@@ -72,11 +72,15 @@ WSGI_APPLICATION = 'CWBAPP.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
+#add secret key password
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'sql_server.pyodbc',
+        'NAME': 'CWBMain',
+        'Host': 'cwb-server.database.windows.net',
+        'User': 'Admin1',
+        'Password': '',
+        'Port': '1433'
     }
 }
 
