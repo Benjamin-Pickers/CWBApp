@@ -6,16 +6,16 @@ class Batchcosttracking(models.Model):
     totalcost = models.FloatField(db_column='TotalCost')
     totalweight = models.SmallIntegerField(db_column='TotalWeight')
     priceperpound = models.FloatField(db_column='PricePerPound')
-    supplier1 = models.ForeignKey('Materialcost', models.DO_NOTHING, db_column='Supplier1')
+    supplier1 = models.ForeignKey('Materialcost', models.DO_NOTHING, db_column='Supplier1',  related_name='supplier1')
     weight1 = models.SmallIntegerField(db_column='Weight1', blank=True, null=True)
     value1 = models.FloatField(db_column='Value1', blank=True, null=True)
-    supplier2 = models.ForeignKey('Materialcost', models.DO_NOTHING, db_column='Supplier2', blank=True, null=True)
+    supplier2 = models.ForeignKey('Materialcost', models.DO_NOTHING, db_column='Supplier2', related_name='supplier2', blank=True, null=True)
     weight2 = models.SmallIntegerField(db_column='Weight2', blank=True, null=True)
     value2 = models.FloatField(db_column='Value2', blank=True, null=True)
-    supplier3 = models.ForeignKey('Materialcost', models.DO_NOTHING, db_column='Supplier3', blank=True, null=True)
+    supplier3 = models.ForeignKey('Materialcost', models.DO_NOTHING, db_column='Supplier3', related_name='supplier3', blank=True, null=True)
     weight3 = models.SmallIntegerField(db_column='Weight3', blank=True, null=True)
     value3 = models.FloatField(db_column='Value3', blank=True, null=True)
-    supplier4 = models.ForeignKey('Materialcost', models.DO_NOTHING, db_column='Supplier4', blank=True, null=True)
+    supplier4 = models.ForeignKey('Materialcost', models.DO_NOTHING, db_column='Supplier4', related_name='supplier4', blank=True, null=True)
     weight4 = models.SmallIntegerField(db_column='Weight4', blank=True, null=True)
     value4 = models.FloatField(db_column='Value4', blank=True, null=True)
     colour = models.CharField(db_column='Colour', max_length=20, blank=True, null=True)
@@ -77,10 +77,46 @@ class Materialtesting(models.Model):
         db_table = 'MaterialTesting'
         unique_together = (('testname', 'testnumber'),)
 
+class Mixingform(models.Model):
+    batchname = models.CharField(db_column='BatchName', primary_key=True, max_length=15)  # Field name made lowercase.
+    batchdate = models.DateField(db_column='BatchDate', blank=True, null=True)  # Field name made lowercase.
+    material1 = models.CharField(db_column='Material1', max_length=20)  # Field name made lowercase.
+    weight1 = models.SmallIntegerField(db_column='Weight1', blank=True, null=True)  # Field name made lowercase.
+    supplier1 = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier1', related_name='rawsupplier1', blank=True, null=True)  # Field name made lowercase.
+    material2 = models.CharField(db_column='Material2', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    weight2 = models.SmallIntegerField(db_column='Weight2', blank=True, null=True)  # Field name made lowercase.
+    supplier2 = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier2', related_name='rawsupplier2', blank=True, null=True)  # Field name made lowercase.
+    material3 = models.CharField(db_column='Material3', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    weight3 = models.SmallIntegerField(db_column='Weight3', blank=True, null=True)  # Field name made lowercase.
+    supplier3 = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier3', related_name='rawsupplier3', blank=True, null=True)  # Field name made lowercase.
+    material4 = models.CharField(db_column='Material4', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    weight4 = models.SmallIntegerField(db_column='Weight4', blank=True, null=True)  # Field name made lowercase.
+    supplier4 = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier4', related_name='rawsupplier4', blank=True, null=True)  # Field name made lowercase.
+    material5 = models.CharField(db_column='Material5', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    weight5 = models.SmallIntegerField(db_column='Weight5', blank=True, null=True)  # Field name made lowercase.
+    supplier5 = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier5', related_name='rawsupplier5', blank=True, null=True)  # Field name made lowercase.
+    material6 = models.CharField(db_column='Material6', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    weight6 = models.SmallIntegerField(db_column='Weight6', blank=True, null=True)  # Field name made lowercase.
+    supplier6 = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier6', related_name='rawsupplier6', blank=True, null=True)  # Field name made lowercase.
+    material7 = models.CharField(db_column='Material7', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    weight7 = models.SmallIntegerField(db_column='Weight7', blank=True, null=True)  # Field name made lowercase.
+    supplier7 = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier7', related_name='rawsupplier7', blank=True, null=True)  # Field name made lowercase.
+    material8 = models.CharField(db_column='Material8', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    weight8 = models.SmallIntegerField(db_column='Weight8', blank=True, null=True)  # Field name made lowercase.
+    supplier8 = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier8', related_name='rawsupplier8', blank=True, null=True)  # Field name made lowercase.
+    material9 = models.CharField(db_column='Material9', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    weight9 = models.SmallIntegerField(db_column='Weight9', blank=True, null=True)  # Field name made lowercase.
+    supplier9 = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier9', related_name='rawsupplier9', blank=True, null=True)  # Field name made lowercase.
+    material10 = models.CharField(db_column='Material10', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    weight10 = models.SmallIntegerField(db_column='Weight10', blank=True, null=True)  # Field name made lowercase.
+    supplier10 = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier10', related_name='rawsupplier10', blank=True, null=True)  # Field name made lowercase.
+    colour = models.CharField(db_column='Colour', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    colourweight = models.FloatField(db_column='ColourWeight', blank=True, null=True)  # Field name made lowercase.
+    foamweight = models.FloatField(db_column='FoamWeight', blank=True, null=True)  # Field name made lowercase.
+
     class Meta:
         managed = False
         db_table = 'MixingForm'
-
 
 class Ordersheetmachine1(models.Model):
     ponumber = models.CharField(db_column='PONumber', primary_key=True, max_length=15)
@@ -89,8 +125,8 @@ class Ordersheetmachine1(models.Model):
     duedate = models.DateField(db_column='DueDate')
     lengthofrunindays = models.FloatField(db_column='LengthofRuninDays', blank=True, null=True)
     priorityrank = models.SmallIntegerField(db_column='PriorityRank')
-    boardprofile = models.ForeignKey('Productinventory', models.DO_NOTHING, db_column='BoardProfile')
-    colour = models.ForeignKey('Productinventory', models.DO_NOTHING, db_column='Colour')
+    boardprofile = models.ForeignKey('Productinventory', models.DO_NOTHING, db_column='BoardProfile', related_name='Machine1boardprofile')
+    colour = models.ForeignKey('Productinventory', models.DO_NOTHING, db_column='Colour', related_name='Machine1colour')
     skidsremaining = models.FloatField(db_column='SkidsRemaining')
     pcs = models.SmallIntegerField(db_column='PCS')
     pcssent = models.SmallIntegerField(db_column='PCSSent')
@@ -111,8 +147,8 @@ class Ordersheetmachine2(models.Model):
     duedate = models.DateField(db_column='DueDate')
     lengthofrunindays = models.FloatField(db_column='LengthofRuninDays', blank=True, null=True)
     priorityrank = models.SmallIntegerField(db_column='PriorityRank')
-    boardprofile = models.ForeignKey('Productinventory', models.DO_NOTHING, db_column='BoardProfile')
-    colour = models.ForeignKey('Productinventory', models.DO_NOTHING, db_column='Colour')
+    boardprofile = models.ForeignKey('Productinventory', models.DO_NOTHING, db_column='BoardProfile', related_name='Machine2boardprofile')
+    colour = models.ForeignKey('Productinventory', models.DO_NOTHING, db_column='Colour', related_name='Machine2colour')
     skidsremaining = models.FloatField(db_column='SkidsRemaining')
     pcs = models.SmallIntegerField(db_column='PCS')
     pcssent = models.SmallIntegerField(db_column='PCSSent')
@@ -133,8 +169,8 @@ class Ordersheetmachine3(models.Model):
     duedate = models.DateField(db_column='DueDate')
     lengthofrunindays = models.FloatField(db_column='LengthofRuninDays', blank=True, null=True)
     priorityrank = models.SmallIntegerField(db_column='PriorityRank')
-    boardprofile = models.ForeignKey('Productinventory', models.DO_NOTHING, db_column='BoardProfile')
-    colour = models.ForeignKey('Productinventory', models.DO_NOTHING, db_column='Colour')
+    boardprofile = models.ForeignKey('Productinventory', models.DO_NOTHING, db_column='BoardProfile', related_name='Machine3boardprofile')
+    colour = models.ForeignKey('Productinventory', models.DO_NOTHING, db_column='Colour', related_name='Machine3colour')
     skidsremaining = models.FloatField(db_column='SkidsRemaining')
     pcs = models.SmallIntegerField(db_column='PCS')
     pcssent = models.SmallIntegerField(db_column='PCSSent')
@@ -159,8 +195,8 @@ class Picandsum(models.Model):
 
 
 class Productinventory(models.Model):
-    productname = models.ForeignKey('Productprofiles', models.DO_NOTHING, db_column='ProductName', primary_key=True)
-    colour = models.ForeignKey('Productprofiles', models.DO_NOTHING, db_column='Colour')
+    productname = models.ForeignKey('Productprofiles', models.DO_NOTHING, db_column='ProductName', related_name='productprofile', primary_key=True)
+    colour = models.ForeignKey('Productprofiles', models.DO_NOTHING, db_column='Colour', related_name='productcolour')
     embossed = models.BooleanField(db_column='Embossed')
     doublesided = models.BooleanField(db_column='DoubleSided')
     numberofskids = models.SmallIntegerField(db_column='NumberOfSkids')
