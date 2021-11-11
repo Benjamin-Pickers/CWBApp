@@ -1,3 +1,18 @@
-django
-pyodbc
-django-pyodbc-azure
+# packages in environment at C:\Users\Ben Pickers\Anaconda3\envs\cwbenv:
+#
+# Name                    Version                   Build  Channel
+ca-certificates           2021.10.8            h5b45459_0    conda-forge
+certifi                   2021.10.8        py37h03978a9_1    conda-forge
+django                    2.1                      py37_0  
+django-pyodbc-azure       2.1.0.0            pyhd3eb1b0_0  
+openssl                   3.0.0                h8ffe710_2    conda-forge
+pip                       21.3.1             pyhd8ed1ab_0    conda-forge
+pyodbc                    4.0.32           py37hf2a7229_1    conda-forge
+python                    3.7.12          h900ac77_100_cpython    conda-forge
+python_abi                3.7                     2_cp37m    conda-forge
+pytz                      2021.3             pyhd3eb1b0_0  
+setuptools                58.5.3           py37h03978a9_0    conda-forge
+sqlite                    3.36.0               h2bbff1b_0  
+vc                        14.2                 h21ff451_1  
+vs2015_runtime            14.27.29016          h5e58377_2  
+wheel                     0.37.0             pyhd3eb1b0_1  

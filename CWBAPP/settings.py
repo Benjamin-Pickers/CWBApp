@@ -78,10 +78,13 @@ DATABASES = {
     'default': {
         'ENGINE': 'sql_server.pyodbc',
         'NAME': 'CWBMain',
-        'Host': 'cwb-server.database.windows.net',
-        'User': os.environ.get('CWB_SERVER_USER'),
-        'Password': os.environ.get('CWB_SERVER_PASSWORD'),
-        'Port': '1433'
+        'HOST': 'cwb-server.database.windows.net',
+        'USER': os.environ.get('CWB_SERVER_USER'),
+        'PASSWORD': os.environ.get('CWB_SERVER_PASSWORD'),
+        'PORT': '1433',
+        'OPTIONS':{
+            'driver': 'ODBC Driver 17 for SQL Server'
+        }
     }
 }
 
@@ -110,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'EST'
 
 USE_I18N = True
 
