@@ -1,7 +1,7 @@
 from django.db import models
 
 class Batchcosttracking(models.Model):
-    batchname = models.ForeignKey('Mixingform', models.DO_NOTHING, db_column='BatchName', primary_key=True)
+    batchname = models.CharField(db_column='BatchName', primary_key=True, max_length=15)
     batchdate = models.DateField(db_column='BatchDate', blank=True, null=True)
     totalcost = models.FloatField(db_column='TotalCost')
     totalweight = models.SmallIntegerField(db_column='TotalWeight')
