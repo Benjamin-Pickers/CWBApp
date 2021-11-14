@@ -1,0 +1,68 @@
+:root
+{
+    --bgcolour: #DBD4D4;
+    --secondarybgcolour: #2B7A78;
+    --borderradius: 15px;
+    --textcolour: #5A4F4F;
+    --hovercolour: #B3D822;
+}
+
+body
+{
+  background-color: var(--bgcolour);
+}
+
+#navImage
+{
+  float: left;
+}
+
+.nav-link
+{
+  color: var(--textcolour);
+  font-size: 25px;
+}
+.nav-link:hover
+{
+  color: var(--hovercolour);
+}
+
+.toggle-button
+{
+  width: 25px;
+  height: 25px;
+  padding: 2px;
+}
+
+.close-toggle
+{
+  float: right;
+  margin-right: 10px;
+}
+
+.offcanvas-header{ display:none; }
+
+@media (max-width: 992px)
+{
+  .offcanvas-header{ display:block; }
+  .navbar-collapse
+  {
+    position: fixed;
+    z-index: 100;
+    top:0;
+    right: 0;
+    left: 100%;
+    width: 100%;
+    height: 100%
+    padding-right: 1rem;
+    padding-left: 1rem;
+    overflow-y: auto;
+    visibility: hidden;
+    transition: visibility .2s ease-in-out, -webkit-transform .2s ease-in-out;
+  }
+  .navbar-collapse.show
+  {
+    visibility: visible;
+    transform: translateX(-100%);
+  }
+}
