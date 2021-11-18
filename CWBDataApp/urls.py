@@ -9,6 +9,8 @@ urlpatterns = [
     path('MaterialTesting/', views.MaterialTesting, name='MaterialTest'),
     path('ProductInventory/', views.ProductInventory, name='ProductInventory'),
     path('MaterialInventory/', views.MaterialInventory, name='MaterialInventory'),
-    path('OrderSheets/', views.OrderSheets, name='OrderSheets'),
+    path('OrderSheetsMachine1/', views.OrderSheetsMachine1, name='OrderSheetsMachine1'),
+    path('OrderSheetsMachine2/', views.OrderSheetsMachine2, name='OrderSheetsMachine2'),
+    path('OrderSheetsMachine3/', views.OrderSheetsMachine3, name='OrderSheetsMachine3'),
     path('help/', views.help, name='help'),
 ]

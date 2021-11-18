@@ -19,8 +19,14 @@ def ProductInventory(request):
 def MaterialInventory(request):
     return render(request, 'CWBDataApp/MaterialInventory.html')
 
-def OrderSheets(request):
-    return render(request, 'CWBDataApp/OrderSheets.html')
+def OrderSheetsMachine1(request):
+    return render(request, 'CWBDataApp/OrderSheetsMachine1.html')
+
+def OrderSheetsMachine2(request):
+    return render(request, 'CWBDataApp/OrderSheetsMachine2.html')
+
+def OrderSheetsMachine3(request):
+    return render(request, 'CWBDataApp/OrderSheetsMachine3.html')
 
 def help(request):
     return render(request, 'CWBDataApp/help.html')
