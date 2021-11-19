@@ -1,0 +1,16 @@
+#header
+{
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+#descriptionParagraph
+{
+  margin-bottom: 3%;
+}
+
+input
+{
+  float: right;
+  margin-left: 10px;
+}

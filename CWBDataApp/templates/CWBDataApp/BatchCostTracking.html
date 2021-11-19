@@ -2,10 +2,62 @@
 
 {% block title %} {{'Batch Cost Tracking'}} {% endblock title %}
 
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/batchCost.css'%}">
+{% endblock %}
+
 {% block content %}
+      <div class="">
+        <h2 id="header"> Batch Cost Tracking </h2>
+        <p id="descriptionParagraph">
+          Batch cost tracking form. Provide information on batchs made throughout the week. Supplier refers to the company that sent
+          us the material (ie Sudesh, Meltech, KalPoly). If a material used was made by us (premixes) enter 'self' as the supplier
+          and then added the corresponding price/pound value of that material. If material was given to us for free, then enter
+          'free' as the supplier and add 0 as the price/pound value. You do not have to fill all four supplier fields, only the 
+          first is mandatory.
+        </p>
+      </div>
+
       <form action="{% url 'CWBDataApp:BatchCost'%}" method="post">
-        {% csrf_token %}
-        Batch Name: <input type="text" name=newBatch>
-        <input type="submit" name="enterNewBatch" value="Submit">
+        <div class="d-inline-flex flex-column">
+          {% csrf_token %}
+          <p>Batch Name: <input type="text" name="newBatch"></p>
+
+          <p>Date: <input type="date" name="batchDate" min="2021-01-01"></p>
+
+          <br>
+          <h4 id="header">Material 1 Supplier </h4>
+          <p>Supplier 1: <input type="text" name="supplier1"></p>
+
+          <p>Weight 1: <input type="text" name="weight1"></p>
+
+          <p>Price/Pound: <input type="text" name="value1"></p>
+
+          <br>
+          <h4 id="header"> Material 2 Supplier </h4>
+          <p>Supplier 2: <input type="text" name="supplier2"></p>
+
+          <p>Weight 2: <input type="text" name="weight2"></p>
+
+          <p>Price/Pound: <input type="text" name="value2"></p>
+
+          <br>
+          <h4 id="header"> Material 3 Supplier </h4>
+          <p>Supplier 3: <input type="text" name="supplier3"></p>
+
+          <p>Weight 3: <input type="text" name="weight3"></p>
+
+          <p>Price/Pound: <input type="text" name="value3"></p>
+
+          <br>
+          <h4 id="header"> Material 4 Supplier </h4>
+          <p>Supplier 4: <input type="text" name="supplier4"></p>
+
+          <p>Weight 4: <input type="text" name="weight4"></p>
+
+          <p>Price/Pound: <input type="text" name="value4"></p>
+          <input type="submit" name="enterNewBatch" value="Submit">
+        </div>
       </form>
 {% endblock content %}
