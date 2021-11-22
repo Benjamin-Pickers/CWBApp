@@ -8,7 +8,12 @@ def index(request):
     return render(request, 'CWBDataApp/index.html')
 
 def BatchCostTracking(request):
+
+
     return render(request, 'CWBDataApp/BatchCostTracking.html')
+
+def BatchCostQuery(request):
+    return render(request, 'CWBDataApp/BatchCostQuery.html')
 
 def MaterialTesting(request):
     return render(request, 'CWBDataApp/MaterialTesting.html')

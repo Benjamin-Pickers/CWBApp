@@ -12,5 +12,9 @@
 input
 {
   float: right;
-  margin-left: 10px;
+}
+
+.inputBox
+{
+  margin-bottom: 10px;
 }

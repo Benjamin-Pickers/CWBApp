@@ -1,0 +1,29 @@
+{% extends 'CWBDataApp/base.html'%}
+
+{% block title %} {{'Batch Cost Tracking'}} {% endblock title %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/batchCost.css'%}">
+{% endblock %}
+
+{% block content %}
+
+<div class="">
+  <h2 id="header"> Batch Cost Tracking Query </h2>
+  <p id="descriptionParagraph">
+    Here you can query a previous batch to get its details. Enter the batch name and hit submit.
+  </p>
+  <p id="descriptionParagraph">If you want to enter batch data click <a href="{% url 'CWBDataApp:BatchCost'%}">HERE</a></p>
+</div>
+
+<form action="{% url 'CWBDataApp:BatchCost'%}" method="post">
+  <div class="d-inline-flex flex-column">
+    {% csrf_token %}
+    <p>Batch Name: <input type="text" name="newBatch"></p>
+
+    <input type="submit" name="enterNewBatch" value="Submit">
+  </div>
+</form>
+
+{% endblock content %}

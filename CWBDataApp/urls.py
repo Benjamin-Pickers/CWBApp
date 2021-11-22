@@ -6,6 +6,7 @@ app_name = 'CWBDataApp'
 urlpatterns = [
     path('', views.index, name='index'),
     path('BatchCostTracking/', views.BatchCostTracking, name='BatchCost'),
+    path('BatchCostQuery/', views.BatchCostQuery, name='BatchCostQuery'),
     path('MaterialTesting/', views.MaterialTesting, name='MaterialTest'),
     path('ProductInventory/', views.ProductInventory, name='ProductInventory'),
     path('MaterialInventory/', views.MaterialInventory, name='MaterialInventory'),

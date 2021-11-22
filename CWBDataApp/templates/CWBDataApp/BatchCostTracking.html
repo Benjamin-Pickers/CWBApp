@@ -14,49 +14,134 @@
           Batch cost tracking form. Provide information on batchs made throughout the week. Supplier refers to the company that sent
           us the material (ie Sudesh, Meltech, KalPoly). If a material used was made by us (premixes) enter 'self' as the supplier
           and then added the corresponding price/pound value of that material. If material was given to us for free, then enter
-          'free' as the supplier and add 0 as the price/pound value. You do not have to fill all four supplier fields, only the 
+          'free' as the supplier and add 0 as the price/pound value. You do not have to fill all four supplier fields, only the
           first is mandatory.
         </p>
+        <p id="descriptionParagraph">If you want to pull batch data click <a href="{% url 'CWBDataApp:BatchCostQuery'%}">HERE</a></p>
       </div>
 
       <form action="{% url 'CWBDataApp:BatchCost'%}" method="post">
         <div class="d-inline-flex flex-column">
           {% csrf_token %}
-          <p>Batch Name: <input type="text" name="newBatch"></p>
+          <div class="inline-flex inputBox">
+            <label for="newbatch">Batch Name*: </label>
+            <input id="newBatch" type="text" name="newBatch">
+          </div>
 
-          <p>Date: <input type="date" name="batchDate" min="2021-01-01"></p>
+          <div class="inline-flex inputBox">
+            <label for="batchDate">Date*: </label>
+            <input id="batchDate" type="date" name="batchDate" min="2021-01-01">
+          </div>
 
           <br>
+
           <h4 id="header">Material 1 Supplier </h4>
-          <p>Supplier 1: <input type="text" name="supplier1"></p>
 
-          <p>Weight 1: <input type="text" name="weight1"></p>
+          <div class="inline-flex inputBox">
+            <label for="supplier1">Supplier 1*: </label>
+            <input id="supplier1" type="text" name="supplier1">
+          </div>
 
-          <p>Price/Pound: <input type="text" name="value1"></p>
+          <div class="inline-flex inputBox">
+            <label for="weight1">Weight 1*: </label>
+            <input id="weight1" type="text" name="weight1">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="value1">Price/Pound*: </label>
+            <input id="value1" type="text" name="value1">
+          </div>
 
           <br>
+
           <h4 id="header"> Material 2 Supplier </h4>
-          <p>Supplier 2: <input type="text" name="supplier2"></p>
 
-          <p>Weight 2: <input type="text" name="weight2"></p>
+          <div class="inline-flex inputBox">
+            <label for="supplier2">Supplier 2*: </label>
+            <input id="supplier2" type="text" name="supplier2">
+          </div>
 
-          <p>Price/Pound: <input type="text" name="value2"></p>
+          <div class="inline-flex inputBox">
+            <label for="weight2">Weight 2*: </label>
+            <input id="weight2" type="text" name="weight2">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="value2">Price/Pound*: </label>
+            <input id="value2" type="text" name="value2">
+          </div>
 
           <br>
+
           <h4 id="header"> Material 3 Supplier </h4>
-          <p>Supplier 3: <input type="text" name="supplier3"></p>
 
-          <p>Weight 3: <input type="text" name="weight3"></p>
+          <div class="inline-flex inputBox">
+            <label for="supplier3">Supplier 3*: </label>
+            <input id="supplier3" type="text" name="supplier3">
+          </div>
 
-          <p>Price/Pound: <input type="text" name="value3"></p>
+          <div class="inline-flex inputBox">
+            <label for="weight3">Weight 3*: </label>
+            <input id="weight3" type="text" name="weight3">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="value3">Price/Pound*: </label>
+            <input id="value3" type="text" name="value3">
+          </div>
 
           <br>
+
           <h4 id="header"> Material 4 Supplier </h4>
-          <p>Supplier 4: <input type="text" name="supplier4"></p>
 
-          <p>Weight 4: <input type="text" name="weight4"></p>
+          <div class="inline-flex inputBox">
+            <label for="supplier4">Supplier 4*: </label>
+            <input id="supplier4" type="text" name="supplier4">
+          </div>
 
-          <p>Price/Pound: <input type="text" name="value4"></p>
+          <div class="inline-flex inputBox">
+            <label for="weight4">Weight 4*: </label>
+            <input id="weight4" type="text" name="weight4">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="value4">Price/Pound*: </label>
+            <input id="value4" type="text" name="value4">
+          </div>
+
+          <br>
+
+          <h4 id="header"> Colour & Foam </h4>
+
+          <div class="inline-flex inputBox">
+            <label for="colour">Colour: </label>
+            <input id="colour" type="text" name="colour">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="colourWeight">Colour Weight: </label>
+            <input id="colourWeight" type="text" name="colourWeight">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="colourPrice">Colour Price/Pound: </label>
+            <input id="colourPrice" type="text" name="colourPrice">
+          </div>
+
+          <br>
+
+          <div class="inline-flex inputBox">
+            <label for="foamWeight">Foam Weight: </label>
+            <input id="foamWeight" type="text" name="foamWeight">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="foamPrice">Foam Price/Pound: </label>
+            <input id="foamPrice" type="text" name="foamPrice">
+          </div>
+
+
+
           <input type="submit" name="enterNewBatch" value="Submit">
         </div>
       </form>
