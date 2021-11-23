@@ -8,6 +8,7 @@ urlpatterns = [
     path('BatchCostTracking/', views.BatchCostTracking, name='BatchCost'),
     path('BatchCostQuery/', views.BatchCostQuery, name='BatchCostQuery'),
     path('MaterialTesting/', views.MaterialTesting, name='MaterialTest'),
+    path('MaterialTestQuery/', views.MaterialTestQuery, name='MaterialTestQuery'),
     path('ProductInventory/', views.ProductInventory, name='ProductInventory'),
     path('MaterialInventory/', views.MaterialInventory, name='MaterialInventory'),
     path('OrderSheetsMachine1/', views.OrderSheetsMachine1, name='OrderSheetsMachine1'),

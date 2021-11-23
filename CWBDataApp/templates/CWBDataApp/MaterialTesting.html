@@ -2,6 +2,23 @@
 
 {% block title %} {{'Material Testing'}} {% endblock title %}
 
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
+
 {% block content %}
-      <p>Material testing</p>
+
+  <div>
+    <h2 id="header"> Material Testing Entry Form </h2>
+    <p id="descriptionParagraph">
+        Material testing entry is to be used to enter data regarding the testing of a batch. To create an entry, the batch must already exist
+        in the batch cost tracking database.
+    </p>
+    <p id="descriptionParagraph">If you want to pull material testing data click <a href="{% url 'CWBDataApp:MaterialTestQuery'%}">HERE</a></p>
+
+  {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
+
+</div>
+
 {% endblock content %}

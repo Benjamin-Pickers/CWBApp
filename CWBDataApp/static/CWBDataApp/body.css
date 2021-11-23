@@ -18,3 +18,10 @@ input
 {
   margin-bottom: 10px;
 }
+
+#error
+{
+  colour: red;
+  font-size: 15px;
+  font-weight: bold;
+}
