@@ -14,6 +14,11 @@ input
   float: right;
 }
 
+select
+{
+  float: right;
+}
+
 .inputBox
 {
   margin-bottom: 10px;
@@ -21,7 +26,12 @@ input
 
 #error
 {
-  colour: red;
+  color: red;
   font-size: 15px;
   font-weight: bold;
+}
+
+form
+{
+  margin-bottom: 5%;
 }

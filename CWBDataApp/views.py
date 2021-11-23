@@ -16,7 +16,7 @@ def BatchCostTracking(request):
 
         try:
             if Batchcosttracking.objects.get(pk=request.POST['newBatch']):
-                return render(request, 'CWBDataApp/BatchCostTracking.html', {'error_message' : "Batch already exists, please enter a new batch. If you wish to update a batch talk to and admin",})
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'error_message' : "Batch already exists, please enter a new batch. If you wish to update a batch talk to an admin",})
         except:
             cost = int(form['weight1'])*float(form['value1']) + int(form['weight2'])*float(form['value2']) + int(form['weight3'])*float(form['value3']) + int(form['weight4'])*float(form['value4'])
             cost=round(cost, 2)

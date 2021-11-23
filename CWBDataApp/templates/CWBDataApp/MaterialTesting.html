@@ -19,6 +19,118 @@
 
   {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
 
-</div>
+  </div>
+
+  <form action="{% url 'CWBDataApp:MaterialTest'%}" method="post">
+    <div class="d-inline-flex flex-column">
+      {% csrf_token %}
+      <div class="inline-flex inputBox">
+        <label for="projNum">Project Number*: </label>
+        <select id="projNum" type="text" name="projNum">
+          <option value="1">1</option>
+          <option value="5">5</option>
+        </select>
+      </div>
+
+      <div class="inline-flex inputBox">
+        <label for="testName">Test Name*: </label>
+        <input id="testName" type="text" name="testName" maxlength="15">
+      </div>
+
+      <div class="inline-flex inputBox">
+        <label for="testNum">Test Number*: </label>
+        <input id="testNum" type="number" name="testNum" value="1">
+      </div>
+
+      <div class="inline-flex inputBox">
+        <label for="testDate">Test Date*: </label>
+        <input id="testDate" type="date" name="testDate" min="2021-01-01">
+      </div>
+
+      <br>
+
+      <div class="inline-flex inputBox">
+        <label for="labourUsed">Labour Used: </label>
+        <input id="labourUsed" type="text" name="labourUsed">
+      </div>
+
+      <div class="inline-flex inputBox">
+        <label for="timeUsed">Machine Time Used: </label>
+        <select id="timeUsed" name="timeUsed">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="8">8</option>
+          <option value="12">12</option>
+        </select>
+      </div>
+
+      <div class="inline-flex inputBox">
+        <label for="productionLine">Production Line: </label>
+        <select id="productionLine" name="productionLine">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+      </div>
+
+      <div class="inline-flex inputBox">
+        <label for="materialTested">Materials Tested: </label>
+        <input id="materialTested" type="text" name="materialTested" maxlength="200">
+      </div>
+
+      <div class="inline-flex inputBox">
+        <label for="othermaterialTested">Other Materials Tested: </label>
+        <input id="othermaterialTested" type="text" name="othermaterialTested" maxlength="200">
+      </div>
+
+      <div class="inline-flex inputBox">
+        <label for="moulds">Moulds Used: </label>
+        <select id="moulds" name="moulds">
+          <option value="wide">Wide</option>
+          <option value="narrow">Narrow</option>
+          <option value="topBoard">Top Board</option>
+          <option value="furnitureBoard">Furniture Board</option>
+          <option value="deckBoard">Deck Board</option>
+          <option value="riser">Risers</option>
+          <option value="1x3">1x3</option>
+          <option value="1x4">1x4</option>
+          <option value="1x6">1x6</option>
+          <option value="1x8">1x8</option>
+        </select>
+      </div>
+
+      <br>
+
+      <div class="inline-flex inputBox">
+        <label for="reasonFor">Reason For Test: </label>
+        <input id="reasonFor" type="text" name="reasonFor" maxLength="200">
+      </div>
+
+      <div class="inline-flex inputBox">
+        <label for="expectedResult">Expected Results: </label>
+        <input id="expectedResult" type="text" name="expectedResult" maxlength="200">
+      </div>
+
+      <div class="inline-flex inputBox">
+        <label for="difficulties">Difficulties Encountered: </label>
+        <input id="difficulties" type="text" name="difficulties" maxlength="200">
+      </div>
+
+      <div class="inline-flex inputBox">
+        <label for="nextStep">Next Step: </label>
+        <input id="nextStep" type="text" name="nextStep" maxlength="100">
+      </div>
+
+      <br>
+
+      <input type="submit" name="enterNewBatch" value="Submit">
+    </div>
+  </form>
+
+  
 
 {% endblock content %}
