@@ -1,0 +1,24 @@
+{% extends 'CWBDataApp/base.html'%}
+
+{% block title %} {{'Product Inventory'}} {% endblock title %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
+
+{% block content %}
+<div>
+  <h2 id="header"> Product Inventory Query Form </h2>
+  <p id="descriptionParagraph">
+      Product inventory entry is to be used to enter data regarding the finshed product skids in the shop.
+  </p>
+  <p id="descriptionParagraph">If you want to enter product inventory data click <a href="{% url 'CWBDataApp:ProductInventory'%}">ENTER</a> or update inventory click <a href="{% url 'CWBDataApp:ProductInventoryUpdate'%}">UPDATE</a></p>
+
+  {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
+  {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
+
+</div>
+
+
+{% endblock content %}

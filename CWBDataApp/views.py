@@ -87,12 +87,11 @@ def ProductInventory(request):
 
     if request.method == 'POST':
         form = request.POST
+        prod_object =  Productprofiles.objects.get(pk=form['prodName'])
+        if Productinventory.objects.filter(productname=prod_object, colour=form['colour']).exists():
 
-        try:
-            if Productinventory.objects.get(pk=request.POST['prodName']):
-                return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'error_message' : "Product already exists in database, please enter a new product. If you wish to update a product scroll down",})
-        except:
-            prod_object =  Productprofiles.objects.get(pk=form['prodName'])
+            return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'error_message' : "Product already exists in database, please enter a new product. If you wish to update a product scroll down",})
+        else:
             newProd = Productinventory(productname=prod_object,
                                        colour=form['colour'],
                                        embossed=form['embossed'],
@@ -101,6 +100,25 @@ def ProductInventory(request):
             newProd.save()
             return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'dataAcceptedMessage':"Data Successfully Submitted"})
     return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles})
+
+
+def ProductInventoryUpdate(request):
+    allProfiles= Productprofiles.objects.all()
+
+    if request.method == 'POST':
+        form = request.POST
+        prod_object =  Productprofiles.objects.get(pk=form['prodName'])
+
+        if Productinventory.objects.filter(productname=prod_object, colour=form['colour']).exists():
+            prod = Productinventory.objects.get(productname=prod_object, colour=form['colour'])
+            prod.numberofskids = form['numSkids']
+            prod.save()
+            return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'dataAcceptedMessage':"Product Successfully Updated"})
+
+    return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles})
+
+def ProductInventoryQuery(request):
+    return render(request, 'CWBDataApp/ProductInventoryQuery.html')
 
 def MaterialInventory(request):
     return render(request, 'CWBDataApp/MaterialInventory.html')
