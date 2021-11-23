@@ -126,7 +126,7 @@ class Ordersheetmachine1(models.Model):
     lengthofrunindays = models.FloatField(db_column='LengthofRuninDays', blank=True, null=True)
     priorityrank = models.SmallIntegerField(db_column='PriorityRank')
     boardprofile = models.ForeignKey('Productinventory', models.DO_NOTHING, db_column='BoardProfile', related_name='Machine1boardprofile')
-    colour = models.ForeignKey('Productinventory', models.DO_NOTHING, db_column='Colour', related_name='Machine1colour')
+    colour = models.CharField(db_column='Colour', max_length=15)
     skidsremaining = models.FloatField(db_column='SkidsRemaining')
     pcs = models.SmallIntegerField(db_column='PCS')
     pcssent = models.SmallIntegerField(db_column='PCSSent')
@@ -148,7 +148,7 @@ class Ordersheetmachine2(models.Model):
     lengthofrunindays = models.FloatField(db_column='LengthofRuninDays', blank=True, null=True)
     priorityrank = models.SmallIntegerField(db_column='PriorityRank')
     boardprofile = models.ForeignKey('Productinventory', models.DO_NOTHING, db_column='BoardProfile', related_name='Machine2boardprofile')
-    colour = models.ForeignKey('Productinventory', models.DO_NOTHING, db_column='Colour', related_name='Machine2colour')
+    colour = models.CharField(db_column='Colour', max_length=15)
     skidsremaining = models.FloatField(db_column='SkidsRemaining')
     pcs = models.SmallIntegerField(db_column='PCS')
     pcssent = models.SmallIntegerField(db_column='PCSSent')
@@ -170,7 +170,7 @@ class Ordersheetmachine3(models.Model):
     lengthofrunindays = models.FloatField(db_column='LengthofRuninDays', blank=True, null=True)
     priorityrank = models.SmallIntegerField(db_column='PriorityRank')
     boardprofile = models.ForeignKey('Productinventory', models.DO_NOTHING, db_column='BoardProfile', related_name='Machine3boardprofile')
-    colour = models.ForeignKey('Productinventory', models.DO_NOTHING, db_column='Colour', related_name='Machine3colour')
+    colour = models.CharField(db_column='Colour', max_length=15)
     skidsremaining = models.FloatField(db_column='SkidsRemaining')
     pcs = models.SmallIntegerField(db_column='PCS')
     pcssent = models.SmallIntegerField(db_column='PCSSent')
@@ -195,8 +195,8 @@ class Picandsum(models.Model):
 
 
 class Productinventory(models.Model):
-    productname = models.ForeignKey('Productprofiles', models.DO_NOTHING, db_column='ProductName', related_name='productprofile', primary_key=True)
-    colour = models.ForeignKey('Productprofiles', models.DO_NOTHING, db_column='Colour', related_name='productcolour')
+    productname = models.CharField(db_column='ProductName', max_length=40)
+    colour = models.CharField(db_column='colour', max_length=15)
     embossed = models.BooleanField(db_column='Embossed')
     doublesided = models.BooleanField(db_column='DoubleSided')
     numberofskids = models.SmallIntegerField(db_column='NumberOfSkids')
@@ -204,14 +204,10 @@ class Productinventory(models.Model):
     class Meta:
         managed = False
         db_table = 'ProductInventory'
-        unique_together = (('productname', 'colour'),)
-
 
 class Productprofiles(models.Model):
     productname = models.CharField(db_column='ProductName', primary_key=True, max_length=40)
-    colour = models.CharField(db_column='Colour', max_length=15)
 
     class Meta:
         managed = False
         db_table = 'ProductProfiles'
-        unique_together = (('productname', 'colour'),)

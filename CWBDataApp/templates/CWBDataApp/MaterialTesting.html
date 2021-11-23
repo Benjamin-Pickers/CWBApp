@@ -90,16 +90,11 @@
       <div class="inline-flex inputBox">
         <label for="moulds">Moulds Used: </label>
         <select id="moulds" name="moulds">
-          <option value="wide">Wide</option>
-          <option value="narrow">Narrow</option>
-          <option value="topBoard">Top Board</option>
-          <option value="furnitureBoard">Furniture Board</option>
-          <option value="deckBoard">Deck Board</option>
-          <option value="riser">Risers</option>
-          <option value="1x3">1x3</option>
-          <option value="1x4">1x4</option>
-          <option value="1x6">1x6</option>
-          <option value="1x8">1x8</option>
+          {% if allProfiles %}
+            {% for profile in allProfiles %}
+                <option value="{{ profile.productname }}">{{ profile.productname }}</option>
+            {% endfor %}
+          {% endif %}
         </select>
       </div>
 
@@ -131,6 +126,6 @@
     </div>
   </form>
 
-  
+
 
 {% endblock content %}

@@ -2,6 +2,67 @@
 
 {% block title %} {{'Product Inventory'}} {% endblock title %}
 
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
+
 {% block content %}
-      <p>product inventory</p>
+<div>
+  <h2 id="header"> Product Inventory Entry Form </h2>
+  <p id="descriptionParagraph">
+      Product inventory entry is to be used to enter data regarding the finshed product skids in the shop.
+  </p>
+  <p id="descriptionParagraph">If you want to pull product inventory data or update inventory click <a href="{% url 'CWBDataApp:MaterialTestQuery'%}">HERE</a></p>
+
+{% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
+{% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
+
+  </div>
+
+  <form action="{% url 'CWBDataApp:ProductInventory'%}" method="post">
+    <div class="d-inline-flex flex-column">
+      {% csrf_token %}
+      <div class="inline-flex inputBox">
+        <label for="prodName">Product Name*: </label>
+        <select id="prodName" type="text" name="prodName">
+          {% if allProfiles %}
+            {% for profile in allProfiles %}
+                <option value="{{ profile.productname }}">{{ profile.productname }}</option>
+            {% endfor %}
+          {% endif %}
+        </select>
+      </div>
+
+      <div class="inline-flex inputBox">
+        <label for="colour">Colour*: </label>
+        <input id="colour" type="text" name="colour" maxlength="15">
+      </div>
+
+      <div class="inline-flex inputBox">
+        <label for="embossed">Are the boards embossed?*: </label>
+        <select id="embossed" name="embossed">
+          <option value="1">Yes</option>
+          <option value="0">No</option>
+        </select>
+      </div>
+
+      <div class="inline-flex inputBox">
+        <label for="doubleSide">Are the embossed on both sides?: </label>
+        <select id="doubleSide" name="doubleSide">
+          <option value="0">No</option>
+          <option value="1">Yes</option>
+        </select>
+      </div>
+
+      <div class="inline-flex inputBox">
+        <label for="numSkids">Number of Skids*: </label>
+        <input id="numSkids" type="number" name="numSkids" max="100">
+      </div>
+
+      <br>
+
+      <input type="submit" name="enterNewProduct" value="Add">
+    </div>
+  </form>
 {% endblock content %}

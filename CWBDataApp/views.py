@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.template import loader
 
-from .models import Batchcosttracking, Materialcost
+from .models import Batchcosttracking, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Picandsum, Productinventory, Productprofiles
 
 def index(request):
     return render(request, 'CWBDataApp/index.html')
@@ -74,14 +74,33 @@ def BatchCostQuery(request):
     return render(request, 'CWBDataApp/BatchCostQuery.html')
 
 def MaterialTesting(request):
-    return render(request, 'CWBDataApp/MaterialTesting.html')
+    allProfiles= Productprofiles.objects.all()
+    return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles})
 
 def MaterialTestQuery(request):
     return render(request, 'CWBDataApp/MaterialTestQuery.html')
 
 
 def ProductInventory(request):
-    return render(request, 'CWBDataApp/ProductInventory.html')
+
+    allProfiles= Productprofiles.objects.all()
+
+    if request.method == 'POST':
+        form = request.POST
+
+        try:
+            if Productinventory.objects.get(pk=request.POST['prodName']):
+                return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'error_message' : "Product already exists in database, please enter a new product. If you wish to update a product scroll down",})
+        except:
+            prod_object =  Productprofiles.objects.get(pk=form['prodName'])
+            newProd = Productinventory(productname=prod_object,
+                                       colour=form['colour'],
+                                       embossed=form['embossed'],
+                                       doublesided=form['doubleSide'],
+                                       numberofskids=form['numSkids'])
+            newProd.save()
+            return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'dataAcceptedMessage':"Data Successfully Submitted"})
+    return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles})
 
 def MaterialInventory(request):
     return render(request, 'CWBDataApp/MaterialInventory.html')

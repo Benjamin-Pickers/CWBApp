@@ -31,6 +31,14 @@ select
   font-weight: bold;
 }
 
+#accepted
+{
+  color: green;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+
 form
 {
   margin-bottom: 5%;
