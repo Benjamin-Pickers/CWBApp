@@ -43,3 +43,33 @@ form
 {
   margin-bottom: 5%;
 }
+
+table
+{
+  background-color: white;
+  border: 1px solid black;
+}
+
+tr, td, th
+{
+  border: 1px solid black;
+}
+
+.queryTable
+{
+  position: relative;
+  width: auto;
+  display: flex;
+  overflow: auto;
+  justify-content: space-evenly safe;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tablecontainer
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  margin: 0 5% 5% 5%;
+}

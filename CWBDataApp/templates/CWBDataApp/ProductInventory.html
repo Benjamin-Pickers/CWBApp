@@ -19,58 +19,59 @@
 {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
 
   </div>
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:ProductInventory'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        <h4 id=header>Add Product </h4>
+        {% csrf_token %}
+        <div class="inline-flex inputBox">
+          <label for="prodName">Product Name*: </label>
+          <select id="prodName" type="text" name="prodName">
+            {% if allProfiles %}
+              {% for profile in allProfiles %}
+                  <option value="{{ profile.productname }}">{{ profile.productname }}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
 
-  <form action="{% url 'CWBDataApp:ProductInventory'%}" method="post">
-    <div class="d-inline-flex flex-column">
-      <h4 id=header>Add Product </h4>
-      {% csrf_token %}
-      <div class="inline-flex inputBox">
-        <label for="prodName">Product Name*: </label>
-        <select id="prodName" type="text" name="prodName">
-          {% if allProfiles %}
-            {% for profile in allProfiles %}
-                <option value="{{ profile.productname }}">{{ profile.productname }}</option>
-            {% endfor %}
-          {% endif %}
-        </select>
+        <div class="inline-flex inputBox">
+          <label for="colour">Colour*: </label>
+          <select id="colour" type="text" name="colour">
+            {% if allColours %}
+              {% for entry in allColours %}
+                  <option value="{{ entry.colour }}">{{ entry.colour }}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for="embossed">Are the boards embossed?*: </label>
+          <select id="embossed" name="embossed">
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+          </select>
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for="doubleSide">Are the embossed on both sides?: </label>
+          <select id="doubleSide" name="doubleSide">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for="numSkids">Number of Skids*: </label>
+          <input id="numSkids" type="number" name="numSkids" max="100">
+        </div>
+
+        <br>
+
+        <input type="submit" name="enterNewProduct" value="Add">
       </div>
-
-      <div class="inline-flex inputBox">
-        <label for="colour">Colour*: </label>
-        <select id="colour" type="text" name="colour">
-          {% if allColours %}
-            {% for entry in allColours %}
-                <option value="{{ entry.colour }}">{{ entry.colour }}</option>
-            {% endfor %}
-          {% endif %}
-        </select>
-      </div>
-
-      <div class="inline-flex inputBox">
-        <label for="embossed">Are the boards embossed?*: </label>
-        <select id="embossed" name="embossed">
-          <option value="1">Yes</option>
-          <option value="0">No</option>
-        </select>
-      </div>
-
-      <div class="inline-flex inputBox">
-        <label for="doubleSide">Are the embossed on both sides?: </label>
-        <select id="doubleSide" name="doubleSide">
-          <option value="0">No</option>
-          <option value="1">Yes</option>
-        </select>
-      </div>
-
-      <div class="inline-flex inputBox">
-        <label for="numSkids">Number of Skids*: </label>
-        <input id="numSkids" type="number" name="numSkids" max="100">
-      </div>
-
-      <br>
-
-      <input type="submit" name="enterNewProduct" value="Add">
-    </div>
-  </form>
+    </form>
+  </div>
 
 {% endblock content %}

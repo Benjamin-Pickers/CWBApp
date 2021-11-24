@@ -21,8 +21,10 @@
 
   </div>
 
+<div class="justify-content-center row no-gutters">
   <form action="{% url 'CWBDataApp:MaterialTest'%}" method="post">
     <div class="d-inline-flex flex-column">
+      <h4 id=header>Enter a Test </h4>
       {% csrf_token %}
       <div class="inline-flex inputBox">
         <label for="projNum">Project Number*: </label>
@@ -125,6 +127,7 @@
       <input type="submit" name="enterNewBatch" value="Submit">
     </div>
   </form>
+</div>
 
 
 

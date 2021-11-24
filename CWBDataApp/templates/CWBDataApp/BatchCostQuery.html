@@ -4,7 +4,7 @@
 
 {% block css %}
   {% load static %}
-  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/batchCost.css'%}">
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
 {% endblock %}
 
 {% block content %}
@@ -15,15 +15,82 @@
     Here you can query a previous batch to get its details. Enter the batch name and hit submit.
   </p>
   <p id="descriptionParagraph">If you want to enter batch data click <a href="{% url 'CWBDataApp:BatchCost'%}">HERE</a></p>
+
+  {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
 </div>
 
-<form action="{% url 'CWBDataApp:BatchCost'%}" method="post">
-  <div class="d-inline-flex flex-column">
-    {% csrf_token %}
-    <p>Batch Name: <input type="text" name="newBatch"></p>
+<div class="justify-content-center row no-gutters">
+  <form action="{% url 'CWBDataApp:BatchCostQuery'%}" method="post">
+    <div class="d-inline-flex flex-column">
+      <h4 id=header>Search for a Batch</h4>
+      {% csrf_token %}
+      <div class="inline-flex inputBox">
+        <label for="searchbatch">Batch Name*: </label>
+        <input id="searchBatch" type="text" name="searchBatch" maxlength="15">
+      </div>
 
-    <input type="submit" name="enterNewBatch" value="Submit">
+      <input type="submit" name="enterNewBatch" value="Submit">
+    </div>
+  </form>
+</div>
+
+{% if batch %}
+<div class="queryTable">
+  <div class="tablecontainer">
+    <table>
+      <tr>
+        <th>Batch Name</th>
+        <th>Batch Date</th>
+        <th>Total Cost</th>
+        <th>Total Weight</th>
+        <th>Price/Pound</th>
+        <th>Supplier_1</th>
+        <th>Weight_1</th>
+        <th>Cost</th>
+        <th>Supplier_2</th>
+        <th>Weight_2</th>
+        <th>Cost</th>
+        <th>Supplier_3</th>
+        <th>Weight_3</th>
+        <th>Cost</th>
+        <th>Supplier_4</th>
+        <th>Weight_4</th>
+        <th>Cost</th>
+        <th>Colour</th>
+        <th>Colour Weight</th>
+        <th>Colour Cost</th>
+        <th>Foam Weight</th>
+        <th>Foam Cost</th>
+        <th>Total Shred Weight</th>
+      </tr>
+      <tr>
+        <td>{{ batch.batchname }}</td>
+        <td>{{ batch.batchdate }}</td>
+        <td>{{ batch.totalcost }}</td>
+        <td>{{ batch.totalweight }}</td>
+        <td>{{ batch.priceperpound }}</td>
+        <td>{{ sup1 }}</td>
+        <td>{{ batch.weight1 }}</td>
+        <td>{{ batch.value1 }}</td>
+        <td>{{ sup2 }}</td>
+        <td>{{ batch.weight2 }}</td>
+        <td>{{ batch.value2 }}</td>
+        <td>{{ sup3 }}</td>
+        <td>{{ batch.weight3 }}</td>
+        <td>{{ batch.value3 }}</td>
+        <td>{{ sup4 }}</td>
+        <td>{{ batch.weight4 }}</td>
+        <td>{{ batch.value4 }}</td>
+        <td>{{ batch.colour }}</td>
+        <td>{{ batch.colourweight }}</td>
+        <td>{{ batch.colourvalue }}</td>
+        <td>{{ batch.foamweight }}</td>
+        <td>{{ batch.foamvalue }}</td>
+        <td>{{ batch.totalshredweight}}</td>
+      </tr>
+    </table>
   </div>
-</form>
+</div>
+{% endif %}
 
 {% endblock content %}

@@ -23,8 +23,10 @@
 
       </div>
 
+<div class="justify-content-center row no-gutters">
       <form action="{% url 'CWBDataApp:BatchCost'%}" method="post">
         <div class="d-inline-flex flex-column">
+          <h4 id=header>Add New Batch </h4>
           {% csrf_token %}
           <div class="inline-flex inputBox">
             <label for="newbatch">Batch Name*: </label>
@@ -157,4 +159,5 @@
           <input type="submit" name="enterNewBatch" value="Submit">
         </div>
       </form>
+    </div>
 {% endblock content %}

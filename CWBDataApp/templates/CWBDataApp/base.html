@@ -36,8 +36,14 @@
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'CWBDataApp:index' %}">Home</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'CWBDataApp:BatchCost' %}">Batch Cost Tracking</a>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkBatch" role="button" data-toggle="dropdown" aria-haspopup="true "aria-expanded="false">
+                  Batch Cost Tracking
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkBatch">
+                  <a class="dropdown-item" href="{% url 'CWBDataApp:BatchCost'%}"> Enter Batch </a>
+                  <a class="dropdown-item" href="{% url 'CWBDataApp:BatchCostQuery'%}"> Search Batch </a>
+                </div>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'CWBDataApp:MaterialTest'%}">Material Testing</a>

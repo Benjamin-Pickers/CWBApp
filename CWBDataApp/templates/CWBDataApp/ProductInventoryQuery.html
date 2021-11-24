@@ -21,35 +21,68 @@
 
 </div>
 
-<form action="{% url 'CWBDataApp:ProductInventoryUpdate'%}" method="post">
-  <div class="d-inline-flex flex-column">
-    <h4 id=header>Search for Product </h4>
-    {% csrf_token %}
-    <div class="inline-flex inputBox">
-      <label for="prodName">Product Name*: </label>
-      <select id="prodName" type="text" name="prodName">
-        {% if allProfiles %}
-          {% for profile in allProfiles %}
-              <option value="{{ profile.productname }}">{{ profile.productname }}</option>
-          {% endfor %}
-        {% endif %}
-      </select>
-    </div>
+<div class="justify-content-center row no-gutters">
+  <form action="{% url 'CWBDataApp:ProductInventoryQuery'%}" method="post">
+    <div class="d-inline-flex flex-column">
+      <h4 id=header>Search for Product </h4>
+      {% csrf_token %}
+      <div class="inline-flex inputBox">
+        <label for="prodName">Product Name*: </label>
+        <select id="prodName" type="text" name="prodName">
+          {% if allProfiles %}
+            {% for profile in allProfiles %}
+                <option value="{{ profile.productname }}">{{ profile.productname }}</option>
+            {% endfor %}
+          {% endif %}
+        </select>
+      </div>
 
-    <div class="inline-flex inputBox">
-      <label for="colour">Colour*: </label>
-      <select id="colour" type="text" name="colour">
-        {% if allColours %}
-          {% for entry in allColours %}
-              <option value="{{ entry.colour }}">{{ entry.colour }}</option>
-          {% endfor %}
-        {% endif %}
-      </select>
-    </div>
+      <div class="inline-flex inputBox">
+        <label for="colour">Colour*: </label>
+        <select id="colour" type="text" name="colour">
+          {% if allColours %}
+            {% for entry in allColours %}
+                <option value="{{ entry.colour }}">{{ entry.colour }}</option>
+            {% endfor %}
+          {% endif %}
+        </select>
+      </div>
 
-    <input type="submit" name="enterNewProduct" value="Find">
-  </div>
-</form>
+      <input type="submit" name="enterNewProduct" value="Find">
+    </div>
+  </form>
+</div>
+
+
+    {% if product %}
+    <div class="queryTable justify-content-center row no-gutters">
+      <table>
+        <tr>
+          <th>Product</th>
+          <th>Colour</th>
+          <th>Embossed</th>
+          <th>Double Sided</th>
+          <th>Number of Skids</th>
+        </tr>
+        <tr>
+          <td>{{ profile.productname }}</td>
+          <td>{{ product.colour }}</td>
+          {% if product.embossed == 1 %}
+            <td>Yes</td>
+          {% else %}
+            <td>No</td>
+          {% endif %}
+          {% if product.doublesided == 1 %}
+            <td>Yes</td>
+          {% else %}
+            <td>No</td>
+          {% endif %}
+          <td>{{ product.numberofskids }}</td>
+        </tr>
+      </table>
+    </div>
+    {% endif %}
+
 
 
 {% endblock content %}

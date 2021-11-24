@@ -40,7 +40,7 @@ def BatchCostTracking(request):
             else:
                 sup4_object =  Materialcost.objects.get(pk=form['supplier4'])
 
-            batch = Batchcosttracking(batchname=form['newBatch'],
+            batch = Batchcosttracking(batchname=form['newBatch'].upper(),
                                     batchdate=form['batchDate'],
                                     totalcost=cost,
                                     totalweight=weight,
@@ -72,7 +72,18 @@ def BatchCostTracking(request):
     return render(request, 'CWBDataApp/BatchCostTracking.html', {'allColours':allColours})
 
 def BatchCostQuery(request):
-    allColours = Colour.objects.all()
+
+    if request.method == 'POST':
+        form = request.POST
+        try:
+            batch = Batchcosttracking.objects.get(pk=form['searchBatch'].upper())
+            sup1_object = batch.supplier1.supplier
+            sup2_object = batch.supplier2.supplier
+            sup3_object = batch.supplier3.supplier
+            sup4_object = batch.supplier4.supplier
+            return render(request, 'CWBDataApp/BatchCostQuery.html', {'batch' : batch, 'sup1':sup1_object, 'sup2':sup2_object, 'sup3':sup3_object, 'sup4':sup4_object, })
+        except:
+            return render(request, 'CWBDataApp/BatchCostQuery.html', {'error_message' : "Batch does not exist, please enter a valid batch",})
     return render(request, 'CWBDataApp/BatchCostQuery.html')
 
 def MaterialTesting(request):
@@ -133,10 +144,9 @@ def ProductInventoryQuery(request):
 
         if Productinventory.objects.filter(productname=prod_object, colour=form['colour']).exists():
             prod = Productinventory.objects.get(productname=prod_object, colour=form['colour'])
-            prod.numberofskids = form['numSkids']
-            prod.save()
-            return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours, 'dataAcceptedMessage':"Product Successfully Updated"})
-
+            return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours, 'product':prod, 'profile':prod_object})
+        else:
+            return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':"This product currently does not exist in inventory. If you wish to enter its data, press the link above"})
     return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours})
 
 def MaterialInventory(request):
