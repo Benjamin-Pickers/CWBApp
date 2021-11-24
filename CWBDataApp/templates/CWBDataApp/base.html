@@ -42,8 +42,15 @@
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'CWBDataApp:MaterialTest'%}">Material Testing</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'CWBDataApp:ProductInventory'%}">Product Inventory</a>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkProduct" role="button" data-toggle="dropdown" aria-haspopup="true "aria-expanded="false">
+                  Product Inventory
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkProduct">
+                  <a class="dropdown-item" href="{% url 'CWBDataApp:ProductInventory'%}"> Enter </a>
+                  <a class="dropdown-item" href="{% url 'CWBDataApp:ProductInventoryUpdate'%}"> Update </a>
+                  <a class="dropdown-item" href="{% url 'CWBDataApp:ProductInventoryQuery'%}"> Search </a>
+                </div>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'CWBDataApp:MaterialInventory'%}">Material Inventory</a>

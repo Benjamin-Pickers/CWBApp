@@ -211,3 +211,6 @@ class Productprofiles(models.Model):
     class Meta:
         managed = False
         db_table = 'ProductProfiles'
+
+class Colour(models.Model):
+    colour = models.CharField(max_length=15, primary_key=True)

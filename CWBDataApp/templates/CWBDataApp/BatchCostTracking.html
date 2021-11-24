@@ -118,7 +118,13 @@
 
           <div class="inline-flex inputBox">
             <label for="colour">Colour: </label>
-            <input id="colour" type="text" name="colour">
+            <select id="colour" type="text" name="colour">
+              {% if allColours %}
+                {% for entry in allColours %}
+                    <option value="{{ entry.colour }}">{{ entry.colour }}</option>
+                {% endfor %}
+              {% endif %}
+            </select>
           </div>
 
           <div class="inline-flex inputBox">

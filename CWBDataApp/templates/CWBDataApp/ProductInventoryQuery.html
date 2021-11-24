@@ -11,7 +11,8 @@
 <div>
   <h2 id="header"> Product Inventory Query Form </h2>
   <p id="descriptionParagraph">
-      Product inventory entry is to be used to enter data regarding the finshed product skids in the shop.
+      Product inventory query is to be used to pull data regarding the finshed product skids in the shop. You can either
+      pull a single products data or pull data of all the product currently in the shop
   </p>
   <p id="descriptionParagraph">If you want to enter product inventory data click <a href="{% url 'CWBDataApp:ProductInventory'%}">ENTER</a> or update inventory click <a href="{% url 'CWBDataApp:ProductInventoryUpdate'%}">UPDATE</a></p>
 
@@ -19,6 +20,36 @@
   {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
 
 </div>
+
+<form action="{% url 'CWBDataApp:ProductInventoryUpdate'%}" method="post">
+  <div class="d-inline-flex flex-column">
+    <h4 id=header>Search for Product </h4>
+    {% csrf_token %}
+    <div class="inline-flex inputBox">
+      <label for="prodName">Product Name*: </label>
+      <select id="prodName" type="text" name="prodName">
+        {% if allProfiles %}
+          {% for profile in allProfiles %}
+              <option value="{{ profile.productname }}">{{ profile.productname }}</option>
+          {% endfor %}
+        {% endif %}
+      </select>
+    </div>
+
+    <div class="inline-flex inputBox">
+      <label for="colour">Colour*: </label>
+      <select id="colour" type="text" name="colour">
+        {% if allColours %}
+          {% for entry in allColours %}
+              <option value="{{ entry.colour }}">{{ entry.colour }}</option>
+          {% endfor %}
+        {% endif %}
+      </select>
+    </div>
+
+    <input type="submit" name="enterNewProduct" value="Find">
+  </div>
+</form>
 
 
 {% endblock content %}

@@ -3,12 +3,13 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.template import loader
 
-from .models import Batchcosttracking, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Picandsum, Productinventory, Productprofiles
+from .models import Batchcosttracking, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Picandsum, Productinventory, Productprofiles, Colour
 
 def index(request):
     return render(request, 'CWBDataApp/index.html')
 
 def BatchCostTracking(request):
+    allColours = Colour.objects.all()
 
     if request.method == 'POST':
 
@@ -16,7 +17,7 @@ def BatchCostTracking(request):
 
         try:
             if Batchcosttracking.objects.get(pk=request.POST['newBatch']):
-                return render(request, 'CWBDataApp/BatchCostTracking.html', {'error_message' : "Batch already exists, please enter a new batch. If you wish to update a batch talk to an admin",})
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allColours':allColours, 'error_message' : "Batch already exists, please enter a new batch. If you wish to update a batch talk to an admin",})
         except:
             cost = int(form['weight1'])*float(form['value1']) + int(form['weight2'])*float(form['value2']) + int(form['weight3'])*float(form['value3']) + int(form['weight4'])*float(form['value4'])
             cost=round(cost, 2)
@@ -68,9 +69,10 @@ def BatchCostTracking(request):
 
 
 
-    return render(request, 'CWBDataApp/BatchCostTracking.html')
+    return render(request, 'CWBDataApp/BatchCostTracking.html', {'allColours':allColours})
 
 def BatchCostQuery(request):
+    allColours = Colour.objects.all()
     return render(request, 'CWBDataApp/BatchCostQuery.html')
 
 def MaterialTesting(request):
@@ -84,13 +86,14 @@ def MaterialTestQuery(request):
 def ProductInventory(request):
 
     allProfiles= Productprofiles.objects.all()
+    allColours = Colour.objects.all()
 
     if request.method == 'POST':
         form = request.POST
         prod_object =  Productprofiles.objects.get(pk=form['prodName'])
         if Productinventory.objects.filter(productname=prod_object, colour=form['colour']).exists():
 
-            return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'error_message' : "Product already exists in database, please enter a new product. If you wish to update a product scroll down",})
+            return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message' : "Product already exists in database, please enter a new product. If you wish to update a product scroll down",})
         else:
             newProd = Productinventory(productname=prod_object,
                                        colour=form['colour'],
@@ -98,12 +101,13 @@ def ProductInventory(request):
                                        doublesided=form['doubleSide'],
                                        numberofskids=form['numSkids'])
             newProd.save()
-            return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'dataAcceptedMessage':"Data Successfully Submitted"})
-    return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles})
+            return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'allColours':allColours, 'dataAcceptedMessage':"Data Successfully Submitted"})
+    return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'allColours':allColours})
 
 
 def ProductInventoryUpdate(request):
     allProfiles= Productprofiles.objects.all()
+    allColours = Colour.objects.all()
 
     if request.method == 'POST':
         form = request.POST
@@ -113,12 +117,27 @@ def ProductInventoryUpdate(request):
             prod = Productinventory.objects.get(productname=prod_object, colour=form['colour'])
             prod.numberofskids = form['numSkids']
             prod.save()
-            return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'dataAcceptedMessage':"Product Successfully Updated"})
-
-    return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles})
+            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'dataAcceptedMessage':"Product Successfully Updated"})
+        else:
+            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':"This product currently does not exist in inventory. If you wish to enter its data, press the link above"})
+    return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours})
 
 def ProductInventoryQuery(request):
-    return render(request, 'CWBDataApp/ProductInventoryQuery.html')
+
+    allProfiles= Productprofiles.objects.all()
+    allColours = Colour.objects.all()
+
+    if request.method == 'POST':
+        form = request.POST
+        prod_object =  Productprofiles.objects.get(pk=form['prodName'])
+
+        if Productinventory.objects.filter(productname=prod_object, colour=form['colour']).exists():
+            prod = Productinventory.objects.get(productname=prod_object, colour=form['colour'])
+            prod.numberofskids = form['numSkids']
+            prod.save()
+            return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours, 'dataAcceptedMessage':"Product Successfully Updated"})
+
+    return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours})
 
 def MaterialInventory(request):
     return render(request, 'CWBDataApp/MaterialInventory.html')
