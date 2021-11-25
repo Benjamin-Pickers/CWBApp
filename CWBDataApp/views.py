@@ -5,9 +5,11 @@ from django.template import loader
 
 from .models import Batchcosttracking, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Picandsum, Productinventory, Productprofiles, Colour
 
+###########################################################HOME PAGE
 def index(request):
     return render(request, 'CWBDataApp/index.html')
 
+###########################################################BATCH COST TRACKING
 def BatchCostTracking(request):
     allColours = Colour.objects.all()
 
@@ -22,7 +24,10 @@ def BatchCostTracking(request):
             cost = int(form['weight1'])*float(form['value1']) + int(form['weight2'])*float(form['value2']) + int(form['weight3'])*float(form['value3']) + int(form['weight4'])*float(form['value4'])
             cost=round(cost, 2)
             weight = int(form['weight1']) + int(form['weight2']) + int(form['weight3']) + int(form['weight4'])
+            if weight == 0:
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allColours':allColours, 'error_message':"Total weight cannot be zero, please add a value to weight1",})
             price = round(cost/weight, 2)
+
             sup1_object = Materialcost.objects.get(pk=form['supplier1'])
 
             if form['supplier2'] == '':
@@ -66,11 +71,12 @@ def BatchCostTracking(request):
                                     totalshredweight=form['shredWeight']
                                     )
             batch.save()
-
+            return render(request, 'CWBDataApp/BatchCostTracking.html', {'allColours':allColours, 'dataAcceptedMessage':"Test Successfully Submitted"})
 
 
     return render(request, 'CWBDataApp/BatchCostTracking.html', {'allColours':allColours})
 
+###########################################################BATCH COST TRACKING QUERY
 def BatchCostQuery(request):
 
     if request.method == 'POST':
@@ -86,14 +92,94 @@ def BatchCostQuery(request):
             return render(request, 'CWBDataApp/BatchCostQuery.html', {'error_message' : "Batch does not exist, please enter a valid batch",})
     return render(request, 'CWBDataApp/BatchCostQuery.html')
 
+###########################################################MATERIAL TESTING
 def MaterialTesting(request):
     allProfiles= Productprofiles.objects.all()
+
+    if request.method == 'POST':
+
+        form = request.POST
+
+        try:
+            Batchcosttracking.objects.get(pk=form['testName'].upper())
+        except:
+            return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles, 'error_message' : "Batch doesn't exist, please enter a batch first before entering a test.",})
+
+        try:
+            testName = Batchcosttracking.objects.get(pk=form['testName'].upper())
+            Materialtesting.objects.get(testname=testName, testnumber=int(form['testNum']))
+            return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles, 'error_message' : "Test number is already used for this batch, please choose a different test number",})
+        except:
+            if int(form['timeUsed']) == 1:
+                costofmaterial=150
+                costoflabour=100
+            elif int(form['timeUsed']) == 2:
+                costofmaterial=200
+                costoflabour=200
+            elif int(form['timeUsed']) == 3:
+                costofmaterial=400
+                costoflabour=300
+            elif int(form['timeUsed']) == 4:
+                costofmaterial=450
+                costoflabour=300
+            elif int(form['timeUsed']) == 5:
+                costofmaterial=500
+                costoflabour=300
+            elif int(form['timeUsed']) == 6:
+                costofmaterial=600
+                costoflabour=350
+            elif int(form['timeUsed']) == 8:
+                costofmaterial=900
+                costoflabour=400
+            else:
+                costofmaterial=1200
+                costoflabour=600
+
+            totalcost = costoflabour + costofmaterial
+            testName = Batchcosttracking.objects.get(pk=form['testName'].upper())
+
+            test=Materialtesting(projectnumber=form['projNum'],
+                                 testname=testName,
+                                 testnumber=form['testNum'],
+                                 testdate=form['testDate'],
+                                 labourused=form['labourUsed'],
+                                 machinetimeused=form['timeUsed'],
+                                 productionline=form['productionLine'],
+                                 materialstested=form['materialTested'],
+                                 othermaterialstested=form['othermaterialTested'],
+                                 moulds=form['moulds'],
+                                 reasonfortest=form['reasonFor'],
+                                 expectedresults=form['expectedResult'],
+                                 difficultiesencountered=form['difficulties'],
+                                 nextstep=form['nextStep'],
+                                 estimatedcostofmaterial=costofmaterial,
+                                 estimatedcostoflabour=costoflabour,
+                                 totalcostoftest=totalcost
+                                 )
+            test.save()
+            return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles, 'dataAcceptedMessage':"Test Successfully Submitted"})
     return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles})
 
+###########################################################MATERIAL TESTING QUERY
 def MaterialTestQuery(request):
+
+    if request.method == 'POST':
+
+        form = request.POST
+
+        try:
+            test = Batchcosttracking.objects.get(pk=form['testName'].upper())
+            testName = test.batchname
+            allTests = Materialtesting.objects.filter(testname=test)
+            if not allTests:
+                return render(request, 'CWBDataApp/MaterialTestQuery.html', {'error_message':"No test exists for this batch"})
+            return render(request, 'CWBDataApp/MaterialTestQuery.html', {'allTests':allTests, 'testName':testName})
+        except:
+            return render(request, 'CWBDataApp/MaterialTestQuery.html', {'error_message':"Batch does not exist, please enter the batch in batch cost tracking"})
     return render(request, 'CWBDataApp/MaterialTestQuery.html')
 
 
+###########################################################PRODUCT INVENTORY
 def ProductInventory(request):
 
     allProfiles= Productprofiles.objects.all()
@@ -115,7 +201,7 @@ def ProductInventory(request):
             return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'allColours':allColours, 'dataAcceptedMessage':"Data Successfully Submitted"})
     return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'allColours':allColours})
 
-
+###########################################################PRODUCT INVENTORY UPDATE
 def ProductInventoryUpdate(request):
     allProfiles= Productprofiles.objects.all()
     allColours = Colour.objects.all()
@@ -133,6 +219,7 @@ def ProductInventoryUpdate(request):
             return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':"This product currently does not exist in inventory. If you wish to enter its data, press the link above"})
     return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours})
 
+###########################################################PRODUCT INVENTORY QUERY
 def ProductInventoryQuery(request):
 
     allProfiles= Productprofiles.objects.all()
@@ -149,20 +236,26 @@ def ProductInventoryQuery(request):
             return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':"This product currently does not exist in inventory. If you wish to enter its data, press the link above"})
     return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours})
 
+###########################################################MATERIAL INVENTORY
 def MaterialInventory(request):
     return render(request, 'CWBDataApp/MaterialInventory.html')
 
+###########################################################ORDER SHEET MACHINE 1
 def OrderSheetsMachine1(request):
     return render(request, 'CWBDataApp/OrderSheetsMachine1.html')
 
+###########################################################ORDER SHEET MACHINE 2
 def OrderSheetsMachine2(request):
     return render(request, 'CWBDataApp/OrderSheetsMachine2.html')
 
+###########################################################ORDER SHEET MACHINE 3
 def OrderSheetsMachine3(request):
     return render(request, 'CWBDataApp/OrderSheetsMachine3.html')
 
+###########################################################HELP
 def help(request):
     return render(request, 'CWBDataApp/help.html')
 
+###########################################################ADMIN
 def admin(request):
     return reverse('admin:index')

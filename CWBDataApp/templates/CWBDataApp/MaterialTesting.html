@@ -18,13 +18,14 @@
     <p id="descriptionParagraph">If you want to pull material testing data click <a href="{% url 'CWBDataApp:MaterialTestQuery'%}">HERE</a></p>
 
   {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
+  {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
 
   </div>
 
 <div class="justify-content-center row no-gutters">
   <form action="{% url 'CWBDataApp:MaterialTest'%}" method="post">
     <div class="d-inline-flex flex-column">
-      <h4 id=header>Enter a Test </h4>
+      <h4 id=header>Enter a New Material Test </h4>
       {% csrf_token %}
       <div class="inline-flex inputBox">
         <label for="projNum">Project Number*: </label>

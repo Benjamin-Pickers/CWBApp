@@ -20,6 +20,7 @@
         <p id="descriptionParagraph">If you want to pull batch data click <a href="{% url 'CWBDataApp:BatchCostQuery'%}">HERE</a></p>
 
         {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
+        {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
 
       </div>
 

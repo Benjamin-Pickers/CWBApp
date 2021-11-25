@@ -39,6 +39,14 @@ class Batchcosttracking(models.Model):
         db_table = 'BatchCostTracking'
 
 
+class CwbdataappColour(models.Model):
+    colour = models.CharField(primary_key=True, max_length=15)
+
+    class Meta:
+        managed = False
+        db_table = 'CWBDataApp_colour'
+
+
 class Materialcost(models.Model):
     supplier = models.CharField(db_column='Supplier', primary_key=True, max_length=30)  # Field name made lowercase.
     costperpound = models.FloatField(db_column='CostPerPound')  # Field name made lowercase.
@@ -63,7 +71,7 @@ class Materialinventory(models.Model):
 
 class Materialtesting(models.Model):
     projectnumber = models.SmallIntegerField(db_column='ProjectNumber')  # Field name made lowercase.
-    testname = models.ForeignKey(Batchcosttracking, models.DO_NOTHING, db_column='TestName', primary_key=True)  # Field name made lowercase.
+    testname = models.ForeignKey(Batchcosttracking, models.DO_NOTHING, db_column='TestName')  # Field name made lowercase.
     testnumber = models.SmallIntegerField(db_column='TestNumber')  # Field name made lowercase.
     testdate = models.DateField(db_column='TestDate', blank=True, null=True)  # Field name made lowercase.
     labourused = models.CharField(db_column='LabourUsed', max_length=50)  # Field name made lowercase.
@@ -83,7 +91,6 @@ class Materialtesting(models.Model):
     class Meta:
         managed = False
         db_table = 'MaterialTesting'
-        unique_together = (('testname', 'testnumber'),)
 
 
 class Mixingform(models.Model):

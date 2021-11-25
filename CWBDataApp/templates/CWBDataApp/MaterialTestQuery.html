@@ -25,13 +25,62 @@
       <h4 id=header>Search for a Test </h4>
       {% csrf_token %}
       <div class="inline-flex inputBox">
-        <label for="batchName">Batch Name*: </label>
-        <input id="batchName" type="text" name="batchName" maxlength="15">
+        <label for="testName">Batch Name*: </label>
+        <input id="testName" type="text" name="testName" maxlength="15">
       </div>
       <br>
-      <input type="submit" name="enterNewBatch" value="Submit">
+      <input type="submit" name="enterNewBatch" value="Search">
     </div>
   </form>
 </div>
+
+{% if allTests %}
+<div class="queryTable">
+  <div class="tablecontainer">
+    <table>
+      <tr>
+        <th>Project Number</th>
+        <th>Test Name</th>
+        <th>Test Number</th>
+        <th>Test Date</th>
+        <th>Labour Used</th>
+        <th>Machine Time Used</th>
+        <th>Production Line</th>
+        <th>Materials Tested</th>
+        <th>Other Materials Tested</th>
+        <th>Moulds</th>
+        <th>Reason For Test</th>
+        <th>Expected Results</th>
+        <th>Difficulties Encountered</th>
+        <th>Next Step</th>
+        <th>Estimated Cost of Material</th>
+        <th>Estimated Cost of Labour</th>
+        <th>Total Cost of Test</th>
+      </tr>
+      {% for test in allTests %}
+        <tr>
+          <td>{{ test.projectnumber }}</td>
+          <td>{{ testName }}</td>
+          <td>{{ test.testnumber }}</td>
+          <td>{{ test.testdate }}</td>
+          <td>{{ test.labourused }}</td>
+          <td>{{ test.machinetimeused }}</td>
+          <td>{{ test.productionline }}</td>
+          <td>{{ test.materialstested }}</td>
+          <td>{{ test.othermaterialstested }}</td>
+          <td>{{ test.moulds }}</td>
+          <td>{{ test.reasonfortest }}</td>
+          <td>{{ test.expectedresults }}</td>
+          <td>{{ test.difficultiesencountered }}</td>
+          <td>{{ test.nextstep }}</td>
+          <td>{{ test.estimatedcostofmaterial }}</td>
+          <td>{{ test.estimatedcostoflabour }}</td>
+          <td>{{ test.totalcostoftest }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+{% endif %}
 
 {% endblock content %}

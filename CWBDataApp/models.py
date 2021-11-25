@@ -54,28 +54,28 @@ class Materialinventory(models.Model):
 
 
 class Materialtesting(models.Model):
-    projectnumber = models.SmallIntegerField(db_column='ProjectNumber')
-    testname = models.ForeignKey(Batchcosttracking, models.DO_NOTHING, db_column='TestName', primary_key=True)
-    testnumber = models.SmallIntegerField(db_column='TestNumber')
-    testdate = models.DateField(db_column='TestDate', blank=True, null=True)
-    labourused = models.CharField(db_column='LabourUsed', max_length=50)
-    machinetimeused = models.SmallIntegerField(db_column='MachineTimeUsed')
-    productionline = models.SmallIntegerField(db_column='ProductionLine', blank=True, null=True)
-    materialstested = models.CharField(db_column='MaterialsTested', max_length=200)
-    othermaterialstested = models.CharField(db_column='OtherMaterialsTested', max_length=200, blank=True, null=True)
-    moulds = models.CharField(db_column='Moulds', max_length=40)
-    reasonfortest = models.CharField(db_column='ReasonForTest', max_length=200, blank=True, null=True)
-    expectedresults = models.CharField(db_column='ExpectedResults', max_length=200, blank=True, null=True)
-    difficultiesencountered = models.CharField(db_column='DifficultiesEncountered', max_length=200, blank=True, null=True)
-    nextstep = models.CharField(db_column='NextStep', max_length=100)
-    estimatedcostofmaterial = models.SmallIntegerField(db_column='EstimatedCostofMaterial')
-    estimatedcostoflabour = models.SmallIntegerField(db_column='EstimatedCostofLabour')
-    totalcostoftest = models.SmallIntegerField(db_column='TotalCostofTest')
+    projectnumber = models.SmallIntegerField(db_column='ProjectNumber')  # Field name made lowercase.
+    testname = models.ForeignKey(Batchcosttracking, models.DO_NOTHING, db_column='TestName')  # Field name made lowercase.
+    testnumber = models.SmallIntegerField(db_column='TestNumber')  # Field name made lowercase.
+    testdate = models.DateField(db_column='TestDate', blank=True, null=True)  # Field name made lowercase.
+    labourused = models.CharField(db_column='LabourUsed', max_length=50)  # Field name made lowercase.
+    machinetimeused = models.SmallIntegerField(db_column='MachineTimeUsed')  # Field name made lowercase.
+    productionline = models.SmallIntegerField(db_column='ProductionLine', blank=True, null=True)  # Field name made lowercase.
+    materialstested = models.CharField(db_column='MaterialsTested', max_length=200)  # Field name made lowercase.
+    othermaterialstested = models.CharField(db_column='OtherMaterialsTested', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    moulds = models.CharField(db_column='Moulds', max_length=40)  # Field name made lowercase.
+    reasonfortest = models.CharField(db_column='ReasonForTest', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    expectedresults = models.CharField(db_column='ExpectedResults', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    difficultiesencountered = models.CharField(db_column='DifficultiesEncountered', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    nextstep = models.CharField(db_column='NextStep', max_length=100)  # Field name made lowercase.
+    estimatedcostofmaterial = models.SmallIntegerField(db_column='EstimatedCostofMaterial')  # Field name made lowercase.
+    estimatedcostoflabour = models.SmallIntegerField(db_column='EstimatedCostofLabour')  # Field name made lowercase.
+    totalcostoftest = models.SmallIntegerField(db_column='TotalCostofTest')  # Field name made lowercase.
 
     class Meta:
         managed = False
         db_table = 'MaterialTesting'
-        unique_together = (('testname', 'testnumber'),)
+
 
 class Mixingform(models.Model):
     batchname = models.CharField(db_column='BatchName', primary_key=True, max_length=15)  # Field name made lowercase.
