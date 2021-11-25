@@ -1,7 +1,63 @@
 {% extends 'CWBDataApp/base.html'%}
 
-{% block title %} {{'Product Inventory'}} {% endblock title %}
+{% block title %} {{'Material Inventory'}} {% endblock title %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
 
 {% block content %}
-      <p>material inventory</p>
+  <div>
+    <h2 id="header"> Material Inventory </h2>
+    <p id="descriptionParagraph">
+        Material inventory is used to track raw materials, premixes, batches, and shred in the warehouse. Currently the location value
+        isn't being used but in the future will be used to locate boxes within the shop.
+    </p>
+    <p id="descriptionParagraph">If you want to pull material inventory data click <a href="{% url 'CWBDataApp:MaterialTestQuery'%}">HERE</a></p>
+
+  {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
+  {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
+
+  </div>
+
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:MaterialInventory'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        <h4 id=header>Enter a New Material Inventory </h4>
+        {% csrf_token %}
+
+        <div class="inline-flex inputBox">
+          <label for="matName">Material Name*: </label>
+          <input id="matName" type="text" name="matName" maxlength="30">
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for="supplier">Supplier*: </label>
+          <input id="supplier" type="text" name="supplier" maxlength="30">
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for="numBoxes">Number of Boxes*: </label>
+          <input id="numBoxes" type="number" name="numBoxes" min="1">
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for="premixed">Are these premixed or box checked: </label>
+          <select id="premixed" name="premixed">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for="price">Price per Pound: </label>
+          <input id="price" type="number" name="price" value="0">
+        </div>
+
+        <br>
+        <input type="submit" name="enterNewBatch" value="Submit">
+      </div>
+    </form>
+  </div>
 {% endblock content %}

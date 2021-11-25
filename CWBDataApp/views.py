@@ -240,6 +240,10 @@ def ProductInventoryQuery(request):
 def MaterialInventory(request):
     return render(request, 'CWBDataApp/MaterialInventory.html')
 
+###########################################################MATERIAL INVENTORY QUERY
+def MaterialInventoryQuery(request):
+    return render(request, 'CWBDataApp/MaterialInventoryQuery.html')
+
 ###########################################################ORDER SHEET MACHINE 1
 def OrderSheetsMachine1(request):
     return render(request, 'CWBDataApp/OrderSheetsMachine1.html')
