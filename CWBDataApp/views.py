@@ -12,6 +12,7 @@ def index(request):
 ###########################################################BATCH COST TRACKING
 def BatchCostTracking(request):
     allColours = Colour.objects.all()
+    allSuppliers= Materialcost.objects.all()
 
     if request.method == 'POST':
 
@@ -20,7 +21,7 @@ def BatchCostTracking(request):
         try:
             #Check if batch already exists, if so stop and send an error message
             if Batchcosttracking.objects.get(pk=request.POST['newBatch']):
-                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allColours':allColours, 'error_message' : "Batch already exists, please enter a new batch. If you wish to update a batch talk to an admin",})
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours, 'error_message' : "Batch already exists, please enter a new batch. If you wish to update a batch talk to an admin",})
         except:
             #Calculate total price, weight and price/pound
             cost = int(form['weight1'])*float(form['value1']) + int(form['weight2'])*float(form['value2']) + int(form['weight3'])*float(form['value3']) + int(form['weight4'])*float(form['value4'])
@@ -28,14 +29,14 @@ def BatchCostTracking(request):
             weight = int(form['weight1']) + int(form['weight2']) + int(form['weight3']) + int(form['weight4'])
             #Check if weight was entered as 0, throw error if it is
             if weight == 0:
-                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allColours':allColours, 'error_message':"Total weight cannot be zero, please add a value to weight1",})
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours, 'error_message':"Total weight cannot be zero, please add a value to weight1",})
             price = round(cost/weight, 2)
 
             #Check if supplier1 exists before grabbing object
             try:
                 sup1_object = Materialcost.objects.get(pk=form['supplier1'])
             except:
-                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allColours':allColours, 'error_message':"Supplier 1 is not a valid supplier",})
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours, 'error_message':"Supplier 1 is not a valid supplier",})
 
             #Check if supplier2 exists before grabbing object
             try:
@@ -44,7 +45,7 @@ def BatchCostTracking(request):
                 else:
                     sup2_object =  Materialcost.objects.get(pk=form['supplier2'])
             except:
-                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allColours':allColours, 'error_message':"Supplier 2 is not a valid supplier",})
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours, 'error_message':"Supplier 2 is not a valid supplier",})
 
             #Check if supplier3 exists before grabbing object
             try:
@@ -53,7 +54,7 @@ def BatchCostTracking(request):
                 else:
                     sup3_object =  Materialcost.objects.get(pk=form['supplier3'])
             except:
-                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allColours':allColours, 'error_message':"Supplier 3 is not a valid supplier",})
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours, 'error_message':"Supplier 3 is not a valid supplier",})
 
             #Check if supplier4 exists before grabbing object
             try:
@@ -62,7 +63,7 @@ def BatchCostTracking(request):
                 else:
                     sup4_object =  Materialcost.objects.get(pk=form['supplier4'])
             except:
-                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allColours':allColours, 'error_message':"Supplier 4 is not a vlid supplier",})
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours, 'error_message':"Supplier 4 is not a valid supplier",})
 
             #Create new batch entry
             batch = Batchcosttracking(batchname=form['newBatch'].upper(),
@@ -91,10 +92,10 @@ def BatchCostTracking(request):
                                     totalshredweight=form['shredWeight']
                                     )
             batch.save()
-            return render(request, 'CWBDataApp/BatchCostTracking.html', {'allColours':allColours, 'dataAcceptedMessage':"Test Successfully Submitted"})
+            return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours, 'dataAcceptedMessage':"Test Successfully Submitted"})
 
 
-    return render(request, 'CWBDataApp/BatchCostTracking.html', {'allColours':allColours})
+    return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours})
 
 ###########################################################BATCH COST TRACKING QUERY
 def BatchCostQuery(request):
@@ -261,20 +262,38 @@ def ProductInventoryQuery(request):
 ###########################################################MATERIAL INVENTORY
 def MaterialInventory(request):
 
+    allSuppliers= Materialcost.objects.all()
+
     if request.method == 'POST':
         form = request.POST
 
         try:
-            Materialinventory.objects.get(pk=form['materialname'])
-            return render(request, 'CWBDataApp/MaterialInventory.html',{'error_message':"Material already exists in inventory, if you wish to update its data click the link above"})
+            Materialinventory.objects.get(pk=form['matName'])
+            return render(request, 'CWBDataApp/MaterialInventory.html',{'allSuppliers':allSuppliers, 'error_message':"Material already exists in inventory, if you wish to update its data click the link above"})
         except:
-            pass
+            try:
+                sup_object = Materialcost.objects.get(pk=form['supplier'])
+                new_material = Materialinventory(materialname=form['matName'],
+                                                 supplier=sup_object,
+                                                 numberofboxes=form['numBoxes'],
+                                                 locations=form['location'],
+                                                 premixed=form['premixed'],
+                                                 priceperpound=(form['price']))
+                new_material.save()
+                return render(request, 'CWBDataApp/MaterialInventory.html', {'allSuppliers':allSuppliers, 'dataAcceptedMessage':"Material Successfully Added",})
+            except:
+                return render(request, 'CWBDataApp/MaterialInventory.html',{'allSuppliers':allSuppliers, 'error_message':"Supplier does not exist"})
 
-    return render(request, 'CWBDataApp/MaterialInventory.html')
+
+    return render(request, 'CWBDataApp/MaterialInventory.html', {'allSuppliers':allSuppliers})
 
 ###########################################################MATERIAL INVENTORY QUERY
 def MaterialInventoryQuery(request):
     return render(request, 'CWBDataApp/MaterialInventoryQuery.html')
+
+###########################################################MATERIAL INVENTORY QUERY
+def MaterialInventoryUpdate(request):
+    return render(request, 'CWBDataApp/MaterialInventoryUpdate.html')
 
 ###########################################################ORDER SHEET MACHINE 1
 def OrderSheetsMachine1(request):

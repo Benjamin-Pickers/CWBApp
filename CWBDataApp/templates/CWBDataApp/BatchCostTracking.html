@@ -45,7 +45,13 @@
 
           <div class="inline-flex inputBox">
             <label for="supplier1">Supplier 1*: </label>
-            <input id="supplier1" type="text" name="supplier1">
+            <select id="supplier1" type="text" name="supplier1">
+              {% if allSuppliers %}
+                {% for entry in allSuppliers %}
+                    <option value="{{ entry.supplier }}">{{ entry.supplier }}</option>
+                {% endfor %}
+              {% endif %}
+            </select>
           </div>
 
           <div class="inline-flex inputBox">
@@ -55,7 +61,7 @@
 
           <div class="inline-flex inputBox">
             <label for="value1">Price/Pound: </label>
-            <input id="value1" type="number" name="value1" value="0">
+            <input id="value1" type="number" name="value1" value="0" step="any">
           </div>
 
           <br>
@@ -64,7 +70,13 @@
 
           <div class="inline-flex inputBox">
             <label for="supplier2">Supplier 2: </label>
-            <input id="supplier2" type="text" name="supplier2">
+            <select id="supplier2" type="text" name="supplier2">
+              {% if allSuppliers %}
+                {% for entry in allSuppliers %}
+                    <option value="{{ entry.supplier }}">{{ entry.supplier }}</option>
+                {% endfor %}
+              {% endif %}
+            </select>
           </div>
 
           <div class="inline-flex inputBox">
@@ -74,7 +86,7 @@
 
           <div class="inline-flex inputBox">
             <label for="value2">Price/Pound: </label>
-            <input id="value2" type="number" name="value2" value="0">
+            <input id="value2" type="number" name="value2" value="0" step="any">
           </div>
 
           <br>
@@ -83,7 +95,13 @@
 
           <div class="inline-flex inputBox">
             <label for="supplier3">Supplier 3: </label>
-            <input id="supplier3" type="text" name="supplier3">
+            <select id="supplier3" type="text" name="supplier3">
+              {% if allSuppliers %}
+                {% for entry in allSuppliers %}
+                    <option value="{{ entry.supplier }}">{{ entry.supplier }}</option>
+                {% endfor %}
+              {% endif %}
+            </select>
           </div>
 
           <div class="inline-flex inputBox">
@@ -93,7 +111,7 @@
 
           <div class="inline-flex inputBox">
             <label for="value3">Price/Pound: </label>
-            <input id="value3" type="number" name="value3" value="0">
+            <input id="value3" type="number" name="value3" value="0" step="any">
           </div>
 
           <br>
@@ -102,7 +120,13 @@
 
           <div class="inline-flex inputBox">
             <label for="supplier4">Supplier 4: </label>
-            <input id="supplier4" type="text" name="supplier4">
+            <select id="supplier4" type="text" name="supplier4">
+              {% if allSuppliers %}
+                {% for entry in allSuppliers %}
+                    <option value="{{ entry.supplier }}">{{ entry.supplier }}</option>
+                {% endfor %}
+              {% endif %}
+            </select>
           </div>
 
           <div class="inline-flex inputBox">
@@ -112,7 +136,7 @@
 
           <div class="inline-flex inputBox">
             <label for="value4">Price/Pound: </label>
-            <input id="value4" type="number" name="value4" value="0">
+            <input id="value4" type="number" name="value4" value="0" step="any">
           </div>
 
           <br>
@@ -132,24 +156,24 @@
 
           <div class="inline-flex inputBox">
             <label for="colourWeight">Colour Weight: </label>
-            <input id="colourWeight" type="number" name="colourWeight" value="0">
+            <input id="colourWeight" type="number" name="colourWeight" value="0" step="any">
           </div>
 
           <div class="inline-flex inputBox">
             <label for="colourPrice">Colour Price/Pound: </label>
-            <input id="colourPrice" type="number" name="colourPrice" value="0">
+            <input id="colourPrice" type="number" name="colourPrice" value="0" step="any">
           </div>
 
           <br>
 
           <div class="inline-flex inputBox">
             <label for="foamWeight">Foam Weight: </label>
-            <input id="foamWeight" type="number" name="foamWeight" value="0">
+            <input id="foamWeight" type="number" name="foamWeight" value="0" step="any">
           </div>
 
           <div class="inline-flex inputBox">
             <label for="foamPrice">Foam Price/Pound: </label>
-            <input id="foamPrice" type="number" name="foamPrice" value="6.75">
+            <input id="foamPrice" type="number" name="foamPrice" value="6.75" step="any">
           </div>
 
           <div class="inline-flex inputBox">

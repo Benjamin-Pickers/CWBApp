@@ -2,6 +2,12 @@
 
 {% block title %} {{'Material Inventory Query'}} {% endblock title %}
 
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
+
+
 {% block content %}
   <div>
     <h2 id="header"> Material Inventory Search </h2>
@@ -9,7 +15,7 @@
         Material inventory search is used to find raw materials, premixes, batches, and shred in the warehouse. Currently the location value
         isn't being used but in the future will be used to locate boxes within the shop.
     </p>
-    <p id="descriptionParagraph">If you want to enter material inventory data click <a href="{% url 'CWBDataApp:MaterialTest'%}">HERE</a></p>
+    <p id="descriptionParagraph">If you want to enter material inventory data click <a href="{% url 'CWBDataApp:MaterialInventory'%}">HERE</a> if you want to update a material entry click <a href="{% url 'CWBDataApp:MaterialInventoryUpdate'%}">HERE</a></p>
 
   {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
   {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}

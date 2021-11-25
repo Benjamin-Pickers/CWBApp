@@ -1,0 +1,39 @@
+{% extends 'CWBDataApp/base.html'%}
+
+{% block title %} {{'Material Inventory Update'}} {% endblock title %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
+
+{% block content %}
+  <div>
+    <h2 id="header"> Material Inventory Update</h2>
+    <p id="descriptionParagraph">
+        Update a Materials price, location or number of boxes
+    </p>
+    <p id="descriptionParagraph">If you want to enter material click <a href="{% url 'CWBDataApp:MaterialInventory'%}">HERE</a> pull material inventory data click <a href="{% url 'CWBDataApp:MaterialInventoryQuery'%}">HERE</a></p>
+
+  {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
+  {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
+
+  </div>
+
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:MaterialInventory'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        <h4 id=header>Update Material Inventory </h4>
+        {% csrf_token %}
+
+        <div class="inline-flex inputBox">
+          <label for="matName">Material Name*: </label>
+          <input id="matName" type="text" name="matName" maxlength="30">
+        </div>
+
+        <br>
+        <input type="submit" name="enterNewBatch" value="Submit">
+      </div>
+    </form>
+  </div>
+{% endblock content %}
