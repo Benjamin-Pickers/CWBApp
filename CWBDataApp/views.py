@@ -18,33 +18,53 @@ def BatchCostTracking(request):
         form = request.POST
 
         try:
+            #Check if batch already exists, if so stop and send an error message
             if Batchcosttracking.objects.get(pk=request.POST['newBatch']):
                 return render(request, 'CWBDataApp/BatchCostTracking.html', {'allColours':allColours, 'error_message' : "Batch already exists, please enter a new batch. If you wish to update a batch talk to an admin",})
         except:
+            #Calculate total price, weight and price/pound
             cost = int(form['weight1'])*float(form['value1']) + int(form['weight2'])*float(form['value2']) + int(form['weight3'])*float(form['value3']) + int(form['weight4'])*float(form['value4'])
             cost=round(cost, 2)
             weight = int(form['weight1']) + int(form['weight2']) + int(form['weight3']) + int(form['weight4'])
+            #Check if weight was entered as 0, throw error if it is
             if weight == 0:
                 return render(request, 'CWBDataApp/BatchCostTracking.html', {'allColours':allColours, 'error_message':"Total weight cannot be zero, please add a value to weight1",})
             price = round(cost/weight, 2)
 
-            sup1_object = Materialcost.objects.get(pk=form['supplier1'])
+            #Check if supplier1 exists before grabbing object
+            try:
+                sup1_object = Materialcost.objects.get(pk=form['supplier1'])
+            except:
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allColours':allColours, 'error_message':"Supplier 1 is not a valid supplier",})
 
-            if form['supplier2'] == '':
-                sup2_object =  Materialcost.objects.get(pk='None')
-            else:
-                sup2_object =  Materialcost.objects.get(pk=form['supplier2'])
+            #Check if supplier2 exists before grabbing object
+            try:
+                if form['supplier2'] == '':
+                    sup2_object =  Materialcost.objects.get(pk='None')
+                else:
+                    sup2_object =  Materialcost.objects.get(pk=form['supplier2'])
+            except:
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allColours':allColours, 'error_message':"Supplier 2 is not a valid supplier",})
 
-            if form['supplier3'] == '':
-                sup3_object =  Materialcost.objects.get(pk='None')
-            else:
-                sup3_object =  Materialcost.objects.get(pk=form['supplier3'])
+            #Check if supplier3 exists before grabbing object
+            try:
+                if form['supplier3'] == '':
+                    sup3_object =  Materialcost.objects.get(pk='None')
+                else:
+                    sup3_object =  Materialcost.objects.get(pk=form['supplier3'])
+            except:
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allColours':allColours, 'error_message':"Supplier 3 is not a valid supplier",})
 
-            if form['supplier4'] == '':
-                sup4_object =  Materialcost.objects.get(pk='None')
-            else:
-                sup4_object =  Materialcost.objects.get(pk=form['supplier4'])
+            #Check if supplier4 exists before grabbing object
+            try:
+                if form['supplier4'] == '':
+                    sup4_object =  Materialcost.objects.get(pk='None')
+                else:
+                    sup4_object =  Materialcost.objects.get(pk=form['supplier4'])
+            except:
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allColours':allColours, 'error_message':"Supplier 4 is not a vlid supplier",})
 
+            #Create new batch entry
             batch = Batchcosttracking(batchname=form['newBatch'].upper(),
                                     batchdate=form['batchDate'],
                                     totalcost=cost,
@@ -82,7 +102,9 @@ def BatchCostQuery(request):
     if request.method == 'POST':
         form = request.POST
         try:
+            #Grab batch if it exists, throw error if it doesn't
             batch = Batchcosttracking.objects.get(pk=form['searchBatch'].upper())
+            #Grab all supplier values
             sup1_object = batch.supplier1.supplier
             sup2_object = batch.supplier2.supplier
             sup3_object = batch.supplier3.supplier
@@ -238,6 +260,16 @@ def ProductInventoryQuery(request):
 
 ###########################################################MATERIAL INVENTORY
 def MaterialInventory(request):
+
+    if request.method == 'POST':
+        form = request.POST
+
+        try:
+            Materialinventory.objects.get(pk=form['materialname'])
+            return render(request, 'CWBDataApp/MaterialInventory.html',{'error_message':"Material already exists in inventory, if you wish to update its data click the link above"})
+        except:
+            pass
+
     return render(request, 'CWBDataApp/MaterialInventory.html')
 
 ###########################################################MATERIAL INVENTORY QUERY
@@ -259,6 +291,27 @@ def OrderSheetsMachine3(request):
 ###########################################################HELP
 def help(request):
     return render(request, 'CWBDataApp/help.html')
+
+###########################################################Add Employee
+def AddEmployee(request):
+    return render(request, 'CWBDataApp/AddEmployee.html')
+
+###########################################################Add Board Profile
+def AddBoardProfile(request):
+    return render(request, 'CWBDataApp/AddBoardProfile.html')
+
+###########################################################Add Colour
+def AddColour(request):
+    return render(request, 'CWBDataApp/AddColour.html')
+
+###########################################################Add Supplier
+def AddSupplier(request):
+    return render(request, 'CWBDataApp/AddSupplier.html')
+
+###########################################################Add Supplier
+def UpdateSupplier(request):
+    return render(request, 'CWBDataApp/UpdateSupplier.html')
+
 
 ###########################################################ADMIN
 def admin(request):

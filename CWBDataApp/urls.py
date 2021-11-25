@@ -18,4 +18,9 @@ urlpatterns = [
     path('OrderSheetsMachine2/', views.OrderSheetsMachine2, name='OrderSheetsMachine2'),
     path('OrderSheetsMachine3/', views.OrderSheetsMachine3, name='OrderSheetsMachine3'),
     path('help/', views.help, name='help'),
+    path('AddEmployee/', views.AddEmployee, name='AddEmployee'),
+    path('AddBoardProfile/', views.AddBoardProfile, name='AddBoardProfile'),
+    path('AddColour/', views.AddColour, name='AddColour'),
+    path('AddSupplier/', views.AddSupplier, name='AddSupplier'),
+    path('UpdateSupplier/', views.UpdateSupplier, name='UpdateSupplier'),
 ]

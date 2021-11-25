@@ -1,0 +1,22 @@
+{% extends 'CWBDataApp/base.html'%}
+
+{% block title %} {{'Add Board Profile'}} {% endblock title %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
+
+{% block content %}
+  <div>
+    <h2 id="header"> Add Board Profile</h2>
+    <p id="descriptionParagraph">
+        Add a board profile to be added to the dropdown in Material Testing and Product Inventory
+    </p>
+
+  {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
+  {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
+
+  </div>
+
+{% endblock content %}

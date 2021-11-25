@@ -1,0 +1,22 @@
+{% extends 'CWBDataApp/base.html'%}
+
+{% block title %} {{'Update Supplier'}} {% endblock title %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
+
+{% block content %}
+  <div>
+    <h2 id="header"> Update Supplier </h2>
+    <p id="descriptionParagraph">
+        Update a Supplier's price/pound value
+    </p>
+
+  {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
+  {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
+
+  </div>
+
+{% endblock content %}
