@@ -24,7 +24,7 @@
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">
           {% load static %}
-          <img src="{% static 'CWBDataApp/images/cwbtech.jpg'%}" alt="cwbtech">
+          <img  id="cwbimg" src="{% static 'CWBDataApp/images/cwbtech.jpg'%}" alt="cwbtech">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -38,18 +38,11 @@
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkBatch" role="button" data-toggle="dropdown" aria-haspopup="true "aria-expanded="false">
-                  Batch Cost Tracking
+                  Batch Cost & Testing
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkBatch">
                   <a class="dropdown-item" href="{% url 'CWBDataApp:BatchCost'%}"> Enter Batch </a>
                   <a class="dropdown-item" href="{% url 'CWBDataApp:BatchCostQuery'%}"> Search Batch </a>
-                </div>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkTest" role="button" data-toggle="dropdown" aria-haspopup="true "aria-expanded="false">
-                  Material Testing
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkTest">
                   <a class="dropdown-item" href="{% url 'CWBDataApp:MaterialTest'%}"> Enter a Material Test </a>
                   <a class="dropdown-item" href="{% url 'CWBDataApp:MaterialTestQuery'%}"> Search for a Test </a>
                 </div>
@@ -64,8 +57,14 @@
                   <a class="dropdown-item" href="{% url 'CWBDataApp:ProductInventoryQuery'%}"> Search for Product</a>
                 </div>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'CWBDataApp:MaterialInventory'%}">Material Inventory</a>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkMaterialInventory" role="button" data-toggle="dropdown" aria-haspopup="true "aria-expanded="false">
+                  Material Inventory
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkMaterialInventory">
+                  <a class="dropdown-item" href="{% url 'CWBDataApp:MaterialInventory'%}"> Enter Material</a>
+                  <a class="dropdown-item" href="{% url 'CWBDataApp:MaterialInventoryQuery'%}"> Search for Material</a>
+                </div>
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true "aria-expanded="false">
