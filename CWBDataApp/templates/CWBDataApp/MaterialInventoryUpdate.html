@@ -36,4 +36,35 @@
       </div>
     </form>
   </div>
+
+  {% if Forms %}
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:MaterialInventoryUpdateNumSkids'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        {% csrf_token %}
+
+        <div class="inline-flex inputBox">
+          <label for="numBoxes">Number of Boxes: </label>
+          <input id="numBoxes" type="number" name="numBoxes" min="0" value="{{ Material.numberofboxes }}">
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for="location">Location: </label>
+          <input id="location" type="text" name="location" maxlength="20" value="{{ Material.locations }}">
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for="price">Price per Pound: </label>
+          <input id="price" type="number" name="price" step="any" value="{{ Material.priceperpound }}">
+        </div>
+
+        <input id="matName" type="text" name="matName" value="{{ Material.materialname }}" hidden>
+
+        <br>
+        <input type="submit" name="updateNumber ofBoxes" value="Update">
+      </div>
+    </form>
+  </div>
+  {% endif %}
+
 {% endblock content %}

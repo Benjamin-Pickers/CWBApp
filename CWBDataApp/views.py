@@ -301,7 +301,7 @@ def MaterialInventory(request):
             return render(request, 'CWBDataApp/MaterialInventory.html',{'allSuppliers':allSuppliers, 'error_message':"Material already exists in inventory, if you wish to update its data click the link above"})
         except:
             try:
-                if form['numBoxes'] == '' or int(form['numBoxes']) <= 0 or int(form['price'] < 0):
+                if form['numBoxes'] == '' or int(form['numBoxes']) <= 0 or float(form['price']) < 0:
                     return render(request, 'CWBDataApp/MaterialInventory.html',{'allSuppliers':allSuppliers, 'error_message':"Cannot enter zero for number of boxes"})
 
                 sup_object = Materialcost.objects.get(pk=form['supplier'])
@@ -338,17 +338,45 @@ def MaterialInventoryQuery(request):
 
     return render(request, 'CWBDataApp/MaterialInventoryQuery.html')
 
-###########################################################MATERIAL INVENTORY QUERY
+###########################################################MATERIAL INVENTORY UPDATE
 def MaterialInventoryUpdate(request):
 
     if request.method == 'POST':
         form = request.POST
         try:
-            mat_object =  Materialinventory.objects.get(pk=form['matName'].upper())
+            if Materialinventory.objects.get(pk=form['matName'].upper()):
+                mat_object = Materialinventory.objects.get(pk=form['matName'].upper())
+                return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'Forms':True, 'Material':mat_object})
+            else:
+                return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'error_message':"Material does not exist in inventory, check your spelling"})
 
-            return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'material':mat_object})
         except:
             return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'error_message':"This material currently does not exist in inventory. If you wish to enter its data, press the link above"})
+
+
+    return render(request, 'CWBDataApp/MaterialInventoryUpdate.html')
+
+###########################################################MATERIAL INVENTORY UPDATE NUMBER of SKIDS
+def MaterialInventoryUpdateNumSkids(request):
+
+    if request.method == 'POST':
+        form = request.POST
+        try:
+            if form['numBoxes'] == '' or int(form['numBoxes']) < 0 or float(form['price']) < 0:
+                return render(request, 'CWBDataApp/MaterialInventoryUpdate.html',{'error_message':"Cannot enter zero for number of boxes"})
+            elif int(form['numBoxes']) == 0:
+                mat_object = Materialinventory.objects.get(pk=form['matName'].upper())
+                mat_object.delete()
+                return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'dataAcceptedMessage':"Material Was Successfully Deleted Since Zero Boxes Remained"})
+
+            mat_object = Materialinventory.objects.get(pk=form['matName'].upper())
+            mat_object.numberofboxes = form['numBoxes']
+            mat_object.locations = form['location']
+            mat_object.priceperpound = form['price']
+            mat_object.save()
+            return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'dataAcceptedMessage':"Material Updated"})
+        except:
+            return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'error_message':"Could not update material, try again"})
 
 
     return render(request, 'CWBDataApp/MaterialInventoryUpdate.html')

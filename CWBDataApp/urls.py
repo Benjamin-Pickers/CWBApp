@@ -16,6 +16,7 @@ urlpatterns = [
     path('MaterialInventory/', views.MaterialInventory, name='MaterialInventory'),
     path('MaterialInventoryQuery/', views.MaterialInventoryQuery, name='MaterialInventoryQuery'),
     path('MaterialInventoryUpdate/', views.MaterialInventoryUpdate, name='MaterialInventoryUpdate'),
+    path('MaterialInventoryUpdateNumSkids/', views.MaterialInventoryUpdateNumSkids, name='MaterialInventoryUpdateNumSkids'),
     path('OrderSheetsMachine1/', views.OrderSheetsMachine1, name='OrderSheetsMachine1'),
     path('OrderSheetsMachine2/', views.OrderSheetsMachine2, name='OrderSheetsMachine2'),
     path('OrderSheetsMachine3/', views.OrderSheetsMachine3, name='OrderSheetsMachine3'),
