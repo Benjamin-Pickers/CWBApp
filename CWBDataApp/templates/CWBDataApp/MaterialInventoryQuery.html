@@ -21,4 +21,46 @@
   {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
 
   </div>
+
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:MaterialInventoryQuery'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        <h4 id=header>Search for Material Inventory </h4>
+        {% csrf_token %}
+
+        <div class="inline-flex inputBox">
+          <label for="matName">Material Name*: </label>
+          <input id="matName" type="text" name="matName" maxlength="30">
+        </div>
+
+        <br>
+        <input type="submit" name="enterNewBatch" value="Submit">
+      </div>
+    </form>
+  </div>
+
+  {% if all_materials %}
+  <div class="queryTable justify-content-center row no-gutters">
+    <table>
+      <tr>
+        <th>Material</th>
+        <th>Supplier</th>
+        <th>Number of Boxes</th>
+        <th>Locations</th>
+        <th>Premixed</th>
+        <th>Price/Pound</th>
+      </tr>
+      {% for material in all_materials %}
+      <tr>
+        <td>{{ material.materialname }}</td>
+        <td>{{ material.supplier.supplier }}</td>
+        <td>{{ material.numberofboxes }}</td>
+        <td>{{ material.locations }}</td>
+        <td>{{ material.premixed }}</td>
+        <td>{{ material.priceperpound }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  {% endif %}
 {% endblock content %}

@@ -2,6 +2,9 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.template import loader
+from django.db import connection
+import pandas as pd
+import os
 
 from .models import Batchcosttracking, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Picandsum, Productinventory, Productprofiles, Colour
 
@@ -113,6 +116,22 @@ def BatchCostQuery(request):
             return render(request, 'CWBDataApp/BatchCostQuery.html', {'batch' : batch, 'sup1':sup1_object, 'sup2':sup2_object, 'sup3':sup3_object, 'sup4':sup4_object, })
         except:
             return render(request, 'CWBDataApp/BatchCostQuery.html', {'error_message' : "Batch does not exist, please enter a valid batch",})
+    return render(request, 'CWBDataApp/BatchCostQuery.html')
+
+###########################################################Batch Cost Excel file download
+def BatchCostExcel(request):
+    query = str(Batchcosttracking.objects.all().query)
+    df = pd.read_sql_query(query, connection)
+
+
+    df.to_excel(r'./CWBDataApp/BatchCostTracking.xlsx', index=False)
+
+    with open(r'./CWBDataApp/BatchCostTracking.xlsx', 'rb') as fh:
+        response = HttpResponse(fh.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        response['Content-Disposition'] = 'attachment; filename=BatchCostTracking.xlsx'
+    os.remove(r'./CWBDataApp/BatchCostTracking.xlsx')
+    return response
+
     return render(request, 'CWBDataApp/BatchCostQuery.html')
 
 ###########################################################MATERIAL TESTING
@@ -273,7 +292,7 @@ def MaterialInventory(request):
         except:
             try:
                 sup_object = Materialcost.objects.get(pk=form['supplier'])
-                new_material = Materialinventory(materialname=form['matName'],
+                new_material = Materialinventory(materialname=form['matName'].upper(),
                                                  supplier=sup_object,
                                                  numberofboxes=form['numBoxes'],
                                                  locations=form['location'],
@@ -288,11 +307,37 @@ def MaterialInventory(request):
     return render(request, 'CWBDataApp/MaterialInventory.html', {'allSuppliers':allSuppliers})
 
 ###########################################################MATERIAL INVENTORY QUERY
+##Fucking broken
 def MaterialInventoryQuery(request):
+
+    if request.method == 'POST':
+        form = request.POST
+        try:
+            if form['matName'].upper() == 'ALL':
+                all_materials = Materialinventory.objects.all()
+                return render(request, 'CWBDataApp/MaterialInventoryQuery.html', {'all_materials':all_materials})
+
+            elif Materialinventory.objects.filter(pk=form['matName'].upper()).exists():
+                mat_object =  Materialinventory.objects.get(pk=form['matName'].upper())
+                return render(request, 'CWBDataApp/MaterialInventoryQuery.html', {'all_materials':mat_object})
+        except:
+            return render(request, 'CWBDataApp/MaterialInventoryQuery.html', {'error_message':"This material currently does not exist in inventory. If you wish to enter its data, press the link above"})
+
     return render(request, 'CWBDataApp/MaterialInventoryQuery.html')
 
 ###########################################################MATERIAL INVENTORY QUERY
 def MaterialInventoryUpdate(request):
+
+    if request.method == 'POST':
+        form = request.POST
+        try:
+            mat_object =  Materialinventory.objects.get(pk=form['matName'].upper())
+
+            return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'material':mat_object})
+        except:
+            return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'error_message':"This material currently does not exist in inventory. If you wish to enter its data, press the link above"})
+
+
     return render(request, 'CWBDataApp/MaterialInventoryUpdate.html')
 
 ###########################################################ORDER SHEET MACHINE 1

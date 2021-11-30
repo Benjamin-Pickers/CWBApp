@@ -11,27 +11,27 @@ from django.db import models
 class Batchcosttracking(models.Model):
     batchname = models.CharField(db_column='BatchName', primary_key=True, max_length=15)  # Field name made lowercase.
     batchdate = models.DateField(db_column='BatchDate', blank=True, null=True)  # Field name made lowercase.
-    totalcost = models.FloatField(db_column='TotalCost')  # Field name made lowercase.
+    totalcost = models.DecimalField(db_column='TotalCost', max_digits=10, decimal_places=2)  # Field name made lowercase.
     totalweight = models.SmallIntegerField(db_column='TotalWeight')  # Field name made lowercase.
-    priceperpound = models.FloatField(db_column='PricePerPound')  # Field name made lowercase.
+    priceperpound = models.DecimalField(db_column='PricePerPound', max_digits=10, decimal_places=2)  # Field name made lowercase.
     supplier1 = models.ForeignKey('Materialcost', models.DO_NOTHING, db_column='Supplier1')  # Field name made lowercase.
     weight1 = models.SmallIntegerField(db_column='Weight1', blank=True, null=True)  # Field name made lowercase.
-    value1 = models.FloatField(db_column='Value1', blank=True, null=True)  # Field name made lowercase.
+    value1 = models.DecimalField(db_column='Value1', max_digits=10, decimal_places=3)  # Field name made lowercase.
     supplier2 = models.ForeignKey('Materialcost', models.DO_NOTHING, db_column='Supplier2', blank=True, null=True)  # Field name made lowercase.
     weight2 = models.SmallIntegerField(db_column='Weight2', blank=True, null=True)  # Field name made lowercase.
-    value2 = models.FloatField(db_column='Value2', blank=True, null=True)  # Field name made lowercase.
+    value2 = models.DecimalField(db_column='Value2', max_digits=10, decimal_places=3, blank=True, null=True)  # Field name made lowercase.
     supplier3 = models.ForeignKey('Materialcost', models.DO_NOTHING, db_column='Supplier3', blank=True, null=True)  # Field name made lowercase.
     weight3 = models.SmallIntegerField(db_column='Weight3', blank=True, null=True)  # Field name made lowercase.
-    value3 = models.FloatField(db_column='Value3', blank=True, null=True)  # Field name made lowercase.
+    value3 = models.DecimalField(db_column='Value3', max_digits=10, decimal_places=3, blank=True, null=True)  # Field name made lowercase.
     supplier4 = models.ForeignKey('Materialcost', models.DO_NOTHING, db_column='Supplier4', blank=True, null=True)  # Field name made lowercase.
     weight4 = models.SmallIntegerField(db_column='Weight4', blank=True, null=True)  # Field name made lowercase.
-    value4 = models.FloatField(db_column='Value4', blank=True, null=True)  # Field name made lowercase.
+    value4 = models.DecimalField(db_column='Value4', max_digits=10, decimal_places=3, blank=True, null=True)  # Field name made lowercase.
     colour = models.CharField(db_column='Colour', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    colourweight = models.FloatField(db_column='ColourWeight', blank=True, null=True)  # Field name made lowercase.
-    colourvalue = models.FloatField(db_column='ColourValue', blank=True, null=True)  # Field name made lowercase.
+    colourweight = models.DecimalField(db_column='ColourWeight', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    colourvalue = models.DecimalField(db_column='ColourValue', max_digits=10, decimal_places=3, blank=True, null=True)  # Field name made lowercase.
     foam = models.CharField(db_column='Foam', max_length=4, blank=True, null=True)  # Field name made lowercase.
-    foamweight = models.FloatField(db_column='FoamWeight', blank=True, null=True)  # Field name made lowercase.
-    foamvalue = models.FloatField(db_column='FoamValue', blank=True, null=True)  # Field name made lowercase.
+    foamweight = models.DecimalField(db_column='FoamWeight', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    foamvalue = models.DecimalField(db_column='FoamValue', max_digits=10, decimal_places=3, blank=True, null=True)  # Field name made lowercase.
     totalshredweight = models.SmallIntegerField(db_column='TotalShredWeight', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -49,7 +49,7 @@ class CwbdataappColour(models.Model):
 
 class Materialcost(models.Model):
     supplier = models.CharField(db_column='Supplier', primary_key=True, max_length=30)  # Field name made lowercase.
-    costperpound = models.FloatField(db_column='CostPerPound')  # Field name made lowercase.
+    costperpound = models.DecimalField(db_column='CostPerPound', max_digits=10, decimal_places=3, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -62,7 +62,7 @@ class Materialinventory(models.Model):
     numberofboxes = models.SmallIntegerField(db_column='NumberofBoxes')  # Field name made lowercase.
     locations = models.CharField(db_column='Locations', max_length=20, blank=True, null=True)  # Field name made lowercase.
     premixed = models.BooleanField(db_column='PreMixed')  # Field name made lowercase.
-    priceperpound = models.FloatField(db_column='PricePerPound')  # Field name made lowercase.
+    priceperpound = models.DecimalField(db_column='PricePerPound', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -140,7 +140,7 @@ class Ordersheetmachine1(models.Model):
     projectedstartdate = models.DateField(db_column='ProjectedStartDate')  # Field name made lowercase.
     projectedenddate = models.DateField(db_column='ProjectedEndDate')  # Field name made lowercase.
     duedate = models.DateField(db_column='DueDate')  # Field name made lowercase.
-    lengthofrunindays = models.FloatField(db_column='LengthofRuninDays', blank=True, null=True)  # Field name made lowercase.
+    lengthofrunindays = models.DecimalField(db_column='LengthofRuninDays', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     priorityrank = models.SmallIntegerField(db_column='PriorityRank')  # Field name made lowercase.
     boardprofile = models.CharField(db_column='BoardProfile', max_length=40)  # Field name made lowercase.
     colour = models.CharField(db_column='Colour', max_length=15)  # Field name made lowercase.
@@ -162,7 +162,7 @@ class Ordersheetmachine2(models.Model):
     projectedstartdate = models.DateField(db_column='ProjectedStartDate')  # Field name made lowercase.
     projectedenddate = models.DateField(db_column='ProjectedEndDate')  # Field name made lowercase.
     duedate = models.DateField(db_column='DueDate')  # Field name made lowercase.
-    lengthofrunindays = models.FloatField(db_column='LengthofRuninDays', blank=True, null=True)  # Field name made lowercase.
+    lengthofrunindays = models.DecimalField(db_column='LengthofRuninDays', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     priorityrank = models.SmallIntegerField(db_column='PriorityRank')  # Field name made lowercase.
     boardprofile = models.CharField(db_column='BoardProfile', max_length=40)  # Field name made lowercase.
     colour = models.CharField(db_column='Colour', max_length=15)  # Field name made lowercase.
@@ -184,7 +184,7 @@ class Ordersheetmachine3(models.Model):
     projectedstartdate = models.DateField(db_column='ProjectedStartDate')  # Field name made lowercase.
     projectedenddate = models.DateField(db_column='ProjectedEndDate')  # Field name made lowercase.
     duedate = models.DateField(db_column='DueDate')  # Field name made lowercase.
-    lengthofrunindays = models.FloatField(db_column='LengthofRuninDays', blank=True, null=True)  # Field name made lowercase.
+    lengthofrunindays = models.DecimalField(db_column='LengthofRuninDays', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     priorityrank = models.SmallIntegerField(db_column='PriorityRank')  # Field name made lowercase.
     boardprofile = models.CharField(db_column='BoardProfile', max_length=40)  # Field name made lowercase.
     colour = models.CharField(db_column='Colour', max_length=15)  # Field name made lowercase.

@@ -34,6 +34,15 @@
   </form>
 </div>
 
+<div class="justify-content-center row no-gutters">
+  <form action="{% url 'CWBDataApp:BatchCostExcel'%}" method="post">
+    <div class="d-inline-flex flex-column">
+      {% csrf_token %}
+      <input type="submit" name="Download" value="Download Excel File of All Batches">
+    </div>
+  </form>
+</div>
+
 {% if batch %}
 <div class="queryTable">
   <div class="tablecontainer">
