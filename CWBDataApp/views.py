@@ -5,6 +5,7 @@ from django.template import loader
 from django.db import connection
 import pandas as pd
 import os
+from datetime import datetime
 
 from .models import Batchcosttracking, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Picandsum, Productinventory, Productprofiles, Colour
 
@@ -26,6 +27,13 @@ def BatchCostTracking(request):
             if Batchcosttracking.objects.get(pk=request.POST['newBatch']):
                 return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours, 'error_message' : "Batch already exists, please enter a new batch. If you wish to update a batch talk to an admin",})
         except:
+
+            #Check if any price values are negative, if so return error message
+            if float(form['value1']) < 0 or float(form['value2']) < 0 float(form['value3']) < 0 float(form['value4']) < 0 float(form['colourPrice']) < 0 or float(form['foamPrice']) < 0:
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours, 'error_message':"Cannot have negative values for prices",})
+
+            if int(form['weight1']) < 0 or int(form['weight2']) < 0 or int(form['weight3']) < 0 or int(form['weight4']) < 0 or int(form['colourWeight']) < 0 or int(form['foamWeight']) < 0:
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours, 'error_message':"Cannot have negative values for weights",})
             #Calculate total price, weight and price/pound
             cost = int(form['weight1'])*float(form['value1']) + int(form['weight2'])*float(form['value2']) + int(form['weight3'])*float(form['value3']) + int(form['weight4'])*float(form['value4'])
             cost=round(cost, 2)
@@ -233,7 +241,7 @@ def ProductInventory(request):
         if Productinventory.objects.filter(productname=prod_object, colour=form['colour']).exists():
 
             return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message' : "Product already exists in database, please enter a new product. If you wish to update a product scroll down",})
-        elif int(form['numSkids']) == 0:
+        elif form['numSkids'] == '' or int(form['numSkids']) <= 0:
             return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message' : "Cannot enter a product with zero skids",})
         else:
             newProd = Productinventory(productname=prod_object,
@@ -293,6 +301,9 @@ def MaterialInventory(request):
             return render(request, 'CWBDataApp/MaterialInventory.html',{'allSuppliers':allSuppliers, 'error_message':"Material already exists in inventory, if you wish to update its data click the link above"})
         except:
             try:
+                if form['numBoxes'] == '' or int(form['numBoxes']) <= 0 or int(form['price'] < 0):
+                    return render(request, 'CWBDataApp/MaterialInventory.html',{'allSuppliers':allSuppliers, 'error_message':"Cannot enter zero for number of boxes"})
+
                 sup_object = Materialcost.objects.get(pk=form['supplier'])
                 new_material = Materialinventory(materialname=form['matName'].upper(),
                                                  supplier=sup_object,
