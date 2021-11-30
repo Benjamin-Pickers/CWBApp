@@ -330,9 +330,9 @@ def MaterialInventoryQuery(request):
                 all_materials = Materialinventory.objects.all()
                 return render(request, 'CWBDataApp/MaterialInventoryQuery.html', {'all_materials':all_materials})
 
-            elif Materialinventory.objects.filter(pk=form['matName'].upper()).exists():
-                mat_object =  Materialinventory.objects.get(pk=form['matName'].upper())
-                return render(request, 'CWBDataApp/MaterialInventoryQuery.html', {'all_materials':mat_object})
+
+            mat_object =  Materialinventory.objects.filter(pk=form['matName'].upper())
+            return render(request, 'CWBDataApp/MaterialInventoryQuery.html', {'all_materials':mat_object})
         except:
             return render(request, 'CWBDataApp/MaterialInventoryQuery.html', {'error_message':"This material currently does not exist in inventory. If you wish to enter its data, press the link above"})
 
