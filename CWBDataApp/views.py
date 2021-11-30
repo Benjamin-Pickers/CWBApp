@@ -233,6 +233,8 @@ def ProductInventory(request):
         if Productinventory.objects.filter(productname=prod_object, colour=form['colour']).exists():
 
             return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message' : "Product already exists in database, please enter a new product. If you wish to update a product scroll down",})
+        elif int(form['numSkids']) == 0:
+            return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message' : "Cannot enter a product with zero skids",})
         else:
             newProd = Productinventory(productname=prod_object,
                                        colour=form['colour'],
