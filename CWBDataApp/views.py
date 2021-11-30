@@ -5,7 +5,7 @@ from django.template import loader
 from django.db import connection
 import pandas as pd
 import os
-from datetime import datetime
+from datetime import date
 
 from .models import Batchcosttracking, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Picandsum, Productinventory, Productprofiles, Colour
 
@@ -29,7 +29,7 @@ def BatchCostTracking(request):
         except:
 
             #Check if any price values are negative, if so return error message
-            if float(form['value1']) < 0 or float(form['value2']) < 0 float(form['value3']) < 0 float(form['value4']) < 0 float(form['colourPrice']) < 0 or float(form['foamPrice']) < 0:
+            if float(form['value1']) < 0 or float(form['value2']) < 0 or float(form['value3']) < 0 or float(form['value4']) < 0 or float(form['colourPrice']) < 0 or float(form['foamPrice']) < 0:
                 return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours, 'error_message':"Cannot have negative values for prices",})
 
             if int(form['weight1']) < 0 or int(form['weight2']) < 0 or int(form['weight3']) < 0 or int(form['weight4']) < 0 or int(form['colourWeight']) < 0 or int(form['foamWeight']) < 0:
@@ -126,17 +126,17 @@ def BatchCostQuery(request):
             return render(request, 'CWBDataApp/BatchCostQuery.html', {'error_message' : "Batch does not exist, please enter a valid batch",})
     return render(request, 'CWBDataApp/BatchCostQuery.html')
 
-###########################################################Batch Cost Excel file download
+###########################################################Batch Cost Excel File Download
 def BatchCostExcel(request):
     query = str(Batchcosttracking.objects.all().query)
     df = pd.read_sql_query(query, connection)
-
+    today = str(date.today())
 
     df.to_excel(r'./CWBDataApp/BatchCostTracking.xlsx', index=False)
 
     with open(r'./CWBDataApp/BatchCostTracking.xlsx', 'rb') as fh:
         response = HttpResponse(fh.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-        response['Content-Disposition'] = 'attachment; filename=BatchCostTracking.xlsx'
+        response['Content-Disposition'] = 'attachment; filename=BatchCostTracking-'+today+'.xlsx'
     os.remove(r'./CWBDataApp/BatchCostTracking.xlsx')
     return response
 
