@@ -30,6 +30,7 @@
       <div class="inline-flex inputBox">
         <label for="projNum">Project Number*: </label>
         <select id="projNum" type="text" name="projNum">
+          {% if entered_data.projnum %} <option value="{{entered_data.projnum}}"> {{entered_data.projnum}} </option>{% endif %}
           <option value="1">1</option>
           <option value="5">5</option>
         </select>
@@ -37,29 +38,29 @@
 
       <div class="inline-flex inputBox">
         <label for="testName">Test Name*: </label>
-        <input id="testName" type="text" name="testName" maxlength="15">
+        <input id="testName" type="text" name="testName" maxlength="15" {% if entered_data.testname %} value="{{entered_data.testname}}" {{entered_data.testname}} {% endif %}>
       </div>
 
       <div class="inline-flex inputBox">
         <label for="testNum">Test Number*: </label>
-        <input id="testNum" type="number" name="testNum" value="1">
+        <input id="testNum" type="number" name="testNum" {% if entered_data.testnum %} value="{{entered_data.testnum}}" {{entered_data.testnum}} {% else %}value="1" {% endif %}>
       </div>
 
       <div class="inline-flex inputBox">
         <label for="testDate">Test Date*: </label>
-        <input id="testDate" type="date" name="testDate" min="2021-01-01">
+        <input id="testDate" type="date" name="testDate" min="2021-01-01" {% if entered_data.testdate %} value="{{entered_data.testdate}}" {{entered_data.testdate}} {% endif %}>
       </div>
 
       <br>
 
       <div class="inline-flex inputBox">
         <label for="labourUsed">Labour Used: </label>
-        <input id="labourUsed" type="text" name="labourUsed">
+        <input id="labourUsed" type="text" name="labourUsed" {% if pop_data.labourused %} value="{{pop_data.labourused}}" {% elif entered_data.labourused %} value={{entered_data.labourused}}  {% endif %}>
       </div>
 
       <div class="inline-flex inputBox">
-        <label for="timeUsed">Machine Time Used: </label>
-        <select id="timeUsed" name="timeUsed">
+        <label for="machinetimeUsed">Machine Time Used: </label>
+        <select id="machinetimeUsed" name="machinetimeUsed">
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -73,7 +74,7 @@
 
       <div class="inline-flex inputBox">
         <label for="productionLine">Production Line: </label>
-        <select id="productionLine" name="productionLine">
+        <select id="productionLine" name="productionLine" {% if entered_data.productionline %} value="{{entered_data.productionline}}" {% endif %}>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -81,18 +82,19 @@
       </div>
 
       <div class="inline-flex inputBox">
-        <label for="materialTested">Materials Tested: </label>
-        <input id="materialTested" type="text" name="materialTested" maxlength="200">
+        <label for="materialsTested">Materials Tested: </label>
+        <input id="materialsTested" type="text" name="materialsTested" maxlength="200" {% if pop_data.materialstested %} value="{{pop_data.materialstested}}" {% elif entered_data.materialstested %} value="{{entered_data.materialstested}}" {% endif %}>
       </div>
 
       <div class="inline-flex inputBox">
-        <label for="othermaterialTested">Other Materials Tested: </label>
-        <input id="othermaterialTested" type="text" name="othermaterialTested" maxlength="200">
+        <label for="othermaterialsTested">Other Materials Tested: </label>
+        <input id="othermaterialsTested" type="text" name="othermaterialsTested" maxlength="200" {% if pop_data.othermaterialstested %} value="{{pop_data.othermaterialstested}}" {% elif entered_data.othermaterialstested%} value="{{entered_data.othermaterialstested}}" {% endif %}>
       </div>
 
       <div class="inline-flex inputBox">
         <label for="moulds">Moulds Used: </label>
         <select id="moulds" name="moulds">
+          {% if pop_data.moulds %}<option value="{{pop_data.moulds}}">{{pop_data.value}} </option>{% elif entered_data.moulds %}<option value="{{entered_data.moulds}}">{{entered_data.moulds}}</option>{% endif %}
           {% if allProfiles %}
             {% for profile in allProfiles %}
                 <option value="{{ profile.productname }}">{{ profile.productname }}</option>
@@ -104,28 +106,29 @@
       <br>
 
       <div class="inline-flex inputBox">
-        <label for="reasonFor">Reason For Test: </label>
-        <input id="reasonFor" type="text" name="reasonFor" maxLength="200">
+        <label for="reasonForTest">Reason For Test: </label>
+        <input id="reasonForTest" type="text" name="reasonForTest" maxLength="200" {% if pop_data.reasonfortest %} value={{pop_data.reasonfortest}} {% elif entered_data.reasonfortest %} value="{{entered_data.reasonfortest}}" {% endif %}>
       </div>
 
       <div class="inline-flex inputBox">
-        <label for="expectedResult">Expected Results: </label>
-        <input id="expectedResult" type="text" name="expectedResult" maxlength="200">
+        <label for="expectedResults">Expected Results: </label>
+        <input id="expectedResults" type="text" name="expectedResults" maxlength="200" {% if pop_data.expectedresults %} value={{pop_data.expectedresults}} {% elif entered_data.expectedresults %} value="{{entered_data.expectedresults}}" {% endif %}>
       </div>
 
       <div class="inline-flex inputBox">
-        <label for="difficulties">Difficulties Encountered: </label>
-        <input id="difficulties" type="text" name="difficulties" maxlength="200">
+        <label for="difficultiesencountered">Difficulties Encountered: </label>
+        <input id="difficultiesencountered" type="text" name="difficultiesencountered" maxlength="200" {% if pop_data.difficultiesencountered %} value={{pop_data.difficultiesencountered}} {% elif entered_data.difficultiesencountered %} value="{{entered_data.difficultiesencountered}}" {% endif %}>
       </div>
 
       <div class="inline-flex inputBox">
         <label for="nextStep">Next Step: </label>
-        <input id="nextStep" type="text" name="nextStep" maxlength="100">
+        <input id="nextStep" type="text" name="nextStep" maxlength="100" {% if pop_data.nextstep %} value={{pop_data.nextstep}} {% elif entered_data.nextstep %} value="{{entered_data.nextstep}}" {% endif %}>
       </div>
 
       <br>
 
-      <input type="submit" name="enterNewBatch" value="Submit">
+      <input type="submit" name="enterNewTest" value="Submit">
+      <input type="submit" name="populateData" formaction="{% url 'CWBDataApp:MaterialTestPopulate'%}" value="Populate">
     </div>
   </form>
 </div>

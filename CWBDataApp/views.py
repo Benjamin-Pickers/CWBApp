@@ -160,25 +160,25 @@ def MaterialTesting(request):
             Materialtesting.objects.get(testname=testName, testnumber=int(form['testNum']))
             return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles, 'error_message' : "Test number is already used for this batch, please choose a different test number",})
         except:
-            if int(form['timeUsed']) == 1:
+            if int(form['machinetimeUsed']) == 1:
                 costofmaterial=150
                 costoflabour=100
-            elif int(form['timeUsed']) == 2:
+            elif int(form['machinetimeUsed']) == 2:
                 costofmaterial=200
                 costoflabour=200
-            elif int(form['timeUsed']) == 3:
+            elif int(form['machinetimeUsed']) == 3:
                 costofmaterial=400
                 costoflabour=300
-            elif int(form['timeUsed']) == 4:
+            elif int(form['machinetimeUsed']) == 4:
                 costofmaterial=450
                 costoflabour=300
-            elif int(form['timeUsed']) == 5:
+            elif int(form['machinetimeUsed']) == 5:
                 costofmaterial=500
                 costoflabour=300
-            elif int(form['timeUsed']) == 6:
+            elif int(form['machinetimeUsed']) == 6:
                 costofmaterial=600
                 costoflabour=350
-            elif int(form['timeUsed']) == 8:
+            elif int(form['machinetimeUsed']) == 8:
                 costofmaterial=900
                 costoflabour=400
             else:
@@ -193,14 +193,14 @@ def MaterialTesting(request):
                                  testnumber=form['testNum'],
                                  testdate=form['testDate'],
                                  labourused=form['labourUsed'],
-                                 machinetimeused=form['timeUsed'],
+                                 machinetimeused=form['machinetimeUsed'],
                                  productionline=form['productionLine'],
-                                 materialstested=form['materialTested'],
-                                 othermaterialstested=form['othermaterialTested'],
+                                 materialstested=form['materialsTested'],
+                                 othermaterialstested=form['othermaterialsTested'],
                                  moulds=form['moulds'],
-                                 reasonfortest=form['reasonFor'],
-                                 expectedresults=form['expectedResult'],
-                                 difficultiesencountered=form['difficulties'],
+                                 reasonfortest=form['reasonForTest'],
+                                 expectedresults=form['expectedResults'],
+                                 difficultiesencountered=form['difficultiesencountered'],
                                  nextstep=form['nextStep'],
                                  estimatedcostofmaterial=costofmaterial,
                                  estimatedcostoflabour=costoflabour,
@@ -208,6 +208,43 @@ def MaterialTesting(request):
                                  )
             test.save()
             return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles, 'dataAcceptedMessage':"Test Successfully Submitted"})
+    return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles})
+
+###########################################################MATERIAL TESTING Populate
+def MaterialTestingPopulate(request):
+    allProfiles= Productprofiles.objects.all()
+
+    if request.method == 'POST':
+
+        form = request.POST
+
+        if int(form['testNum']) > 1:
+            try:
+                Batchcosttracking.objects.get(pk=form['testName'].upper())
+            except:
+                return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles, 'error_message' : "Batch doesn't exist, please enter a batch first before entering a test.",})
+
+            try:
+                testName = Batchcosttracking.objects.get(pk=form['testName'].upper())
+                Materialtesting.objects.get(testname=testName, testnumber=int(form['testNum']))
+                return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles, 'error_message' : "Test number is already used for this batch, please choose a different test number",})
+            except:
+
+                testName = Batchcosttracking.objects.get(pk=form['testName'].upper())
+                prev_test = Materialtesting.objects.get(testname=testName, testnumber=int(form['testNum'])-1)
+
+                pop_data = {}
+                entered_data = {}
+                for key, value in form.items():
+                    if value == '':
+                        pop_data[key.lower()] = getattr(prev_test, key.lower())
+                    else:
+                        entered_data[key.lower()] = value
+                return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles, 'dataAcceptedMessage':"Data Populated", 'pop_data':pop_data, 'entered_data':entered_data})
+
+                return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles, 'error_message' : "Something went wrong, can't populate data",})
+        else:
+            return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles, 'error_message':"Cannot populate data on the first test"})
     return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles})
 
 ###########################################################MATERIAL TESTING QUERY
