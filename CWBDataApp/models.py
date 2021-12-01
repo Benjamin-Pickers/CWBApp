@@ -33,7 +33,7 @@ class Batchcosttracking(models.Model):
 
 class Materialcost(models.Model):
     supplier = models.CharField(db_column='Supplier', primary_key=True, max_length=30)
-    costperpound = models.DecimalField(db_column='CostPerPound', decimal_places=3, max_digits=10)
+    costperpound = models.DecimalField(db_column='CostPerPound', decimal_places=2, max_digits=10)
 
     class Meta:
         managed = False
@@ -214,3 +214,10 @@ class Productprofiles(models.Model):
 
 class Colour(models.Model):
     colour = models.CharField(max_length=15, primary_key=True)
+
+class Employees(models.Model):
+    employeename = models.CharField(db_column='EmployeeName', primary_key=True, max_length=40)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'Employees'

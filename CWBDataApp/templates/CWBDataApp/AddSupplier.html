@@ -19,4 +19,30 @@
 
   </div>
 
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:AddSupplier'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        <h4 id=header>Add/Remove a Material Supplier</h4>
+        {% csrf_token %}
+
+        <div class="inline-flex inputBox">
+          <label for="supplier">Supplier*: </label>
+          <input id="supplier" type="text" name="supplier" maxlength="30">
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for="price">Price per Pound: </label>
+          <input id="price" type="number" name="price" value="0" step="any" min="0">
+        </div>
+
+        <br>
+        <div class="justify-content-center row">
+          <div class="col"><input type="submit" name="enterNewProfile" value="Enter"></div>
+          <div class="col"><input type="submit" name="removeProfile" formaction="{% url 'CWBDataApp:RemoveSupplier'%}" value="Remove"></div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+
 {% endblock content %}

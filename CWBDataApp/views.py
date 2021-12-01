@@ -551,6 +551,34 @@ def RemoveColour(request):
 
 ###########################################################Add Supplier
 def AddSupplier(request):
+
+    if request.method == 'POST':
+        form = request.POST
+
+        try:
+            supplier = Materialcost.objects.get(pk=form['supplier'])
+            return render(request, 'CWBDataApp/AddSupplier.html', {'error_message':"Supplier already exists"})
+        except:
+            new_supplier = Materialcost(supplier=form['supplier'],
+                                        costperpound=form['price']
+                                       )
+            new_supplier.save()
+            return render(request, 'CWBDataApp/AddSupplier.html', {'dataAcceptedMessage':"Supplier Successfully Added"})
+
+    return render(request, 'CWBDataApp/AddSupplier.html')
+
+###########################################################Remove Supplier
+def RemoveSupplier(request):
+
+    if request.method == 'POST':
+        form = request.POST
+
+        try:
+            supplier = Materialcost.objects.get(pk=form['supplier'])
+            supplier.delete()
+            return render(request, 'CWBDataApp/AddSupplier.html', {'dataAcceptedMessage':"Supplier Successfully Removed"})
+        except:
+            return render(request, 'CWBDataApp/AddSupplier.html', {'error_message':"Supplier Cannot Be Removed Because It Does Not Exist"})
     return render(request, 'CWBDataApp/AddSupplier.html')
 
 ###########################################################Add Supplier

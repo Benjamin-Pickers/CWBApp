@@ -37,7 +37,7 @@
           <select id="supplier" type="text" name="supplier">
             {% if allSuppliers %}
               {% for entry in allSuppliers %}
-                  <option value="{{ entry.supplier }}">{{ entry.supplier }}</option>
+                  <option value="{{ entry.supplier }}">{{ entry.supplier }} ({{entry.costperpound}})</option>
               {% endfor %}
             {% endif %}
           </select>

@@ -48,7 +48,7 @@
             <select id="supplier1" type="text" name="supplier1">
               {% if allSuppliers %}
                 {% for entry in allSuppliers %}
-                    <option value="{{ entry.supplier }}">{{ entry.supplier }}</option>
+                    <option value="{{ entry.supplier }}">{{ entry.supplier }} ({{entry.costperpound}})</option>
                 {% endfor %}
               {% endif %}
             </select>
@@ -73,7 +73,7 @@
             <select id="supplier2" type="text" name="supplier2">
               {% if allSuppliers %}
                 {% for entry in allSuppliers %}
-                    <option value="{{ entry.supplier }}">{{ entry.supplier }}</option>
+                    <option value="{{ entry.supplier }}">{{ entry.supplier }} ({{entry.costperpound}})</option>
                 {% endfor %}
               {% endif %}
             </select>
@@ -98,7 +98,7 @@
             <select id="supplier3" type="text" name="supplier3">
               {% if allSuppliers %}
                 {% for entry in allSuppliers %}
-                    <option value="{{ entry.supplier }}">{{ entry.supplier }}</option>
+                    <option value="{{ entry.supplier }}">{{ entry.supplier }} ({{entry.costperpound}})</option>
                 {% endfor %}
               {% endif %}
             </select>
@@ -123,7 +123,7 @@
             <select id="supplier4" type="text" name="supplier4">
               {% if allSuppliers %}
                 {% for entry in allSuppliers %}
-                    <option value="{{ entry.supplier }}">{{ entry.supplier }}</option>
+                    <option value="{{ entry.supplier }}">{{ entry.supplier }} ({{entry.costperpound}})</option>
                 {% endfor %}
               {% endif %}
             </select>

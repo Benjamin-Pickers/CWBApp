@@ -47,9 +47,17 @@ class CwbdataappColour(models.Model):
         db_table = 'CWBDataApp_colour'
 
 
+class Employees(models.Model):
+    employeename = models.CharField(db_column='EmployeeName', primary_key=True, max_length=40)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'Employees'
+
+
 class Materialcost(models.Model):
     supplier = models.CharField(db_column='Supplier', primary_key=True, max_length=30)  # Field name made lowercase.
-    costperpound = models.DecimalField(db_column='CostPerPound', max_digits=10, decimal_places=3, blank=True, null=True)  # Field name made lowercase.
+    costperpound = models.DecimalField(db_column='CostPerPound', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
