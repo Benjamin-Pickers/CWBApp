@@ -7,7 +7,7 @@ import pandas as pd
 import os
 from datetime import date
 
-from .models import Batchcosttracking, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Picandsum, Productinventory, Productprofiles, Colour
+from .models import Batchcosttracking, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Picandsum, Productinventory, Productprofiles, Colour, Employees
 
 ###########################################################HOME PAGE
 def index(request):
@@ -145,6 +145,7 @@ def BatchCostExcel(request):
 ###########################################################MATERIAL TESTING
 def MaterialTesting(request):
     allProfiles= Productprofiles.objects.all()
+    allEmployees= Employees.objects.all()
 
     if request.method == 'POST':
 
@@ -153,12 +154,12 @@ def MaterialTesting(request):
         try:
             Batchcosttracking.objects.get(pk=form['testName'].upper())
         except:
-            return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles, 'error_message' : "Batch doesn't exist, please enter a batch first before entering a test.",})
+            return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles, 'allEmployees':allEmployees, 'error_message' : "Batch doesn't exist, please enter a batch first before entering a test.",})
 
         try:
             testName = Batchcosttracking.objects.get(pk=form['testName'].upper())
             Materialtesting.objects.get(testname=testName, testnumber=int(form['testNum']))
-            return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles, 'error_message' : "Test number is already used for this batch, please choose a different test number",})
+            return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles, 'allEmployees':allEmployees, 'error_message' : "Test number is already used for this batch, please choose a different test number",})
         except:
             if int(form['machinetimeUsed']) == 1:
                 costofmaterial=150
@@ -207,8 +208,8 @@ def MaterialTesting(request):
                                  totalcostoftest=totalcost
                                  )
             test.save()
-            return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles, 'dataAcceptedMessage':"Test Successfully Submitted"})
-    return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles})
+            return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles, 'allEmployees':allEmployees, 'dataAcceptedMessage':"Test Successfully Submitted"})
+    return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles, 'allEmployees':allEmployees})
 
 ###########################################################MATERIAL TESTING Populate
 def MaterialTestingPopulate(request):
@@ -403,7 +404,6 @@ def MaterialInventory(request):
     return render(request, 'CWBDataApp/MaterialInventory.html', {'allSuppliers':allSuppliers})
 
 ###########################################################MATERIAL INVENTORY QUERY
-##Fucking broken
 def MaterialInventoryQuery(request):
 
     if request.method == 'POST':
@@ -486,6 +486,31 @@ def help(request):
 
 ###########################################################Add Employee
 def AddEmployee(request):
+
+    if request.method == 'POST':
+        form = request.POST
+
+        try:
+            employee = Employees.objects.get(pk=form['employeeName'])
+            return render(request, 'CWBDataApp/AddEmployee.html', {'error_message':"Employee already exists"})
+        except:
+            new_employee = Employees(employeename=form['employeeName'])
+            new_employee.save()
+            return render(request, 'CWBDataApp/AddEmployee.html', {'dataAcceptedMessage':"Employee Successfully Added"})
+    return render(request, 'CWBDataApp/AddEmployee.html')
+
+###########################################################Remove Employee
+def RemoveEmployee(request):
+
+    if request.method == 'POST':
+        form = request.POST
+
+        try:
+            employee = Employees.objects.get(pk=form['employeeName'])
+            employee.delete()
+            return render(request, 'CWBDataApp/AddEmployee.html', {'dataAcceptedMessage':"Employee Successfully Removed"})
+        except:
+            return render(request, 'CWBDataApp/AddEmployee.html', {'error_message':"Employee Cannot Be Removed Because They Do Not Exist"})
     return render(request, 'CWBDataApp/AddEmployee.html')
 
 ###########################################################Add Board Profile
@@ -581,7 +606,7 @@ def RemoveSupplier(request):
             return render(request, 'CWBDataApp/AddSupplier.html', {'error_message':"Supplier Cannot Be Removed Because It Does Not Exist"})
     return render(request, 'CWBDataApp/AddSupplier.html')
 
-###########################################################Add Supplier
+###########################################################Update Supplier
 def UpdateSupplier(request):
     return render(request, 'CWBDataApp/UpdateSupplier.html')
 

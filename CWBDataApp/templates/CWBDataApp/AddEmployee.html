@@ -13,10 +13,31 @@
     <p id="descriptionParagraph">
         Add a new employee to be added to the dropdown in material testing
     </p>
-  
+
   {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
   {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
 
+  </div>
+
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:AddEmployee'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        <h4 id=header>Add/Remove an Employee</h4>
+        {% csrf_token %}
+
+        <div class="inline-flex inputBox">
+          <label for="employeeName">Employees Name*: </label>
+          <input id="employeeName" type="text" name="employeeName" maxlength="40">
+        </div>
+
+
+        <br>
+        <div class="justify-content-center row">
+          <div class="col"><input type="submit" name="enterNewProfile" value="Enter"></div>
+          <div class="col"><input type="submit" name="removeProfile" formaction="{% url 'CWBDataApp:RemoveEmployee'%}" value="Remove"></div>
+        </div>
+      </div>
+    </form>
   </div>
 
 {% endblock content %}

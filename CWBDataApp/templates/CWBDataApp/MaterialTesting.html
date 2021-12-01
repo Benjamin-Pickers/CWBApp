@@ -55,7 +55,14 @@
 
       <div class="inline-flex inputBox">
         <label for="labourUsed">Labour Used: </label>
-        <input id="labourUsed" type="text" name="labourUsed" {% if pop_data.labourused %} value="{{pop_data.labourused}}" {% elif entered_data.labourused %} value={{entered_data.labourused}}  {% endif %}>
+        <select id="labourUsed" name="labourUsed">
+          {% if pop_data.labourused %}<option value="{{pop_data.labourused}}">{{pop_data.labourused}} </option>{% elif entered_data.labourused %}<option value="{{entered_data.labourused}}">{{entered_data.labourused}}</option>{% endif %}
+          {% if allEmployees %}
+            {% for employee in allEmployees %}
+                <option value="{{ employee.employeename }}">{{ employee.employeename }}</option>
+            {% endfor %}
+          {% endif %}
+        </select>
       </div>
 
       <div class="inline-flex inputBox">
@@ -94,7 +101,7 @@
       <div class="inline-flex inputBox">
         <label for="moulds">Moulds Used: </label>
         <select id="moulds" name="moulds">
-          {% if pop_data.moulds %}<option value="{{pop_data.moulds}}">{{pop_data.value}} </option>{% elif entered_data.moulds %}<option value="{{entered_data.moulds}}">{{entered_data.moulds}}</option>{% endif %}
+          {% if pop_data.moulds %}<option value="{{pop_data.moulds}}">{{pop_data.moulds}} </option>{% elif entered_data.moulds %}<option value="{{entered_data.moulds}}">{{entered_data.moulds}}</option>{% endif %}
           {% if allProfiles %}
             {% for profile in allProfiles %}
                 <option value="{{ profile.productname }}">{{ profile.productname }}</option>

@@ -26,6 +26,7 @@ urlpatterns = [
     path('PicSum/', views.PicSum, name='PicSum'),
     path('help/', views.help, name='help'),
     path('AddEmployee/', views.AddEmployee, name='AddEmployee'),
+    path('RemoveEmployee/', views.RemoveEmployee, name='RemoveEmployee'),
     path('AddBoardProfile/', views.AddBoardProfile, name='AddBoardProfile'),
     path('RemoveBoardProfile/', views.RemoveBoardProfile, name='RemoveBoardProfile'),
     path('AddColour/', views.AddColour, name='AddColour'),
