@@ -1,6 +1,6 @@
 {% extends 'CWBDataApp/base.html'%}
 
-{% block title %} {{'Product Inventory Update'}} {% endblock title %}
+{% block title %} {{'Product Inventory Shipped'}} {% endblock title %}
 
 {% block css %}
   {% load static %}
@@ -9,22 +9,23 @@
 
 {% block content %}
 <div>
-  <h2 id="header"> Product Inventory Update Form </h2>
+  <h2 id="header"> Product Inventory Shipped Form </h2>
   <p id="descriptionParagraph">
-      Product inventory entry is to be used to enter data regarding the finshed product skids in the shop.
+      Product inventory shipped is to be used to enter the number of skids shipped.
   </p>
   <p id="descriptionParagraph">If you want to pull product inventory data click <a href="{% url 'CWBDataApp:ProductInventoryQuery'%}">QUERY</a> or enter inventory data click <a href="{% url 'CWBDataApp:ProductInventory'%}">ENTER</a></p>
 
   {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
   {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
+  {% if skids %} <p>{{skids}} remain </p> {% endif %}
 
 </div>
 
 
 <div class="justify-content-center row no-gutters">
-  <form action="{% url 'CWBDataApp:ProductInventoryUpdate'%}" method="post">
+  <form action="{% url 'CWBDataApp:ProductInventoryShipped'%}" method="post">
     <div class="d-inline-flex flex-column">
-      <h4 id=header>Update Product </h4>
+      <h4 id=header>Shipped Product </h4>
       {% csrf_token %}
       <div class="inline-flex inputBox">
         <label for="prodName">Product Name*: </label>
@@ -47,33 +48,19 @@
           {% endif %}
         </select>
       </div>
+
+      <div class="inline-flex inputBox">
+        <label for="numSkids">Number of Skids Shipped*: </label>
+        <input id="numSkids" type="number" name="numSkids" max="100">
+      </div>
+
       <br>
 
-      <input type="submit" name="enterNewProduct" value="Search">
+      <input type="submit" name="enterNewProduct" value="Update">
     </div>
   </form>
 </div>
 
-{% if Forms %}
-  <div class="justify-content-center row no-gutters">
-    <form action="{% url 'CWBDataApp:ProductInventoryUpdateSkids'%}" method="post">
-      <div class="d-inline-flex flex-column">
-        {% csrf_token %}
-
-        <div class="inline-flex inputBox">
-          <label for="numSkids">Number of Skids*: </label>
-          <input id="numSkids" type="number" name="numSkids" max="100" value={{prod_object.numberofskids}}>
-        </div>
-
-        <input id="prodName" type="text" name="prodName" value="{{ prod_object.productname }}" hidden>
-        <input id="colour" type="text" name="colour" value="{{ prod_object.colour }}" hidden>
-        <br>
-
-        <input type="submit" name="enterNewProduct" value="Update">
-      </div>
-    </form>
-  </div>
-{% endif %}
 
 
 {% endblock content %}

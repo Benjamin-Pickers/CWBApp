@@ -260,13 +260,33 @@ def ProductInventoryUpdate(request):
 
     if request.method == 'POST':
         form = request.POST
-        prod_object =  Productprofiles.objects.get(pk=form['prodName'])
+        prod_object = Productprofiles.objects.get(pk=form['prodName'])
 
         if Productinventory.objects.filter(productname=prod_object, colour=form['colour']).exists():
-            prod = Productinventory.objects.get(productname=prod_object, colour=form['colour'])
-            prod.numberofskids = form['numSkids']
-            prod.save()
-            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'dataAcceptedMessage':"Product Successfully Updated"})
+            prod_object = Productinventory.objects.get(productname=prod_object, colour=form['colour'])
+            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'Forms':True, 'prod_object':prod_object})
+        else:
+            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':"This product currently does not exist in inventory. If you wish to enter its data, press the link above"})
+    return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours})
+
+###########################################################PRODUCT INVENTORY UPDATE SKIDS
+def ProductInventoryUpdateSkids(request):
+    allProfiles= Productprofiles.objects.all()
+    allColours = Colour.objects.all()
+
+    if request.method == 'POST':
+        form = request.POST
+
+        if Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).exists() and int(form['numSkids']) >= 0:
+            prod = Productinventory.objects.get(productname=form['prodName'], colour=form['colour'])
+
+            if int(form['numSkids']) == 0:
+                prod.delete()
+                return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'dataAcceptedMessage':"Product Successfully Deleted Since No Skids Remain"})
+            else:
+                prod.numberofskids = int(form['numSkids'])
+                prod.save()
+                return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'dataAcceptedMessage':"Product Successfully Updated"})
         else:
             return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':"This product currently does not exist in inventory. If you wish to enter its data, press the link above"})
     return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours})
@@ -287,6 +307,32 @@ def ProductInventoryQuery(request):
         else:
             return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':"This product currently does not exist in inventory. If you wish to enter its data, press the link above"})
     return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours})
+
+###########################################################PRODUCT INVENTORY SHIPPED
+def ProductInventoryShipped(request):
+
+    allProfiles= Productprofiles.objects.all()
+    allColours = Colour.objects.all()
+
+    if request.method == 'POST':
+        form = request.POST
+        prod_object =  Productprofiles.objects.get(pk=form['prodName'])
+
+        if Productinventory.objects.filter(productname=prod_object, colour=form['colour']).exists():
+            prod = Productinventory.objects.get(productname=prod_object, colour=form['colour'])
+
+            SkidsRemaining = prod.numberofskids - int(form['numSkids'])
+
+            if SkidsRemaining <= 0:
+                prod.delete()
+                SkidsRemaining = 0
+            else:
+                prod.numberofskids = SkidsRemaining
+                prod.save()
+            return render(request, 'CWBDataApp/ProductInventoryShipped.html', {'allProfiles':allProfiles, 'allColours':allColours, 'dataAcceptedMessage':"Number of Skids Successfully Updated", 'skids':str(SkidsRemaining)})
+        else:
+            return render(request, 'CWBDataApp/ProductInventoryShipped.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':"This product currently does not exist in inventory. If you wish to enter its data, press the link above"})
+    return render(request, 'CWBDataApp/ProductInventoryShipped.html', {'allProfiles':allProfiles, 'allColours':allColours})
 
 ###########################################################MATERIAL INVENTORY
 def MaterialInventory(request):
