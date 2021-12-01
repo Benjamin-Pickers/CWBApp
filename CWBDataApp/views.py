@@ -477,6 +477,10 @@ def OrderSheetsMachine3(request):
     return render(request, 'CWBDataApp/OrderSheetsMachine3.html')
 
 ###########################################################HELP
+def PicSum(request):
+    return render(request, 'CWBDataApp/PicSum.html')
+
+###########################################################HELP
 def help(request):
     return render(request, 'CWBDataApp/help.html')
 
@@ -486,10 +490,63 @@ def AddEmployee(request):
 
 ###########################################################Add Board Profile
 def AddBoardProfile(request):
+
+    if request.method == 'POST':
+        form = request.POST
+
+        try:
+            profile = Productprofiles.objects.get(pk=form['profile'])
+            return render(request, 'CWBDataApp/AddBoardProfile.html', {'error_message':"Profile already exists"})
+        except:
+            new_profile = Productprofiles(productname=form['profile'])
+            new_profile.save()
+            return render(request, 'CWBDataApp/AddBoardProfile.html', {'dataAcceptedMessage':"Profile Successfully Added"})
     return render(request, 'CWBDataApp/AddBoardProfile.html')
+
+###########################################################Add Board Profile
+def RemoveBoardProfile(request):
+
+    if request.method == 'POST':
+        form = request.POST
+
+        try:
+            if form['profile'] == '':
+                return render(request, 'CWBDataApp/AddBoardProfile.html', {'error_message':"Please enter a profile"})
+            profile = Productprofiles.objects.get(pk=form['profile'])
+            profile.delete()
+            return render(request, 'CWBDataApp/AddBoardProfile.html', {'dataAcceptedMessage':"Profile Successfully Removed"} )
+        except:
+            return render(request, 'CWBDataApp/AddBoardProfile.html', {'error_message':"Profile cannot be removed because it does not exist"})
+    return render(request, 'CWBDataApp/AddBoardProfile.html')
+
 
 ###########################################################Add Colour
 def AddColour(request):
+
+    if request.method == 'POST':
+        form = request.POST
+
+        try:
+            colour = Colour.objects.get(pk=form['colour'])
+            return render(request, 'CWBDataApp/AddColour.html', {'error_message':"Colour already exists"})
+        except:
+            new_colour = Colour(colour=form['colour'])
+            new_colour.save()
+            return render(request, 'CWBDataApp/AddColour.html', {'dataAcceptedMessage':"Colour Successfully Added"})
+    return render(request, 'CWBDataApp/AddColour.html')
+
+###########################################################Add Colour
+def RemoveColour(request):
+
+    if request.method == 'POST':
+        form = request.POST
+
+        try:
+            colour = Colour.objects.get(pk=form['colour'])
+            colour.delete()
+            return render(request, 'CWBDataApp/AddColour.html', {'dataAcceptedMessage':"Colour Successfully Deleted"})
+        except:
+            return render(request, 'CWBDataApp/AddColour.html', {'error_message':"Colour could not be removed because it does not exist"})
     return render(request, 'CWBDataApp/AddColour.html')
 
 ###########################################################Add Supplier

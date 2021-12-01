@@ -9,14 +9,34 @@
 
 {% block content %}
   <div>
-    <h2 id="header"> Add Colour </h2>
+    <h2 id="header"> Add/Remove Product Colours </h2>
     <p id="descriptionParagraph">
-        Add a new colour to be added to the dropdown in batch cost tracking and product inventory
+        Add or remove a colour to be added to the dropdown in batch cost tracking and product inventory
     </p>
 
   {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
   {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
 
+  </div>
+
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:AddColour'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        <h4 id=header>Add/Remove a Product Colour</h4>
+        {% csrf_token %}
+
+        <div class="inline-flex inputBox">
+          <label for="colour">Colour*: </label>
+          <input id="colour" type="text" name="colour" maxlength="15">
+        </div>
+
+        <br>
+        <div class="justify-content-center row">
+          <input type="submit" name="enterNewProfile" value="Enter">
+          <input type="submit" name="removeProfile" formaction="{% url 'CWBDataApp:RemoveColour'%}" value="Remove">
+        </div>
+      </div>
+    </form>
   </div>
 
 {% endblock content %}

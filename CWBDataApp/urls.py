@@ -23,10 +23,13 @@ urlpatterns = [
     path('OrderSheetsMachine1/', views.OrderSheetsMachine1, name='OrderSheetsMachine1'),
     path('OrderSheetsMachine2/', views.OrderSheetsMachine2, name='OrderSheetsMachine2'),
     path('OrderSheetsMachine3/', views.OrderSheetsMachine3, name='OrderSheetsMachine3'),
+    path('PicSum/', views.PicSum, name='PicSum'),
     path('help/', views.help, name='help'),
     path('AddEmployee/', views.AddEmployee, name='AddEmployee'),
     path('AddBoardProfile/', views.AddBoardProfile, name='AddBoardProfile'),
+    path('RemoveBoardProfile/', views.RemoveBoardProfile, name='RemoveBoardProfile'),
     path('AddColour/', views.AddColour, name='AddColour'),
+    path('RemoveColour/', views.RemoveColour, name='RemoveColour'),
     path('AddSupplier/', views.AddSupplier, name='AddSupplier'),
     path('UpdateSupplier/', views.UpdateSupplier, name='UpdateSupplier'),
 ]

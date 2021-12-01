@@ -9,14 +9,34 @@
 
 {% block content %}
   <div>
-    <h2 id="header"> Add Board Profile</h2>
+    <h2 id="header"> Add/Remove Board Profile</h2>
     <p id="descriptionParagraph">
-        Add a board profile to be added to the dropdown in Material Testing and Product Inventory
+        Add a board profile to be added to the dropdown in Material Testing and Product Inventory, or remove an outdated profile
     </p>
 
   {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
   {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
 
+  </div>
+
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:AddBoardProfile'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        <h4 id=header>Add/Remove a Board Profile</h4>
+        {% csrf_token %}
+
+        <div class="inline-flex inputBox">
+          <label for="profile">Board Profile*: </label>
+          <input id="profile" type="text" name="profile" maxlength="40">
+        </div>
+
+        <br>
+        <div class="justify-content-center row">
+          <input type="submit" name="enterNewProfile" value="Enter">
+          <input type="submit" name="removeProfile" formaction="{% url 'CWBDataApp:RemoveBoardProfile'%}" value="Remove">
+        </div>
+      </div>
+    </form>
   </div>
 
 {% endblock content %}
