@@ -8,6 +8,54 @@
 from django.db import models
 
 
+class Batchcost(models.Model):
+    batchname = models.CharField(db_column='BatchName', primary_key=True, max_length=15)  # Field name made lowercase.
+    batchdate = models.DateField(db_column='BatchDate', blank=True, null=True)  # Field name made lowercase.
+    totalcost = models.DecimalField(db_column='TotalCost', max_digits=10, decimal_places=2)  # Field name made lowercase.
+    totalweight = models.SmallIntegerField(db_column='TotalWeight')  # Field name made lowercase.
+    priceperpound = models.DecimalField(db_column='PricePerPound', max_digits=10, decimal_places=2)  # Field name made lowercase.
+    material1 = models.CharField(db_column='Material1', max_length=30, blank=True, null=True)  # Field name made lowercase.
+    weight1 = models.SmallIntegerField(db_column='Weight1', blank=True, null=True)  # Field name made lowercase.
+    value1 = models.DecimalField(db_column='Value1', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    material2 = models.CharField(db_column='Material2', max_length=30, blank=True, null=True)  # Field name made lowercase.
+    weight2 = models.SmallIntegerField(db_column='Weight2', blank=True, null=True)  # Field name made lowercase.
+    value2 = models.DecimalField(db_column='Value2', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    material3 = models.CharField(db_column='Material3', max_length=30, blank=True, null=True)  # Field name made lowercase.
+    weight3 = models.SmallIntegerField(db_column='Weight3', blank=True, null=True)  # Field name made lowercase.
+    value3 = models.DecimalField(db_column='Value3', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    material4 = models.CharField(db_column='Material4', max_length=30, blank=True, null=True)  # Field name made lowercase.
+    weight4 = models.SmallIntegerField(db_column='Weight4', blank=True, null=True)  # Field name made lowercase.
+    value4 = models.DecimalField(db_column='Value4', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    material5 = models.CharField(db_column='Material5', max_length=30, blank=True, null=True)  # Field name made lowercase.
+    weight5 = models.SmallIntegerField(db_column='Weight5', blank=True, null=True)  # Field name made lowercase.
+    value5 = models.DecimalField(db_column='Value5', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    material6 = models.CharField(db_column='Material6', max_length=30, blank=True, null=True)  # Field name made lowercase.
+    weight6 = models.SmallIntegerField(db_column='Weight6', blank=True, null=True)  # Field name made lowercase.
+    value6 = models.DecimalField(db_column='Value6', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    material7 = models.CharField(db_column='Material7', max_length=30, blank=True, null=True)  # Field name made lowercase.
+    weight7 = models.SmallIntegerField(db_column='Weight7', blank=True, null=True)  # Field name made lowercase.
+    value7 = models.DecimalField(db_column='Value7', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    material8 = models.CharField(db_column='Material8', max_length=30, blank=True, null=True)  # Field name made lowercase.
+    weight8 = models.SmallIntegerField(db_column='Weight8', blank=True, null=True)  # Field name made lowercase.
+    value8 = models.DecimalField(db_column='Value8', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    material9 = models.CharField(db_column='Material9', max_length=30, blank=True, null=True)  # Field name made lowercase.
+    weight9 = models.SmallIntegerField(db_column='Weight9', blank=True, null=True)  # Field name made lowercase.
+    value9 = models.DecimalField(db_column='Value9', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    material10 = models.CharField(db_column='Material10', max_length=30, blank=True, null=True)  # Field name made lowercase.
+    weight10 = models.SmallIntegerField(db_column='Weight10', blank=True, null=True)  # Field name made lowercase.
+    value10 = models.DecimalField(db_column='Value10', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    colour = models.CharField(db_column='Colour', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    colourweight = models.DecimalField(db_column='ColourWeight', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    colourvalue = models.DecimalField(db_column='ColourValue', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    foamweight = models.DecimalField(db_column='FoamWeight', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    foamvalue = models.DecimalField(db_column='FoamValue', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    totalshredweight = models.SmallIntegerField(db_column='TotalShredWeight', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'BatchCost'
+
+
 class Batchcosttracking(models.Model):
     batchname = models.CharField(db_column='BatchName', primary_key=True, max_length=15)  # Field name made lowercase.
     batchdate = models.DateField(db_column='BatchDate', blank=True, null=True)  # Field name made lowercase.
@@ -67,7 +115,7 @@ class Materialcost(models.Model):
 class Materialinventory(models.Model):
     materialname = models.CharField(db_column='MaterialName', primary_key=True, max_length=30)  # Field name made lowercase.
     supplier = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier')  # Field name made lowercase.
-    numberofboxes = models.SmallIntegerField(db_column='NumberofBoxes')  # Field name made lowercase.
+    numberofboxes = models.DecimalField(db_column='NumberofBoxes', max_digits=10, decimal_places=1)  # Field name made lowercase.
     locations = models.CharField(db_column='Locations', max_length=20, blank=True, null=True)  # Field name made lowercase.
     premixed = models.BooleanField(db_column='PreMixed')  # Field name made lowercase.
     priceperpound = models.DecimalField(db_column='PricePerPound', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.

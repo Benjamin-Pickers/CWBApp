@@ -6,8 +6,9 @@ from django.db import connection
 import pandas as pd
 import os
 from datetime import date
+from decimal import Decimal
 
-from .models import Batchcosttracking, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Picandsum, Productinventory, Productprofiles, Colour, Employees
+from .models import Batchcosttracking, Batchcost, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Picandsum, Productinventory, Productprofiles, Colour, Employees
 
 ###########################################################HOME PAGE
 def index(request):
@@ -16,7 +17,8 @@ def index(request):
 ###########################################################BATCH COST TRACKING
 def BatchCostTracking(request):
     allColours = Colour.objects.all()
-    allSuppliers= Materialcost.objects.all()
+    allMaterials= Materialinventory.objects.all()
+    num_of_materials = 11
 
     if request.method == 'POST':
 
@@ -24,89 +26,95 @@ def BatchCostTracking(request):
 
         try:
             #Check if batch already exists, if so stop and send an error message
-            if Batchcosttracking.objects.get(pk=request.POST['newBatch']):
-                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours, 'error_message' : "Batch already exists, please enter a new batch. If you wish to update a batch talk to an admin",})
+            if Batchcost.objects.get(pk=request.POST['newBatch']):
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'range':range(1, num_of_materials), 'error_message' : "Batch already exists, please enter a new batch. If you wish to update a batch talk to an admin",})
         except:
 
-            #Check if any price values are negative, if so return error message
-            if float(form['value1']) < 0 or float(form['value2']) < 0 or float(form['value3']) < 0 or float(form['value4']) < 0 or float(form['colourPrice']) < 0 or float(form['foamPrice']) < 0:
-                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours, 'error_message':"Cannot have negative values for prices",})
-
-            if int(form['weight1']) < 0 or int(form['weight2']) < 0 or int(form['weight3']) < 0 or int(form['weight4']) < 0 or int(form['colourWeight']) < 0 or int(form['foamWeight']) < 0:
-                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours, 'error_message':"Cannot have negative values for weights",})
             #Calculate total price, weight and price/pound
-            cost = int(form['weight1'])*float(form['value1']) + int(form['weight2'])*float(form['value2']) + int(form['weight3'])*float(form['value3']) + int(form['weight4'])*float(form['value4'])
+            cost = 0
+            weight = 0
+            for i in range(1, num_of_materials):
+                cost += int(form['weight'+ str(i)]) * float(form['value'+str(i)])
             cost=round(cost, 2)
-            weight = int(form['weight1']) + int(form['weight2']) + int(form['weight3']) + int(form['weight4'])
+
+            for i in range(1, num_of_materials):
+                weight += int(form['weight'+str(i)])
             #Check if weight was entered as 0, throw error if it is
             if weight == 0:
-                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours, 'error_message':"Total weight cannot be zero, please add a value to weight1",})
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'range':range(1, num_of_materials), 'error_message':"Total weight cannot be zero, please add a value to weight1",})
+
             price = round(cost/weight, 2)
 
-            #Check if supplier1 exists before grabbing object
-            try:
-                sup1_object = Materialcost.objects.get(pk=form['supplier1'])
-            except:
-                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours, 'error_message':"Supplier 1 is not a valid supplier",})
+            #Check if theres enough boxes before we subtract from inventory
+            for i in range(1, num_of_materials):
+                try:
+                    if form['material'+str(i)] != 'None':
+                        box = Materialinventory.objects.get(pk=form['material'+str(i)])
 
-            #Check if supplier2 exists before grabbing object
-            try:
-                if form['supplier2'] == '':
-                    sup2_object =  Materialcost.objects.get(pk='None')
-                else:
-                    sup2_object =  Materialcost.objects.get(pk=form['supplier2'])
-            except:
-                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours, 'error_message':"Supplier 2 is not a valid supplier",})
+                        if box.numberofboxes < Decimal(form['numofBoxes'+str(i)]):
+                            return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'range':range(1, num_of_materials), 'error_message' : form["material"+str(i)]+" does no have enough boxes for Material"+str(i)+"",})
+                except:
+                    return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'range':range(1, num_of_materials), 'error_message' : "Couldn't find box in inventory",})
 
-            #Check if supplier3 exists before grabbing object
-            try:
-                if form['supplier3'] == '':
-                    sup3_object =  Materialcost.objects.get(pk='None')
-                else:
-                    sup3_object =  Materialcost.objects.get(pk=form['supplier3'])
-            except:
-                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours, 'error_message':"Supplier 3 is not a valid supplier",})
-
-            #Check if supplier4 exists before grabbing object
-            try:
-                if form['supplier4'] == '':
-                    sup4_object =  Materialcost.objects.get(pk='None')
-                else:
-                    sup4_object =  Materialcost.objects.get(pk=form['supplier4'])
-            except:
-                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours, 'error_message':"Supplier 4 is not a valid supplier",})
+            for i in range(1, num_of_materials):
+                #try:
+                if form['material'+str(i)] != 'None':
+                    box = Materialinventory.objects.get(pk=form['material'+str(i)])
+                    box.numberofboxes -= Decimal(form['numofBoxes'+str(i)])
+                    box.save()
+                    if box.numberofboxes <=0:
+                        box.delete()
+                #except:
+                    #return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'range':range(1, num_of_materials), 'error_message' : form["material"+str(i)]+" does not have enough boxes for Material"+str(i)+"",})
 
             #Create new batch entry
-            batch = Batchcosttracking(batchname=form['newBatch'].upper(),
+            batch = Batchcost(batchname=form['newBatch'].upper(),
                                     batchdate=form['batchDate'],
                                     totalcost=cost,
                                     totalweight=weight,
                                     priceperpound=price,
-                                    supplier1=sup1_object,
+                                    material1=form['material1'],
                                     weight1=form['weight1'],
                                     value1=form['value1'],
-                                    supplier2=sup2_object,
+                                    material2=form['material2'],
                                     weight2=form['weight2'],
                                     value2=form['value2'],
-                                    supplier3=sup3_object,
+                                    material3=form['material3'],
                                     weight3=form['weight3'],
                                     value3=form['value3'],
-                                    supplier4=sup4_object,
+                                    material4=form['material4'],
                                     weight4=form['weight4'],
                                     value4=form['value4'],
+                                    material5=form['material5'],
+                                    weight5=form['weight5'],
+                                    value5=form['value5'],
+                                    material6=form['material6'],
+                                    weight6=form['weight6'],
+                                    value6=form['value6'],
+                                    material7=form['material7'],
+                                    weight7=form['weight7'],
+                                    value7=form['value7'],
+                                    material8=form['material8'],
+                                    weight8=form['weight8'],
+                                    value8=form['value8'],
+                                    material9=form['material9'],
+                                    weight9=form['weight9'],
+                                    value9=form['value9'],
+                                    material10=form['material10'],
+                                    weight10=form['weight10'],
+                                    value10=form['value10'],
                                     colour=form['colour'],
                                     colourweight=form['colourWeight'],
                                     colourvalue=form['colourPrice'],
-                                    foam= 'Foam',
                                     foamweight=form['foamWeight'],
                                     foamvalue=form['foamPrice'],
                                     totalshredweight=form['shredWeight']
                                     )
             batch.save()
-            return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours, 'dataAcceptedMessage':"Test Successfully Submitted"})
+            return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'range':range(1, num_of_materials), 'dataAcceptedMessage':"Batch Successfully Submitted and material used removedd from inventory"})
 
 
-    return render(request, 'CWBDataApp/BatchCostTracking.html', {'allSuppliers':allSuppliers, 'allColours':allColours})
+    return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'range':range(1, num_of_materials)})
 
 ###########################################################BATCH COST TRACKING QUERY
 def BatchCostQuery(request):
@@ -385,8 +393,8 @@ def MaterialInventory(request):
             return render(request, 'CWBDataApp/MaterialInventory.html',{'allSuppliers':allSuppliers, 'error_message':"Material already exists in inventory, if you wish to update its data click the link above"})
         except:
             try:
-                if form['numBoxes'] == '' or int(form['numBoxes']) <= 0 or float(form['price']) < 0:
-                    return render(request, 'CWBDataApp/MaterialInventory.html',{'allSuppliers':allSuppliers, 'error_message':"Cannot enter zero for number of boxes"})
+                if form['numBoxes'] == '' or float(form['numBoxes']) <= 0 or float(form['price']) < 0:
+                    return render(request, 'CWBDataApp/MaterialInventory.html',{'allSuppliers':allSuppliers, 'error_message':"Cannot enter zero for number of boxes or price"})
 
                 sup_object = Materialcost.objects.get(pk=form['supplier'])
                 new_material = Materialinventory(materialname=form['matName'].upper(),
@@ -445,9 +453,9 @@ def MaterialInventoryUpdateNumSkids(request):
     if request.method == 'POST':
         form = request.POST
         try:
-            if form['numBoxes'] == '' or int(form['numBoxes']) < 0 or float(form['price']) < 0:
+            if form['numBoxes'] == '' or float(form['numBoxes']) < 0 or float(form['price']) < 0:
                 return render(request, 'CWBDataApp/MaterialInventoryUpdate.html',{'error_message':"Cannot enter zero for number of boxes"})
-            elif int(form['numBoxes']) == 0:
+            elif float(form['numBoxes']) == 0:
                 mat_object = Materialinventory.objects.get(pk=form['matName'].upper())
                 mat_object.delete()
                 return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'dataAcceptedMessage':"Material Was Successfully Deleted Since Zero Boxes Remained"})

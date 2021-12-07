@@ -41,105 +41,39 @@
 
           <br>
 
-          <h4 id="header">Material 1 Supplier </h4>
+          {% for i in range %}
+            <h4 id="header">Material {{i}} </h4>
 
-          <div class="inline-flex inputBox">
-            <label for="supplier1">Supplier 1*: </label>
-            <select id="supplier1" type="text" name="supplier1">
-              {% if allSuppliers %}
-                {% for entry in allSuppliers %}
-                    <option value="{{ entry.supplier }}">{{ entry.supplier }} ({{entry.costperpound}})</option>
-                {% endfor %}
-              {% endif %}
-            </select>
-          </div>
+            <div class="inline-flex inputBox">
+              <label for="material{{i}}">Material Name*: </label>
+              <select id="material{{i}}" type="text" name="material{{i}}">
+                <option value="None"></option>
+                {% if allMaterials %}
+                  {% for entry in allMaterials %}
+                      <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }}-{{entry.priceperpound}})</option>
+                  {% endfor %}
+                {% endif %}
+              </select>
+            </div>
 
-          <div class="inline-flex inputBox">
-            <label for="weight1">Weight 1*: </label>
-            <input id="weight1" type="number" name="weight1" value="1" min="1">
-          </div>
+            <div class="inline-flex inputBox">
+              <label for="weight{{i}}">Weight {{i}}*: </label>
+              <input id="weight{{i}}" type="number" name="weight{{i}}" {% if i == 1 %} value="1" min="1" {% else %} value="0" min="0"{% endif %}>
+            </div>
 
-          <div class="inline-flex inputBox">
-            <label for="value1">Price/Pound: </label>
-            <input id="value1" type="number" name="value1" value="0" step="any">
-          </div>
+            <div class="inline-flex inputBox">
+              <label for="value{{i}}">Price/Pound: </label>
+              <input id="value{{i}}" type="number" name="value{{i}}" value="0" step="any" min="0">
+            </div>
 
-          <br>
+            <div class="inline-flex inputBox">
+              <label for="numofBoxes{{i}}">Number of Boxes: </label>
+              <input id="numofBoxes{{i}}" type="number" name="numofBoxes{{i}}" value="1" step="0.5" min="1">
+            </div>
 
-          <h4 id="header"> Material 2 Supplier </h4>
+            <br>
+          {% endfor %}
 
-          <div class="inline-flex inputBox">
-            <label for="supplier2">Supplier 2: </label>
-            <select id="supplier2" type="text" name="supplier2">
-              {% if allSuppliers %}
-                {% for entry in allSuppliers %}
-                    <option value="{{ entry.supplier }}">{{ entry.supplier }} ({{entry.costperpound}})</option>
-                {% endfor %}
-              {% endif %}
-            </select>
-          </div>
-
-          <div class="inline-flex inputBox">
-            <label for="weight2">Weight 2: </label>
-            <input id="weight2" type="number" name="weight2" value="0">
-          </div>
-
-          <div class="inline-flex inputBox">
-            <label for="value2">Price/Pound: </label>
-            <input id="value2" type="number" name="value2" value="0" step="any">
-          </div>
-
-          <br>
-
-          <h4 id="header"> Material 3 Supplier </h4>
-
-          <div class="inline-flex inputBox">
-            <label for="supplier3">Supplier 3: </label>
-            <select id="supplier3" type="text" name="supplier3">
-              {% if allSuppliers %}
-                {% for entry in allSuppliers %}
-                    <option value="{{ entry.supplier }}">{{ entry.supplier }} ({{entry.costperpound}})</option>
-                {% endfor %}
-              {% endif %}
-            </select>
-          </div>
-
-          <div class="inline-flex inputBox">
-            <label for="weight3">Weight 3: </label>
-            <input id="weight3" type="number" name="weight3" value="0">
-          </div>
-
-          <div class="inline-flex inputBox">
-            <label for="value3">Price/Pound: </label>
-            <input id="value3" type="number" name="value3" value="0" step="any">
-          </div>
-
-          <br>
-
-          <h4 id="header"> Material 4 Supplier </h4>
-
-          <div class="inline-flex inputBox">
-            <label for="supplier4">Supplier 4: </label>
-            <select id="supplier4" type="text" name="supplier4">
-              {% if allSuppliers %}
-                {% for entry in allSuppliers %}
-                    <option value="{{ entry.supplier }}">{{ entry.supplier }} ({{entry.costperpound}})</option>
-                {% endfor %}
-              {% endif %}
-            </select>
-          </div>
-
-          <div class="inline-flex inputBox">
-            <label for="weight4">Weight 4: </label>
-            <input id="weight4" type="number" name="weight4" value="0">
-          </div>
-
-          <div class="inline-flex inputBox">
-            <label for="value4">Price/Pound: </label>
-            <input id="value4" type="number" name="value4" value="0" step="any">
-          </div>
-
-          <br>
 
           <h4 id="header"> Colour & Foam </h4>
 
