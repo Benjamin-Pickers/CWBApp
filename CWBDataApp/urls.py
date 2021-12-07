@@ -34,4 +34,6 @@ urlpatterns = [
     path('AddSupplier/', views.AddSupplier, name='AddSupplier'),
     path('RemoveSupplier/', views.RemoveSupplier, name='RemoveSupplier'),
     path('UpdateSupplier/', views.UpdateSupplier, name='UpdateSupplier'),
+    path('AddProfileAverage/', views.AddProfileAverage, name='AddProfileAverage'),
+    path('UpdateProfileAverage/', views.UpdateProfileAverage, name='UpdateProfileAverage'),
 ]

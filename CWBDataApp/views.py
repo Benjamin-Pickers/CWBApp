@@ -623,6 +623,42 @@ def RemoveSupplier(request):
 def UpdateSupplier(request):
     return render(request, 'CWBDataApp/UpdateSupplier.html')
 
+###########################################################ADD PROFILE AVERAGE
+def AddProfileAverage(request):
+
+    if request.method == 'POST':
+        form = request.POST
+
+        try:
+            profile = Profileaverages.objects.get(pk=form['profile'])
+            return render(request, 'CWBDataApp/AddProfileAverage.html', {'error_message':"Profile already exists. If you wish to update this profile use, the UpdateProfileAverage tab under help"})
+        except:
+            new_average = Profileaverages(productname=form['profile'],
+                                          averageskidsperday=form['average']
+                                       )
+            new_average.save()
+            return render(request, 'CWBDataApp/AddProfileAverage.html', {'dataAcceptedMessage':"Profile Average Successfully Added"})
+
+
+    return render(request, 'CWBDataApp/AddProfileAverage.html')
+
+###########################################################UPDATE PROFILE AVERAGE
+def UpdateProfileAverage(request):
+    allAverages= Profileaverages.objects.all()
+
+    if request.method == 'POST':
+        form = request.POST
+
+        try:
+            profile = Profileaverages.objects.get(pk=form['profile'])
+            profile.averageskidsperday = form['average']
+            profile.save()
+            return render(request, 'CWBDataApp/UpdateProfileAverage.html', {'allAverages':allAverages, 'dataAcceptedMessage':"Profile Average Successfully Updated"})
+        except:
+            return render(request, 'CWBDataApp/UpdateProfileAverage.html', {'allAverages':allAverages, 'error_message':"Profile could not be updated"})
+
+    return render(request, 'CWBDataApp/UpdateProfileAverage.html', {'allAverages':allAverages})
+
 
 ###########################################################ADMIN
 def admin(request):

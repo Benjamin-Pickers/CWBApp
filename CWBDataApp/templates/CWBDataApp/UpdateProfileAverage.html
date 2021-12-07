@@ -1,0 +1,51 @@
+{% extends 'CWBDataApp/base.html'%}
+
+{% block title %} {{'Update Profile Average'}} {% endblock title %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
+
+{% block content %}
+  <div>
+    <h2 id="header"> Update Profile Average </h2>
+    <p id="descriptionParagraph">
+        Update a profile average skids per day
+    </p>
+
+  {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
+  {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
+
+  </div>
+
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:UpdateProfileAverage'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        <h4 id=header>Update an Average</h4>
+        {% csrf_token %}
+
+        <div class="inline-flex inputBox">
+          <label for="profile">Profile*: </label>
+          <select id="profile" type="text" name="profile">
+            {% if allAverages %}
+              {% for entry in allAverages %}
+                  <option value="{{ entry.productname }}">{{ entry.productname }} ({{entry.averageskidsperday}})</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for="average">New Average Skids per day: </label>
+          <input id="average" type="number" name="average" value="0" step="any" min="0">
+        </div>
+
+        <br>
+
+          <input type="submit" name="enterNewAverage" value="Update">
+      </div>
+    </form>
+  </div>
+
+{% endblock content %}
