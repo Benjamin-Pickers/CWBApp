@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Batchcosttracking, Batchcost, Materialcost, Materialinventory, Materialtesting, Mixingform, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Picandsum,  Productinventory, Productprofiles, Colour
+from .models import Batchcosttracking, Batchcost, Materialcost, Materialinventory, Materialtesting, Mixingform, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Picandsum,  Productinventory, Productprofiles, Colour, Profileaverages
 
 admin.site.register(Batchcosttracking)
 admin.site.register(Batchcost)
@@ -14,3 +14,4 @@ admin.site.register(Picandsum)
 admin.site.register(Productinventory)
 admin.site.register(Productprofiles)
 admin.site.register(Colour)
+admin.site.register(Profileaverages)

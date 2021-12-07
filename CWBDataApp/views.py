@@ -8,7 +8,7 @@ import os
 from datetime import date
 from decimal import Decimal
 
-from .models import Batchcosttracking, Batchcost, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Picandsum, Productinventory, Productprofiles, Colour, Employees
+from .models import Batchcosttracking, Batchcost, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Picandsum, Productinventory, Productprofiles, Colour, Employees, Profileaverages
 
 ###########################################################HOME PAGE
 def index(request):

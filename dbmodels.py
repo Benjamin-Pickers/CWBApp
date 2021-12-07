@@ -287,6 +287,15 @@ class Productprofiles(models.Model):
         db_table = 'ProductProfiles'
 
 
+class Profileaverages(models.Model):
+    productname = models.CharField(db_column='ProductName', primary_key=True, max_length=40)  # Field name made lowercase.
+    averageskidsperday = models.DecimalField(db_column='AverageSkidsPerDay', max_digits=7, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'ProfileAverages'
+
+
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=80)
 
