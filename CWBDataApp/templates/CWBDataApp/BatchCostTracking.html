@@ -47,7 +47,7 @@
             <div class="inline-flex inputBox">
               <label for="material{{i}}">Material Name*: </label>
               <select id="material{{i}}" type="text" name="material{{i}}">
-                <option value="None"></option>
+                <option value="None">None</option>
                 {% if allMaterials %}
                   {% for entry in allMaterials %}
                       <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }}-{{entry.priceperpound}})</option>

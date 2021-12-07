@@ -34,11 +34,13 @@ def BatchCostTracking(request):
             cost = 0
             weight = 0
             for i in range(1, num_of_materials):
-                cost += int(form['weight'+ str(i)]) * float(form['value'+str(i)])
+                cost += int(form['weight'+ str(i)]) * Decimal(form['value'+str(i)])
+            cost += (Decimal(form['colourWeight']) * Decimal(form['colourPrice'])) + (Decimal(form['foamWeight']) * Decimal(form['foamPrice']))
             cost=round(cost, 2)
 
             for i in range(1, num_of_materials):
                 weight += int(form['weight'+str(i)])
+            weight += Decimal(form['colourWeight']) + Decimal(form['foamWeight'])
             #Check if weight was entered as 0, throw error if it is
             if weight == 0:
                 return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'range':range(1, num_of_materials), 'error_message':"Total weight cannot be zero, please add a value to weight1",})
@@ -57,15 +59,15 @@ def BatchCostTracking(request):
                     return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'range':range(1, num_of_materials), 'error_message' : "Couldn't find box in inventory",})
 
             for i in range(1, num_of_materials):
-                #try:
-                if form['material'+str(i)] != 'None':
-                    box = Materialinventory.objects.get(pk=form['material'+str(i)])
-                    box.numberofboxes -= Decimal(form['numofBoxes'+str(i)])
-                    box.save()
-                    if box.numberofboxes <=0:
-                        box.delete()
-                #except:
-                    #return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'range':range(1, num_of_materials), 'error_message' : form["material"+str(i)]+" does not have enough boxes for Material"+str(i)+"",})
+                try:
+                    if form['material'+str(i)] != 'None':
+                        box = Materialinventory.objects.get(pk=form['material'+str(i)])
+                        box.numberofboxes -= Decimal(form['numofBoxes'+str(i)])
+                        box.save()
+                        if box.numberofboxes <=0:
+                            box.delete()
+                except:
+                    return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'range':range(1, num_of_materials), 'error_message' : form["material"+str(i)]+" does not have enough boxes for Material"+str(i)+"",})
 
             #Create new batch entry
             batch = Batchcost(batchname=form['newBatch'].upper(),
@@ -121,17 +123,20 @@ def BatchCostQuery(request):
 
     if request.method == 'POST':
         form = request.POST
-        try:
+        #Number of material boxes that are allowed to be entered
+        num_of_materials = 11
+
+        #try:
             #Grab batch if it exists, throw error if it doesn't
-            batch = Batchcosttracking.objects.get(pk=form['searchBatch'].upper())
-            #Grab all supplier values
-            sup1_object = batch.supplier1.supplier
-            sup2_object = batch.supplier2.supplier
-            sup3_object = batch.supplier3.supplier
-            sup4_object = batch.supplier4.supplier
-            return render(request, 'CWBDataApp/BatchCostQuery.html', {'batch' : batch, 'sup1':sup1_object, 'sup2':sup2_object, 'sup3':sup3_object, 'sup4':sup4_object, })
-        except:
-            return render(request, 'CWBDataApp/BatchCostQuery.html', {'error_message' : "Batch does not exist, please enter a valid batch",})
+        batch = Batchcost.objects.get(pk=form['searchBatch'].upper())
+        dict= {}
+        for i in range(1, num_of_materials):
+            dict['material'+str(i)] = getattr(batch, 'material'+str(i))
+            dict['weight'+str(i)] = getattr(batch, 'weight'+str(i))
+            dict['value'+str(i)] = getattr(batch, 'value'+str(i))
+        return render(request, 'CWBDataApp/BatchCostQuery.html', {'batch' : batch, 'range':range(1,num_of_materials), 'dict':dict.items(),})
+        #except:
+            #return render(request, 'CWBDataApp/BatchCostQuery.html', {'error_message' : "Batch does not exist, please enter a valid batch",})
     return render(request, 'CWBDataApp/BatchCostQuery.html')
 
 ###########################################################Batch Cost Excel File Download
