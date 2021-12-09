@@ -192,69 +192,69 @@ class Mixingform(models.Model):
 
 
 class Ordersheetmachine1(models.Model):
-    ponumber = models.CharField(db_column='PONumber', primary_key=True, max_length=15)  # Field name made lowercase.
+    ponumber = models.AutoField(db_column='PONumber', primary_key=True)  # Field name made lowercase.
+    customerponumber = models.CharField(db_column='CustomerPONumber', max_length=15, blank=True, null=True)  # Field name made lowercase.
     projectedstartdate = models.DateField(db_column='ProjectedStartDate')  # Field name made lowercase.
     projectedenddate = models.DateField(db_column='ProjectedEndDate')  # Field name made lowercase.
     duedate = models.DateField(db_column='DueDate')  # Field name made lowercase.
-    lengthofrunindays = models.DecimalField(db_column='LengthofRuninDays', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    lengthofrunindays = models.DecimalField(db_column='LengthofRuninDays', max_digits=6, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     priorityrank = models.SmallIntegerField(db_column='PriorityRank')  # Field name made lowercase.
     boardprofile = models.CharField(db_column='BoardProfile', max_length=40)  # Field name made lowercase.
     colour = models.CharField(db_column='Colour', max_length=15)  # Field name made lowercase.
-    skidsremaining = models.FloatField(db_column='SkidsRemaining')  # Field name made lowercase.
+    skidsremaining = models.DecimalField(db_column='SkidsRemaining', max_digits=6, decimal_places=2)  # Field name made lowercase.
     pcs = models.SmallIntegerField(db_column='PCS')  # Field name made lowercase.
-    pcssent = models.SmallIntegerField(db_column='PCSSent')  # Field name made lowercase.
+    pcssent = models.SmallIntegerField(db_column='PCSSent', blank=True, null=True)  # Field name made lowercase.
     pcsremaining = models.SmallIntegerField(db_column='PCSRemaining')  # Field name made lowercase.
-    customer = models.CharField(db_column='Customer', max_length=20)  # Field name made lowercase.
+    customer = models.CharField(db_column='Customer', max_length=20, blank=True, null=True)  # Field name made lowercase.
     qualitynotes = models.CharField(db_column='QualityNotes', max_length=500, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
         db_table = 'OrderSheetMachine1'
-        unique_together = (('ponumber', 'boardprofile', 'colour', 'duedate'),)
 
 
 class Ordersheetmachine2(models.Model):
-    ponumber = models.CharField(db_column='PONumber', primary_key=True, max_length=15)  # Field name made lowercase.
+    ponumber = models.AutoField(db_column='PONumber', primary_key=True)  # Field name made lowercase.
+    customerponumber = models.CharField(db_column='CustomerPONumber', max_length=15, blank=True, null=True)  # Field name made lowercase.
     projectedstartdate = models.DateField(db_column='ProjectedStartDate')  # Field name made lowercase.
     projectedenddate = models.DateField(db_column='ProjectedEndDate')  # Field name made lowercase.
     duedate = models.DateField(db_column='DueDate')  # Field name made lowercase.
-    lengthofrunindays = models.DecimalField(db_column='LengthofRuninDays', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    lengthofrunindays = models.DecimalField(db_column='LengthofRuninDays', max_digits=6, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     priorityrank = models.SmallIntegerField(db_column='PriorityRank')  # Field name made lowercase.
     boardprofile = models.CharField(db_column='BoardProfile', max_length=40)  # Field name made lowercase.
     colour = models.CharField(db_column='Colour', max_length=15)  # Field name made lowercase.
-    skidsremaining = models.FloatField(db_column='SkidsRemaining')  # Field name made lowercase.
+    skidsremaining = models.DecimalField(db_column='SkidsRemaining', max_digits=6, decimal_places=2)  # Field name made lowercase.
     pcs = models.SmallIntegerField(db_column='PCS')  # Field name made lowercase.
-    pcssent = models.SmallIntegerField(db_column='PCSSent')  # Field name made lowercase.
+    pcssent = models.SmallIntegerField(db_column='PCSSent', blank=True, null=True)  # Field name made lowercase.
     pcsremaining = models.SmallIntegerField(db_column='PCSRemaining')  # Field name made lowercase.
-    customer = models.CharField(db_column='Customer', max_length=20)  # Field name made lowercase.
+    customer = models.CharField(db_column='Customer', max_length=20, blank=True, null=True)  # Field name made lowercase.
     qualitynotes = models.CharField(db_column='QualityNotes', max_length=500, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
         db_table = 'OrderSheetMachine2'
-        unique_together = (('ponumber', 'boardprofile', 'colour', 'duedate'),)
 
 
 class Ordersheetmachine3(models.Model):
-    ponumber = models.CharField(db_column='PONumber', primary_key=True, max_length=15)  # Field name made lowercase.
+    ponumber = models.AutoField(db_column='PONumber', primary_key=True)  # Field name made lowercase.
+    customerponumber = models.CharField(db_column='CustomerPONumber', max_length=15, blank=True, null=True)  # Field name made lowercase.
     projectedstartdate = models.DateField(db_column='ProjectedStartDate')  # Field name made lowercase.
     projectedenddate = models.DateField(db_column='ProjectedEndDate')  # Field name made lowercase.
     duedate = models.DateField(db_column='DueDate')  # Field name made lowercase.
-    lengthofrunindays = models.DecimalField(db_column='LengthofRuninDays', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    lengthofrunindays = models.DecimalField(db_column='LengthofRuninDays', max_digits=6, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     priorityrank = models.SmallIntegerField(db_column='PriorityRank')  # Field name made lowercase.
     boardprofile = models.CharField(db_column='BoardProfile', max_length=40)  # Field name made lowercase.
     colour = models.CharField(db_column='Colour', max_length=15)  # Field name made lowercase.
-    skidsremaining = models.FloatField(db_column='SkidsRemaining')  # Field name made lowercase.
+    skidsremaining = models.DecimalField(db_column='SkidsRemaining', max_digits=6, decimal_places=2)  # Field name made lowercase.
     pcs = models.SmallIntegerField(db_column='PCS')  # Field name made lowercase.
-    pcssent = models.SmallIntegerField(db_column='PCSSent')  # Field name made lowercase.
+    pcssent = models.SmallIntegerField(db_column='PCSSent', blank=True, null=True)  # Field name made lowercase.
     pcsremaining = models.SmallIntegerField(db_column='PCSRemaining')  # Field name made lowercase.
-    customer = models.CharField(db_column='Customer', max_length=20)  # Field name made lowercase.
+    customer = models.CharField(db_column='Customer', max_length=20, blank=True, null=True)  # Field name made lowercase.
     qualitynotes = models.CharField(db_column='QualityNotes', max_length=500, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
         db_table = 'OrderSheetMachine3'
-        unique_together = (('ponumber', 'boardprofile', 'colour', 'duedate'),)
 
 
 class Picandsum(models.Model):
@@ -281,6 +281,7 @@ class Productinventory(models.Model):
 
 class Productprofiles(models.Model):
     productname = models.CharField(db_column='ProductName', max_length=40)  # Field name made lowercase.
+    pcsperskid = models.SmallIntegerField(blank=True, null=True)
 
     class Meta:
         managed = False

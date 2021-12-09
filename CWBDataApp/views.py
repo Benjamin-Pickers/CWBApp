@@ -5,8 +5,9 @@ from django.template import loader
 from django.db import connection
 import pandas as pd
 import os
-from datetime import date
+from datetime import date, timedelta
 from decimal import Decimal
+import math
 
 from .models import Batchcosttracking, Batchcost, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Picandsum, Productinventory, Productprofiles, Colour, Employees, Profileaverages
 
@@ -288,14 +289,13 @@ def ProductInventory(request):
 
     if request.method == 'POST':
         form = request.POST
-        prod_object =  Productprofiles.objects.get(pk=form['prodName'])
-        if Productinventory.objects.filter(productname=prod_object, colour=form['colour']).exists():
+        if Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).exists():
 
             return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message' : "Product already exists in database, please enter a new product. If you wish to update a product scroll down",})
         elif form['numSkids'] == '' or int(form['numSkids']) <= 0:
             return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message' : "Cannot enter a product with zero skids",})
         else:
-            newProd = Productinventory(productname=prod_object,
+            newProd = Productinventory(productname=form['prodName'],
                                        colour=form['colour'],
                                        embossed=form['embossed'],
                                        doublesided=form['doubleSide'],
@@ -311,10 +311,9 @@ def ProductInventoryUpdate(request):
 
     if request.method == 'POST':
         form = request.POST
-        prod_object = Productprofiles.objects.get(pk=form['prodName'])
 
-        if Productinventory.objects.filter(productname=prod_object, colour=form['colour']).exists():
-            prod_object = Productinventory.objects.get(productname=prod_object, colour=form['colour'])
+        if Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).exists():
+            prod_object = Productinventory.objects.get(productname=form['prodName'], colour=form['colour'])
             return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'Forms':True, 'prod_object':prod_object})
         else:
             return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':"This product currently does not exist in inventory. If you wish to enter its data, press the link above"})
@@ -350,11 +349,10 @@ def ProductInventoryQuery(request):
 
     if request.method == 'POST':
         form = request.POST
-        prod_object =  Productprofiles.objects.get(pk=form['prodName'])
 
-        if Productinventory.objects.filter(productname=prod_object, colour=form['colour']).exists():
-            prod = Productinventory.objects.get(productname=prod_object, colour=form['colour'])
-            return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours, 'product':prod, 'profile':prod_object})
+        if Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).exists():
+            prod = Productinventory.objects.get(productname=form['prodName'], colour=form['colour'])
+            return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours, 'product':prod})
         else:
             return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':"This product currently does not exist in inventory. If you wish to enter its data, press the link above"})
     return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours})
@@ -367,10 +365,9 @@ def ProductInventoryShipped(request):
 
     if request.method == 'POST':
         form = request.POST
-        prod_object =  Productprofiles.objects.get(pk=form['prodName'])
 
-        if Productinventory.objects.filter(productname=prod_object, colour=form['colour']).exists():
-            prod = Productinventory.objects.get(productname=prod_object, colour=form['colour'])
+        if Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).exists():
+            prod = Productinventory.objects.get(productname=form['prodName'], colour=form['colour'])
 
             SkidsRemaining = prod.numberofskids - int(form['numSkids'])
 
@@ -479,7 +476,87 @@ def MaterialInventoryUpdateNumSkids(request):
 
 ###########################################################ORDER SHEET MACHINE 1
 def OrderSheetsMachine1(request):
-    return render(request, 'CWBDataApp/OrderSheetsMachine1.html')
+    allColours = Colour.objects.all()
+    allProfiles= Productprofiles.objects.all()
+
+    if request.method == 'POST':
+        form = request.POST
+
+        pcsinventorized = 0
+
+        if Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).exists():
+            product = Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).first()
+            pcsinventorized = int(product.numberofskids)
+
+        product = Productprofiles.objects.get(pk=form['prodName'])
+        productAverage = Profileaverages.objects.get(pk=form['prodName'])
+        pcsremaining = int(form['pcs']) - int(form['pcsSent']) - pcsinventorized
+        skidsremaining = pcsremaining / int(product.pcsperskid)
+        lengthofrunindays = Decimal(skidsremaining) / Decimal(productAverage.averageskidsperday)
+        priority = 0
+        startdate = date.today()
+        enddate = startdate + timedelta(days=math.ceil(lengthofrunindays))
+        duedate = enddate
+        ponumber = form['ponumber']
+
+        if Ordersheetmachine1.objects.all() == None:
+            priority = 1
+        else:
+            if form['priority'] == '' :
+                #If no priority is given, grab the lowest priority entry and give this order a lower priority
+                lastOrder = Ordersheetmachine1.objects.all().order_by('-priorityrank').first()
+                priority = lastOrder.priorityrank + 1
+                startdate = lastOrder.projectedenddate
+                enddate = startdate + timedelta(days=math.ceil(lengthofrunindays))
+
+
+            else:
+                lessPriority = Ordersheetmachine1.objects.filter(priorityrank__gt = (int(form['priority'])-1)).order_by('priorityrank')
+                if int(form['priority']) == 1:
+                    startdate = date.today()
+                else:
+                    higherpriority = Ordersheetmachine1.objects.filter(priorityrank=(int(form['priority'])+1)).first()
+                    startdate = higherpriority.projectedenddate
+                enddate = startdate + timedelta(days=math.ceil(lengthofrunindays))
+                prioritize(form['priority'], enddate, lessPriority)
+                priority = form['priority']
+
+        if form['dueDate'] == '':
+            duedate = enddate
+        else:
+            duedate = form['dueDate']
+
+        newOrder=Ordersheetmachine1( customerponumber=ponumber,
+                                      projectedstartdate=startdate,
+                                      projectedenddate=enddate,
+                                      duedate=duedate,
+                                      lengthofrunindays=lengthofrunindays,
+                                      priorityrank=priority,
+                                      boardprofile=form['prodName'],
+                                      colour=form['colour'],
+                                      skidsremaining=skidsremaining,
+                                      pcs=form['pcs'],
+                                      pcssent=form['pcsSent'],
+                                      pcsremaining=pcsremaining,
+                                      customer=form['customer'],
+                                      qualitynotes=form['qualitynotes'])
+        newOrder.save()
+        return render(request, 'CWBDataApp/OrderSheetsMachine1.html', {'allColours':allColours, 'allProfiles':allProfiles, 'dataAcceptedMessage':"Order Successfully Added"})
+    return render(request, 'CWBDataApp/OrderSheetsMachine1.html', {'allColours':allColours, 'allProfiles':allProfiles})
+
+def prioritize(priority, endDate, querySet):
+
+    for entry in querySet:
+        if entry.priorityrank == priority:
+            entry.projectedstartdate = endDate
+            entry.projectedenddate = endDate + timedelta(days=math.ceil(entry.lengthofrunindays))
+        else:
+            higherpriority = querySet.filter(priorityrank=entry.priorityrank).first()
+            entry.projectedstartdate = higherpriority.projectedenddate
+            entry.projectedenddate =  higherpriority.projectedenddate + timedelta(days=math.ceil(entry.lengthofrunindays))
+        entry.priorityrank += 1
+        entry.save()
+
 
 ###########################################################ORDER SHEET MACHINE 2
 def OrderSheetsMachine2(request):
