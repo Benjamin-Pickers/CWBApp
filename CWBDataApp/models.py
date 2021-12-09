@@ -181,6 +181,7 @@ class Ordersheetmachine1(models.Model):
     pcsremaining = models.SmallIntegerField(db_column='PCSRemaining')  # Field name made lowercase.
     customer = models.CharField(db_column='Customer', max_length=20, blank=True, null=True)  # Field name made lowercase.
     qualitynotes = models.CharField(db_column='QualityNotes', max_length=500, blank=True, null=True)  # Field name made lowercase.
+    pcsinventorized = models.SmallIntegerField(db_column='PcsInventorized', blank=True, null=True)  # Field name made lowercase
 
     class Meta:
         managed = False
@@ -203,6 +204,7 @@ class Ordersheetmachine2(models.Model):
     pcsremaining = models.SmallIntegerField(db_column='PCSRemaining')  # Field name made lowercase.
     customer = models.CharField(db_column='Customer', max_length=20, blank=True, null=True)  # Field name made lowercase.
     qualitynotes = models.CharField(db_column='QualityNotes', max_length=500, blank=True, null=True)  # Field name made lowercase.
+    pcsinventorized = models.SmallIntegerField(db_column='PcsInventorized', blank=True, null=True)  # Field name made lowercase
 
     class Meta:
         managed = False
@@ -225,6 +227,7 @@ class Ordersheetmachine3(models.Model):
     pcsremaining = models.SmallIntegerField(db_column='PCSRemaining')  # Field name made lowercase.
     customer = models.CharField(db_column='Customer', max_length=20, blank=True, null=True)  # Field name made lowercase.
     qualitynotes = models.CharField(db_column='QualityNotes', max_length=500, blank=True, null=True)  # Field name made lowercase.
+    pcsinventorized = models.SmallIntegerField(db_column='PcsInventorized', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False

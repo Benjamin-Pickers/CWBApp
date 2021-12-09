@@ -295,6 +295,9 @@ def ProductInventory(request):
         elif form['numSkids'] == '' or int(form['numSkids']) <= 0:
             return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message' : "Cannot enter a product with zero skids",})
         else:
+            orderDict = FindOrder(form['prodName'], form['colour'])
+            UpdateOrderInventory(orderDict.order, int(form['numSkids']), orderDict.orderSheet)
+
             newProd = Productinventory(productname=form['prodName'],
                                        colour=form['colour'],
                                        embossed=form['embossed'],
@@ -329,6 +332,10 @@ def ProductInventoryUpdateSkids(request):
 
         if Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).exists() and int(form['numSkids']) >= 0:
             prod = Productinventory.objects.get(productname=form['prodName'], colour=form['colour'])
+
+            differenceInPieces = int(form['numSkids']) - prod.numberofskids
+            orderDict = FindOrder(form['prodName'], form['colour'])
+            updateOrderSent(orderDict.order, differenceInPieces, orderDict.orderSheet)
 
             if int(form['numSkids']) == 0:
                 prod.delete()
@@ -369,15 +376,18 @@ def ProductInventoryShipped(request):
         if Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).exists():
             prod = Productinventory.objects.get(productname=form['prodName'], colour=form['colour'])
 
-            SkidsRemaining = prod.numberofskids - int(form['numSkids'])
+            PiecesRemaining = prod.numberofskids - int(form['numSkids'])
 
-            if SkidsRemaining <= 0:
+            orderDict = FindOrder(form['prodName'], form['colour'])
+            updateOrderSent(orderDict.order, int(form['numSkids']), orderDict.orderSheet)
+
+            if PiecesRemaining <= 0:
                 prod.delete()
-                SkidsRemaining = 0
+                PiecesRemaining = 0
             else:
-                prod.numberofskids = SkidsRemaining
+                prod.numberofskids = PiecesRemaining
                 prod.save()
-            return render(request, 'CWBDataApp/ProductInventoryShipped.html', {'allProfiles':allProfiles, 'allColours':allColours, 'dataAcceptedMessage':"Number of Skids Successfully Updated", 'skids':str(SkidsRemaining)})
+            return render(request, 'CWBDataApp/ProductInventoryShipped.html', {'allProfiles':allProfiles, 'allColours':allColours, 'dataAcceptedMessage':"Number of Skids Successfully Updated", 'skids':str(PiecesRemaining)})
         else:
             return render(request, 'CWBDataApp/ProductInventoryShipped.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':"This product currently does not exist in inventory. If you wish to enter its data, press the link above"})
     return render(request, 'CWBDataApp/ProductInventoryShipped.html', {'allProfiles':allProfiles, 'allColours':allColours})
@@ -484,7 +494,7 @@ def OrderSheetsMachine1(request):
 
         pcsinventorized = 0
 
-        if Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).exists():
+        if Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).exists() and Ordersheetmachine1.objects.filter(boardprofile=form['prodName'], colour=form['colour']).exists() == False:
             product = Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).first()
             pcsinventorized = int(product.numberofskids)
 
@@ -515,10 +525,10 @@ def OrderSheetsMachine1(request):
                 if int(form['priority']) == 1:
                     startdate = date.today()
                 else:
-                    higherpriority = Ordersheetmachine1.objects.filter(priorityrank=(int(form['priority'])+1)).first()
+                    higherpriority = Ordersheetmachine1.objects.filter(priorityrank=(int(form['priority'])-1)).first()
                     startdate = higherpriority.projectedenddate
                 enddate = startdate + timedelta(days=math.ceil(lengthofrunindays))
-                prioritize(form['priority'], enddate, lessPriority)
+                deprioritize(form['priority'], enddate, lessPriority)
                 priority = form['priority']
 
         if form['dueDate'] == '':
@@ -539,12 +549,14 @@ def OrderSheetsMachine1(request):
                                       pcssent=form['pcsSent'],
                                       pcsremaining=pcsremaining,
                                       customer=form['customer'],
-                                      qualitynotes=form['qualitynotes'])
+                                      qualitynotes=form['qualitynotes'],
+                                      pcsinventorized=pcsinventorized)
         newOrder.save()
         return render(request, 'CWBDataApp/OrderSheetsMachine1.html', {'allColours':allColours, 'allProfiles':allProfiles, 'dataAcceptedMessage':"Order Successfully Added"})
     return render(request, 'CWBDataApp/OrderSheetsMachine1.html', {'allColours':allColours, 'allProfiles':allProfiles})
 
-def prioritize(priority, endDate, querySet):
+#Helper method to rearrange the priority and dates of orders
+def deprioritize(priority, endDate, querySet):
 
     for entry in querySet:
         if entry.priorityrank == priority:
@@ -557,6 +569,55 @@ def prioritize(priority, endDate, querySet):
         entry.priorityrank += 1
         entry.save()
 
+#Helper method to update orders when product is shipped
+def updateOrderSent(order, pcsSent):
+
+    order.pcssent += pcsSent
+    order.pcsinventorized -= pcsSent
+    order.save()
+
+
+    if order.pcssent >= order.pcs:
+        deletedOrder(order, orderSheet)
+        order.delete()
+
+def FindOrder(product, colour):
+    dict = {}
+    if Ordersheetmachine1.objects.filter(boardprofile=form['prodName'], colour=form['colour']).exists():
+        dict['order'] = Ordersheetmachine1.objects.filter(boardprofile=form['prodName'], colour=form['colour']).order_by('priorityrank').first()
+        dict['orderSheet'] = Ordersheetmachine1.objects.all()
+    elif Ordersheetmachine2.objects.filter(boardprofile=form['prodName'], colour=form['colour']).exists():
+        dict['order'] = Ordersheetmachine2.objects.filter(boardprofile=form['prodName'], colour=form['colour']).order_by('priorityrank').first()
+        dict['orderSheet'] = Ordersheetmachine2.objects.all()
+    elif Ordersheetmachine3.objects.filter(boardprofile=form['prodName'], colour=form['colour']).exists():
+        dict['order'] = Ordersheetmachine3.objects.filter(boardprofile=form['prodName'], colour=form['colour']).order_by('priorityrank').first()
+        dict['orderSheet'] = Ordersheetmachine3.objects.all()
+        return dict
+
+#Update an orders inventorized pieces
+def UpdateOrderInventory(order, pcsinventorized, orderSheet):
+    order.pcsinventorized += pcsinventorized
+    order.pcsremaining -= pcsinventorized
+
+    if order.pcs <= 0:
+        deletedOrder(order, orderSheet)
+        order.delete()
+
+#Reorder orders when an order needs to be deleted
+def deletedOrder(order, orderSheet):
+    endDate = date.today()
+    if order.priorityrank != 1:
+        higherOrder = orderSheet.filter(priorityrank=(order.priorityrank -1)).first()
+        endDate = higherOrder.projectedenddate
+    lowerOrder = orderSheet.filter(priorityrank__gt=order.priorityrank)
+
+    #Change projected start and end dates based on which order was removed, update priority by 1
+    for item in lowerOrder:
+            item.projectedstartdate = endDate
+            item.projectedenddate = endDate + timedelta(days=math.ceil(item.lengthofrunindays))
+            item.priorityrank -= 1
+            item.save()
+            endDate = item.projectedenddate
 
 ###########################################################ORDER SHEET MACHINE 2
 def OrderSheetsMachine2(request):
