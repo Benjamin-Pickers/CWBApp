@@ -335,7 +335,7 @@ def ProductInventoryUpdateSkids(request):
 
             differenceInPieces = int(form['numSkids']) - prod.numberofskids
             orderDict = FindOrder(form['prodName'], form['colour'])
-            updateOrderSent(orderDict.order, differenceInPieces, orderDict.orderSheet)
+            UpdateOrderInventory(orderDict.get('order'), differenceInPieces, orderDict.get('orderSheet'))
 
             if int(form['numSkids']) == 0:
                 prod.delete()
@@ -581,24 +581,26 @@ def updateOrderSent(order, pcsSent):
         deletedOrder(order, orderSheet)
         order.delete()
 
+#Given a Product and colour, find the Ordersheet that and order that needs that product
+#Return the specific order and ordersheet for that product
 def FindOrder(product, colour):
     dict = {}
-    if Ordersheetmachine1.objects.filter(boardprofile=form['prodName'], colour=form['colour']).exists():
-        dict['order'] = Ordersheetmachine1.objects.filter(boardprofile=form['prodName'], colour=form['colour']).order_by('priorityrank').first()
+    if Ordersheetmachine1.objects.filter(boardprofile=product, colour=colour).exists():
+        dict['order'] = Ordersheetmachine1.objects.filter(boardprofile=product, colour=colour).order_by('priorityrank').first()
         dict['orderSheet'] = Ordersheetmachine1.objects.all()
-    elif Ordersheetmachine2.objects.filter(boardprofile=form['prodName'], colour=form['colour']).exists():
-        dict['order'] = Ordersheetmachine2.objects.filter(boardprofile=form['prodName'], colour=form['colour']).order_by('priorityrank').first()
+    elif Ordersheetmachine2.objects.filter(boardprofile=product, colour=colour).exists():
+        dict['order'] = Ordersheetmachine2.objects.filter(boardprofile=product, colour=colour).order_by('priorityrank').first()
         dict['orderSheet'] = Ordersheetmachine2.objects.all()
-    elif Ordersheetmachine3.objects.filter(boardprofile=form['prodName'], colour=form['colour']).exists():
-        dict['order'] = Ordersheetmachine3.objects.filter(boardprofile=form['prodName'], colour=form['colour']).order_by('priorityrank').first()
+    elif Ordersheetmachine3.objects.filter(boardprofile=product, colour=colour).exists():
+        dict['order'] = Ordersheetmachine3.objects.filter(boardprofile=product, colour=colour).order_by('priorityrank').first()
         dict['orderSheet'] = Ordersheetmachine3.objects.all()
-        return dict
+    return dict
 
 #Update an orders inventorized pieces
 def UpdateOrderInventory(order, pcsinventorized, orderSheet):
     order.pcsinventorized += pcsinventorized
     order.pcsremaining -= pcsinventorized
-
+    order.save()
     if order.pcs <= 0:
         deletedOrder(order, orderSheet)
         order.delete()
