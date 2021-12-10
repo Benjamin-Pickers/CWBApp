@@ -1,0 +1,92 @@
+{% extends 'CWBDataApp/base.html'%}
+
+{% block title %} {{'View Orders'}} {% endblock title %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
+
+{% block content %}
+  <div>
+    <h2 id="header"> View Orders  </h2>
+    <p id="descriptionParagraph">
+        View all orders for a machine
+    </p>
+
+  {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
+  {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
+
+  </div>
+
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:ViewOrders'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        <h4 id=header>View Orders</h4>
+        {% csrf_token %}
+
+        <div class="inline-flex inputBox">
+          <label for="machine">View Orders For*: </label>
+          <select id="machine" type="text" name="machine">
+            {% if numberOfMachines %}
+              {% for i in numberOfMachines %}
+                  <option value="{{ i }}">Machine {{ i }}</option>
+              {% endfor %}
+            {% endif %}
+            <option value="all">All Machines</option>
+          </select>
+        </div>
+
+        <br>
+
+          <input type="submit" name="enterNewOrder" value="Add">
+      </div>
+    </form>
+  </div>
+
+  {% if allOrders %}
+  <div class="queryTable">
+    <div class="tablecontainer">
+      <table>
+        <tr>
+          <th>PO Number</th>
+          <th>Profile</th>
+          <th>Colour</th>
+          <th>Skids Remaining</th>
+          <th>Pcs</th>
+          <th>Pcs Sent</th>
+          <th>Pcs Inventorized</th>
+          <th>Pcs Remaining</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Priority</th>
+          <th>Due Date</th>
+          <th>Customer</th>
+          <th>Quality, Notes, etc</th>
+        </tr>
+        {% for machine in allOrders %}
+          {% for order in machine %}
+            <tr>
+              <td>{{ order.customerponumber }}</td>
+              <td>{{ order.boardprofile }}</td>
+              <td>{{ order.colour }}</td>
+              <td>{{ order.skidsremaining }}</td>
+              <td>{{ order.pcs }}</td>
+              <td>{{ order.pcssent }}</td>
+              <td>{{ order.pcsinventorized }}</td>
+              <td>{{ order.pcsremaining }}</td>
+              <td>{{ order.projectedstartdate }}</td>
+              <td>{{ order.projectedenddate }}</td>
+              <td>{{ order.priorityrank }}</td>
+              <td>{{ order.duedate }}</td>
+              <td>{{ order.customer }}</td>
+              <td>{{ order.qualitynotes }}</td>
+            </tr>
+          {% endfor %}
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+  {% endif %}
+
+{% endblock content %}

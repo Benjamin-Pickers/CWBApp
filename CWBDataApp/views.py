@@ -627,6 +627,36 @@ def OrderSheetsMachine2(request):
 def OrderSheetsMachine3(request):
     return render(request, 'CWBDataApp/OrderSheetsMachine3.html')
 
+###########################################################ORDER SHEET MACHINE 3
+def ViewOrders(request):
+    #Number of machine options to be displayed on page
+    numberOfMachines = 3
+
+    if request.method == 'POST':
+        form = request.POST
+        dict = {}
+
+        if form['machine'] == '1':
+            if Ordersheetmachine1.objects.all():
+                dict['machine1'] = Ordersheetmachine1.objects.all().order_by('priorityrank')
+        elif form['machine'] == '2':
+            if Ordersheetmachine2.objects.all():
+                dict['machine2'] = Ordersheetmachine2.objects.all().order_by('priorityrank')
+        elif form['machine'] == '3':
+            if Ordersheetmachine3.objects.all():
+                dict['machine3'] = Ordersheetmachine3.objects.all().order_by('priorityrank')
+        elif form['machine'] == 'all':
+            dict['machine1'] = Ordersheetmachine1.objects.all().order_by('priorityrank')
+            dict['machine2'] = Ordersheetmachine2.objects.all().order_by('priorityrank')
+            dict['machine3'] = Ordersheetmachine3.objects.all().order_by('priorityrank')
+
+        if not dict:
+            return render(request, 'CWBDataApp/ViewOrders.html', {'numberOfMachines':range(1, numberOfMachines+1), 'error_message': "There are Currently No Orders For This Machine"})
+        else:
+            return render(request, 'CWBDataApp/ViewOrders.html', {'numberOfMachines':range(1, numberOfMachines+1), 'allOrders':dict.values()})
+
+    return render(request, 'CWBDataApp/ViewOrders.html', {'numberOfMachines':range(1, numberOfMachines+1)})
+
 ###########################################################HELP
 def PicSum(request):
     return render(request, 'CWBDataApp/PicSum.html')
