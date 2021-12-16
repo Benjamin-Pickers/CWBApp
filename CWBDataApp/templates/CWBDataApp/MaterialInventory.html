@@ -15,10 +15,6 @@
         isn't being used but in the future will be used to locate boxes within the shop.
     </p>
     <p id="descriptionParagraph">If you want to pull material inventory data click <a href="{% url 'CWBDataApp:MaterialInventoryQuery'%}">HERE</a> if you want to update a material entry click <a href="{% url 'CWBDataApp:MaterialInventoryUpdate'%}">HERE</a></p>
-
-  {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
-  {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
-
   </div>
 
   <div class="justify-content-center row no-gutters">

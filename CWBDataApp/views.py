@@ -786,7 +786,7 @@ def ChangeOrder(request):
     return render(request, 'CWBDataApp/UpdateOrders.html', {'numberOfMachines':range(1, numberOfMachines+1)})
 
 
-###########################################################HELP
+###########################################################PIC & SUM
 def PicSum(request):
     return render(request, 'CWBDataApp/PicSum.html')
 
@@ -927,7 +927,7 @@ def UpdateSupplier(request):
             supplier = Materialcost.objects.get(pk=form['supplier'])
             supplier.costperpound = form['price']
             supplier.save()
-            return render(request, 'CWBDataApp/UpdateSupplier.html', {'allSupplier': allSuppliers, 'dataAcceptedMessage':"Supplier Successfully Updated"})    
+            return render(request, 'CWBDataApp/UpdateSupplier.html', {'allSuppliers': allSuppliers, 'dataAcceptedMessage':"Supplier Successfully Updated"})
         except:
             return render(request, 'CWBDataApp/UpdateSupplier.html', {'allSuppliers':allSuppliers, 'error_message':'Supplier does not exist'})
 

@@ -15,10 +15,6 @@
       pull a single products data or pull data of all the product currently in the shop
   </p>
   <p id="descriptionParagraph">If you want to enter product inventory data click <a href="{% url 'CWBDataApp:ProductInventory'%}">ENTER</a> or update inventory click <a href="{% url 'CWBDataApp:ProductInventoryUpdate'%}">UPDATE</a></p>
-
-  {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
-  {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
-
 </div>
 
 <div class="justify-content-center row no-gutters">

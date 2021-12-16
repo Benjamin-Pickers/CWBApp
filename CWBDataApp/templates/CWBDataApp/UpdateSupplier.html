@@ -13,20 +13,16 @@
     <p id="descriptionParagraph">
         Update a Supplier's price/pound value
     </p>
-
-  {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
-  {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
-
   </div>
 
   <div class="justify-content-center row no-gutters">
     <form action="{% url 'CWBDataApp:UpdateSupplier'%}" method="post">
       <div class="d-inline-flex flex-column">
-        <h4 id=header>Update an Average</h4>
+        <h4 id=header>Update a Supplier</h4>
         {% csrf_token %}
 
         <div class="inline-flex inputBox">
-          <label for="supplier">Profile*: </label>
+          <label for="supplier">Supplier*: </label>
           <select id="supplier" type="text" name="supplier">
             {% if allSuppliers %}
               {% for entry in allSuppliers %}

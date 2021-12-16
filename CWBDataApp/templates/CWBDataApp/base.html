@@ -108,6 +108,9 @@
         </div>
       </nav>
 
+      {% if error_message %} <div class="alert alert-danger" role="alert"> {{error_message}} </div>{% endif %}
+      {% if dataAcceptedMessage %} <div class="alert alert-success" role="alert"> {{dataAcceptedMessage}} </div> {% endif %}
+
       {% block content %}
       {% endblock content%}
 

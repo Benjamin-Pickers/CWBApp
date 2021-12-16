@@ -14,10 +14,6 @@
         Update a Materials price, location or number of boxes
     </p>
     <p id="descriptionParagraph">If you want to enter material click <a href="{% url 'CWBDataApp:MaterialInventory'%}">HERE</a> pull material inventory data click <a href="{% url 'CWBDataApp:MaterialInventoryQuery'%}">HERE</a></p>
-
-  {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
-  {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
-
   </div>
 
   <div class="justify-content-center row no-gutters">
