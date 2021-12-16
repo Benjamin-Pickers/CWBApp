@@ -19,4 +19,34 @@
 
   </div>
 
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:UpdateSupplier'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        <h4 id=header>Update an Average</h4>
+        {% csrf_token %}
+
+        <div class="inline-flex inputBox">
+          <label for="supplier">Profile*: </label>
+          <select id="supplier" type="text" name="supplier">
+            {% if allSuppliers %}
+              {% for entry in allSuppliers %}
+                  <option value="{{ entry.supplier }}">{{ entry.supplier }} ({{entry.costperpound}})</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for="price">Price per Pound: </label>
+          <input id="price" type="number" name="price" value="0" step="any" min="0">
+        </div>
+
+        <br>
+
+          <input type="submit" name="enter" value="Update">
+      </div>
+    </form>
+  </div>
+
+
 {% endblock content %}

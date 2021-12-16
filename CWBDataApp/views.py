@@ -11,6 +11,9 @@ import math
 
 from .models import Batchcosttracking, Batchcost, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Picandsum, Productinventory, Productprofiles, Colour, Employees, Profileaverages
 
+numberOfMachines = 3
+num_of_materials = 11
+
 ###########################################################HOME PAGE
 def index(request):
     return render(request, 'CWBDataApp/index.html')
@@ -19,7 +22,6 @@ def index(request):
 def BatchCostTracking(request):
     allColours = Colour.objects.all()
     allMaterials= Materialinventory.objects.all()
-    num_of_materials = 11
 
     if request.method == 'POST':
 
@@ -124,8 +126,6 @@ def BatchCostQuery(request):
 
     if request.method == 'POST':
         form = request.POST
-        #Number of material boxes that are allowed to be entered
-        num_of_materials = 11
 
         #try:
             #Grab batch if it exists, throw error if it doesn't
@@ -631,8 +631,6 @@ def OrderSheetsMachine3(request):
 
 ###########################################################ORDER SHEET MACHINE 3
 def ViewOrders(request):
-    #Number of machine options to be displayed on page
-    numberOfMachines = 3
 
     if request.method == 'POST':
         form = request.POST
@@ -657,8 +655,6 @@ def ViewOrders(request):
 
 ###########################################################UPDATE ORDERS
 def UpdateOrders(request):
-    #Number of machine options to be displayed on page
-    numberOfMachines = 3
 
     if request.method == 'POST':
         form = request.POST
@@ -677,8 +673,6 @@ def UpdateOrders(request):
 
 ###########################################################GET SPECIFIC ORDER TO UPDATE
 def GetOrder(request):
-    #Number of machine options to be displayed on page
-    numberOfMachines = 3
 
     if request.method == 'POST':
         form = request.POST
@@ -693,8 +687,6 @@ def GetOrder(request):
 
 ###########################################################Change ORDER
 def ChangeOrder(request):
-    #Number of machine options to be displayed on page
-    numberOfMachines = 3
 
     if request.method == 'POST':
         form = request.POST
@@ -926,7 +918,20 @@ def RemoveSupplier(request):
 
 ###########################################################Update Supplier
 def UpdateSupplier(request):
-    return render(request, 'CWBDataApp/UpdateSupplier.html')
+    allSuppliers = Materialcost.objects.all()
+
+    if request.method == 'POST':
+        form = request.POST
+
+        try:
+            supplier = Materialcost.objects.get(pk=form['supplier'])
+            supplier.costperpound = form['price']
+            supplier.save()
+            return render(request, 'CWBDataApp/UpdateSupplier.html', {'allSupplier': allSuppliers, 'dataAcceptedMessage':"Supplier Successfully Updated"})    
+        except:
+            return render(request, 'CWBDataApp/UpdateSupplier.html', {'allSuppliers':allSuppliers, 'error_message':'Supplier does not exist'})
+
+    return render(request, 'CWBDataApp/UpdateSupplier.html', {'allSuppliers': allSuppliers})
 
 ###########################################################ADD PROFILE AVERAGE
 def AddProfileAverage(request):
