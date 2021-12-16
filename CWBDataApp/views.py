@@ -505,7 +505,7 @@ def OrderSheetsMachine1(request):
         lengthofrunindays = Decimal(skidsremaining) / Decimal(productAverage.averageskidsperday)
         priority = 0
         startdate = date.today()
-        enddate = startdate + timedelta(days=math.ceil(lengthofrunindays))
+        enddate = addDate(startdate, math.ceil(lengthofrunindays))
         duedate = enddate
         ponumber = form['ponumber']
 
@@ -517,7 +517,7 @@ def OrderSheetsMachine1(request):
                 lastOrder = Ordersheetmachine1.objects.all().order_by('-priorityrank').first()
                 priority = lastOrder.priorityrank + 1
                 startdate = lastOrder.projectedenddate
-                enddate = startdate + timedelta(days=math.ceil(lengthofrunindays))
+                enddate = addDate(startdate, math.ceil(lengthofrunindays))
 
 
             else:
@@ -527,7 +527,7 @@ def OrderSheetsMachine1(request):
                 else:
                     higherpriority = Ordersheetmachine1.objects.filter(priorityrank=(int(form['priority'])-1)).first()
                     startdate = higherpriority.projectedenddate
-                enddate = startdate + timedelta(days=math.ceil(lengthofrunindays))
+                enddate = addDate(startdate, math.ceil(lengthofrunindays))
                 deprioritize(form['priority'], enddate, lessPriority)
                 priority = form['priority']
 
@@ -561,11 +561,11 @@ def deprioritize(priority, endDate, querySet):
     for entry in querySet:
         if entry.priorityrank == priority:
             entry.projectedstartdate = endDate
-            entry.projectedenddate = endDate + timedelta(days=math.ceil(entry.lengthofrunindays))
+            entry.projectedenddate = addDate(endDate, math.ceil(entry.lengthofrunindays))
         else:
             higherpriority = querySet.filter(priorityrank=entry.priorityrank).first()
             entry.projectedstartdate = higherpriority.projectedenddate
-            entry.projectedenddate =  higherpriority.projectedenddate + timedelta(days=math.ceil(entry.lengthofrunindays))
+            entry.projectedenddate =  addDate(higherpriority.projectedenddate, math.ceil(entry.lengthofrunindays))
         entry.priorityrank += 1
         entry.save()
 
@@ -616,7 +616,7 @@ def deletedOrder(order, orderSheet):
     #Change projected start and end dates based on which order was removed, update priority by 1
     for item in lowerOrder:
             item.projectedstartdate = endDate
-            item.projectedenddate = endDate + timedelta(days=math.ceil(item.lengthofrunindays))
+            item.projectedenddate = addDate(endDate, math.ceil(item.lengthofrunindays))
             item.priorityrank -= 1
             item.save()
             endDate = item.projectedenddate
@@ -638,19 +638,14 @@ def ViewOrders(request):
         form = request.POST
         dict = {}
 
-        if form['machine'] == '1':
-            if Ordersheetmachine1.objects.all():
-                dict['machine1'] = Ordersheetmachine1.objects.all().order_by('priorityrank')
-        elif form['machine'] == '2':
-            if Ordersheetmachine2.objects.all():
-                dict['machine2'] = Ordersheetmachine2.objects.all().order_by('priorityrank')
-        elif form['machine'] == '3':
-            if Ordersheetmachine3.objects.all():
-                dict['machine3'] = Ordersheetmachine3.objects.all().order_by('priorityrank')
-        elif form['machine'] == 'all':
+        if form['machine'] == 'all':
             dict['machine1'] = Ordersheetmachine1.objects.all().order_by('priorityrank')
             dict['machine2'] = Ordersheetmachine2.objects.all().order_by('priorityrank')
             dict['machine3'] = Ordersheetmachine3.objects.all().order_by('priorityrank')
+        else:
+            orderModel = globals()["Ordersheetmachine" + form['machine']]
+            if orderModel.objects.all():
+                dict['machine'+ form['machine']] = orderModel.objects.all().order_by('priorityrank')
 
         if not dict:
             return render(request, 'CWBDataApp/ViewOrders.html', {'numberOfMachines':range(1, numberOfMachines+1), 'error_message': "There are Currently No Orders For This Machine"})
@@ -668,23 +663,15 @@ def UpdateOrders(request):
     if request.method == 'POST':
         form = request.POST
         orders = None
-        machine = 1
 
-        if form['machine'] == '1':
-            if Ordersheetmachine1.objects.all():
-                orders = Ordersheetmachine1.objects.all().order_by('priorityrank')
-        elif form['machine'] == '2':
-            if Ordersheetmachine2.objects.all():
-                orders = Ordersheetmachine2.objects.all().order_by('priorityrank')
-            machine = 2
-        elif form['machine'] == '3':
-            if Ordersheetmachine3.objects.all():
-                orders = Ordersheetmachine3.objects.all().order_by('priorityrank')
-            machine = 3
+        orderModel = globals()["Ordersheetmachine" + form['machine']]
+        if orderModel.objects.all():
+            orders = orderModel.objects.all().order_by('priorityrank')
+
         if orders == None:
             return render(request, 'CWBDataApp/UpdateOrders.html', {'numberOfMachines':range(1, numberOfMachines+1), 'error_message':"No Orders Exist For This Machine"})
         else:
-            return render(request, 'CWBDataApp/UpdateOrders.html', {'numberOfMachines':range(1, numberOfMachines+1), 'orders':orders, 'machine':machine})
+            return render(request, 'CWBDataApp/UpdateOrders.html', {'numberOfMachines':range(1, numberOfMachines+1), 'orders':orders, 'machine':form['machine']})
 
     return render(request, 'CWBDataApp/UpdateOrders.html', {'numberOfMachines':range(1, numberOfMachines+1)})
 
@@ -804,7 +791,7 @@ def ChangeOrder(request):
         order.save()
 
         return render(request, 'CWBDataApp/UpdateOrders.html', {'numberOfMachines':range(1, numberOfMachines+1), 'dataAcceptedMessage':"Order updated"})
-    return render(request, 'CWBDataApp/UpdateOrders.html')
+    return render(request, 'CWBDataApp/UpdateOrders.html', {'numberOfMachines':range(1, numberOfMachines+1)})
 
 
 ###########################################################HELP
