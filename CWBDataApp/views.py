@@ -659,6 +659,154 @@ def ViewOrders(request):
 
     return render(request, 'CWBDataApp/ViewOrders.html', {'numberOfMachines':range(1, numberOfMachines+1)})
 
+
+###########################################################UPDATE ORDERS
+def UpdateOrders(request):
+    #Number of machine options to be displayed on page
+    numberOfMachines = 3
+
+    if request.method == 'POST':
+        form = request.POST
+        orders = None
+        machine = 1
+
+        if form['machine'] == '1':
+            if Ordersheetmachine1.objects.all():
+                orders = Ordersheetmachine1.objects.all().order_by('priorityrank')
+        elif form['machine'] == '2':
+            if Ordersheetmachine2.objects.all():
+                orders = Ordersheetmachine2.objects.all().order_by('priorityrank')
+            machine = 2
+        elif form['machine'] == '3':
+            if Ordersheetmachine3.objects.all():
+                orders = Ordersheetmachine3.objects.all().order_by('priorityrank')
+            machine = 3
+        if orders == None:
+            return render(request, 'CWBDataApp/UpdateOrders.html', {'numberOfMachines':range(1, numberOfMachines+1), 'error_message':"No Orders Exist For This Machine"})
+        else:
+            return render(request, 'CWBDataApp/UpdateOrders.html', {'numberOfMachines':range(1, numberOfMachines+1), 'orders':orders, 'machine':machine})
+
+    return render(request, 'CWBDataApp/UpdateOrders.html', {'numberOfMachines':range(1, numberOfMachines+1)})
+
+###########################################################GET SPECIFIC ORDER TO UPDATE
+def GetOrder(request):
+    #Number of machine options to be displayed on page
+    numberOfMachines = 3
+
+    if request.method == 'POST':
+        form = request.POST
+
+        try:
+            orderModel = globals()["Ordersheetmachine" + form['machine']]
+            order = orderModel.objects.get(priorityrank=form['orderrank'])
+            return render(request, 'CWBDataApp/UpdateOrders.html', {'numberOfMachines':range(1, numberOfMachines+1), 'orderChange':order, 'machine':form['machine']})
+        except:
+            return render(request, 'CWBDataApp/UpdateOrders.html', {'numberOfMachines':range(1, numberOfMachines+1), 'error_message':"Could not grab orders"})
+    return render(request, 'CWBDataApp/UpdateOrders.html', {'numberOfMachines':range(1, numberOfMachines+1)})
+
+###########################################################Change ORDER
+def ChangeOrder(request):
+    #Number of machine options to be displayed on page
+    numberOfMachines = 3
+
+    if request.method == 'POST':
+        form = request.POST
+
+
+        orderModel = globals()["Ordersheetmachine" + form['machine']]
+        order = orderModel.objects.get(pk=form['orderPK'])
+        order.customerponumber = form['ponumber']
+        order.customer = form['customer']
+        order.qualitynotes = form['qualitynotes']
+
+        if order.pcs != int(form['pcs']):
+            order.pcs = form['pcs']
+            order.pcsremaining = int(form['pcs']) - order.pcssent - order.pcsinventorized
+            product = Productprofiles.objects.get(pk=order.boardprofile)
+            productAverage = Profileaverages.objects.get(pk=order.boardprofile)
+            order.skidsremaining = order.pcsremaining / int(product.pcsperskid)
+            order.lengthofrunindays = order.skidsremaining / Decimal(productAverage.averageskidsperday)
+            order.projectedenddate = addDate(order.projectedstartdate, math.ceil(order.lengthofrunindays))
+            order.save()
+            #Grab all orders with lower priority
+            lowerOrders = orderModel.objects.filter(priorityrank__gt=form['priority']).order_by('priorityrank')
+            endDate = order.projectedenddate
+            for item in lowerOrders:
+                item.projectedstartdate = endDate
+                item.projectedenddate = addDate(endDate, math.ceil(item.lengthofrunindays))
+                item.save()
+                endDate = item.projectedenddate
+
+
+        #If priority was changed then reorder all the order where necessary
+        #If new priority is higher than the current, shuffle all orders down
+        if int(form['priority']) < order.priorityrank:
+            startdate = None
+            lessPriority = orderModel.objects.filter(priorityrank__gte = (int(form['priority']))).order_by('priorityrank')
+            if int(form['priority']) == 1:
+                startdate = date.today()
+            else:
+                higherpriority = orderModel.objects.filter(priorityrank=(int(form['priority'])-1)).first()
+                startdate = higherpriority.projectedenddate
+            enddate = addDate(startdate, math.ceil(order.lengthofrunindays))
+
+            #Loop to change priority and dates of order the are under the new priority
+            for entry in lessPriority:
+                if entry.priorityrank == form['priority']:
+                    entry.projectedstartdate = endDate
+                    entry.projectedenddate = endDate + timedelta(days=math.ceil(entry.lengthofrunindays))
+                else:
+                    higherpriority = orderModel.objects.filter(priorityrank=entry.priorityrank).first()
+                    entry.projectedstartdate = higherpriority.projectedenddate
+                    entry.projectedenddate =  higherpriority.projectedenddate + timedelta(days=math.ceil(entry.lengthofrunindays))
+                #only change priority of orders in which the priority was shifted
+                if entry.priorityrank < order.priorityrank:
+                    entry.priorityrank += 1
+                entry.save()
+
+            order.priorityrank = form['priority']
+            order.projectedstartdate = startdate
+            order.projectedenddate = enddate
+            order.save()
+        elif int(form['priority']) > order.priorityrank:
+            startdate = None
+            lessPriority = orderModel.objects.filter(priorityrank__gt = order.priorityrank ).order_by('priorityrank')
+
+            if order.priorityrank == 1:
+                startdate = date.today()
+            else:
+                higherpriority = orderModel.objects.filter(priorityrank=order.priorityrank).first()
+                startdate = higherpriority.projectedenddate
+
+            for entry in lessPriority:
+                if entry.priorityrank == int(order.priorityrank) + 1:
+                    entry.projectedstartdate = startdate
+                    entry.projectedenddate = addDate(startdate, math.ceil(entry.lengthofrunindays))
+                elif entry.priorityrank > order.priorityrank+1 and entry.priorityrank <= int(form['priority']):
+                    higherpriority = orderModel.objects.filter(priorityrank=entry.priorityrank-2).first()
+                    entry.projectedstartdate = higherpriority.projectedenddate
+                    entry.projectedenddate =  addDate(higherpriority.projectedenddate, math.ceil(entry.lengthofrunindays))
+                elif entry.priorityrank > form['priority']:
+                    higherpriority = orderModel.objects.filter(priorityrank=entry.priorityrank-1).first()
+                    entry.projectedstartdate = higherpriority.projectedenddate
+                    entry.projectedenddate =  addDate(higherpriority.projectedenddate, math.ceil(entry.lengthofrunindays))
+
+                if entry.priorityrank == int(form['priority']):
+                    order.priorityrank = form['priority']
+                    order.projectedstartdate = entry.projectedenddate
+                    order.projectedenddate = addDate(entry.projectedenddate, math.ceil(order.lengthofrunindays))
+                    order.save()
+                #only change priority of orders in which the priority was shifted
+                if entry.priorityrank <= int(form['priority']):
+                    entry.priorityrank -= 1
+                entry.save()
+
+        order.save()
+
+        return render(request, 'CWBDataApp/UpdateOrders.html', {'numberOfMachines':range(1, numberOfMachines+1), 'dataAcceptedMessage':"Order updated"})
+    return render(request, 'CWBDataApp/UpdateOrders.html')
+
+
 ###########################################################HELP
 def PicSum(request):
     return render(request, 'CWBDataApp/PicSum.html')
@@ -833,3 +981,17 @@ def UpdateProfileAverage(request):
 ###########################################################ADMIN
 def admin(request):
     return reverse('admin:index')
+
+
+#Add a given number of business days to a date, we ignore weekends
+def addDate(startDate, numDays):
+    currentDate = startDate
+
+    while numDays > 0:
+        currentDate += timedelta(days=1)
+        weekday=currentDate.weekday()
+        if weekday >= 5:
+            continue
+        else:
+            numDays -= 1
+    return currentDate

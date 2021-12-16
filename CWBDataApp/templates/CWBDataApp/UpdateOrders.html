@@ -1,0 +1,110 @@
+{% extends 'CWBDataApp/base.html'%}
+
+{% block title %} {{'Update Orders'}} {% endblock title %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
+
+{% block content %}
+  <div>
+    <h2 id="header"> Update Orders </h2>
+    <p id="descriptionParagraph">
+        Upload a picture and summary of a test
+    </p>
+
+  {% if error_message %} <p id="error"> {{error_message}} </p> {% endif %}
+  {% if dataAcceptedMessage %} <p id="accepted"> {{dataAcceptedMessage}} </p> {% endif %}
+
+  </div>
+
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:UpdateOrders'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        <h4 id=header>Update Orders</h4>
+        {% csrf_token %}
+
+        <div class="inline-flex inputBox">
+          <label for="machine">Update Order For*: </label>
+          <select id="machine" type="text" name="machine">
+            {% if numberOfMachines %}
+              {% for i in numberOfMachines %}
+                  <option value="{{ i }}">Machine {{ i }}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+
+        <br>
+
+          <input type="submit" name="enterNewOrder" value="View">
+      </div>
+    </form>
+  </div>
+
+  {% if orders and not orderChange%}
+    <div class="justify-content-center row no-gutters">
+      <form action="{% url 'CWBDataApp:GetOrder'%}" method="post">
+        <div class="d-inline-flex flex-column">
+          {% csrf_token %}
+
+          <div class="inline-flex inputBox">
+            <fieldset>
+              <legend> Choose an Order to Update:</legend>
+              {% for order in orders %}
+                <input type="radio" name="orderrank" value="{{order.priorityrank}}">{{order.customerponumber}}- {{order.colour}} {{order.boardprofile}} with priority {{order.priorityrank}}<br>
+              {% endfor %}
+            </fieldset>
+          </div>
+
+          <input type="text" name="machine" value="{{machine}}" hidden>
+          <br>
+
+            <input type="submit" name="chooseOrder" value="Choose">
+        </div>
+      </form>
+    </div>
+  {% endif %}
+
+  {% if orderChange and not orders%}
+    <div class="justify-content-center row no-gutters">
+      <form action="{% url 'CWBDataApp:ChangeOrder'%}" method="post">
+        <div class="d-inline-flex flex-column">
+          {% csrf_token %}
+
+          <div class="inline-flex inputBox">
+            <label for="ponumber">PO Number*: </label>
+            <input id="ponumber" type="text" name="ponumber" value="{{orderChange.customerponumber}}" maxlength="15">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="pcs">Pieces*: </label>
+            <input id="pcs" type="number" name="pcs" value="{{orderChange.pcs}}" step="any" min="0">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="priority">Priority (optional): </label>
+            <input id="priority" type="number" name="priority" step="1" min="1" value="{{orderChange.priorityrank}}">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="customer">Customer: </label>
+            <input id="customer" type="text" name="customer" maxlength="20" value="{{orderChange.customer}}">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="qualitynotes">Quality, Notes, etc: </label>
+            <input id="qualitynotes" type="text" name="qualitynotes" maxlength="500" value="{{orderChange.qualitynotes}}">
+          </div>
+
+            <input type="text" name="machine" value="{{machine}}" hidden>
+            <input type="text" name="orderPK" value="{{orderChange.ponumber}}" hidden>
+          <br>
+
+            <input type="submit" name="chooseOrder" value="Choose">
+        </div>
+      </form>
+    </div>
+  {% endif %}
+{% endblock content %}
