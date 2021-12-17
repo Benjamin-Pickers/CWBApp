@@ -52,14 +52,16 @@
 
     {% if product %}
     <div class="queryTable justify-content-center row no-gutters">
-      <table>
-        <tr>
-          <th>Product</th>
-          <th>Colour</th>
-          <th>Embossed</th>
-          <th>Double Sided</th>
-          <th>Number of Pieces</th>
-        </tr>
+      <table class="table table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th>Product</th>
+            <th>Colour</th>
+            <th>Embossed</th>
+            <th>Double Sided</th>
+            <th>Number of Pieces</th>
+          </tr>
+        </thead>
         <tr>
           <td>{{ product.productname }}</td>
           <td>{{ product.colour }}</td>

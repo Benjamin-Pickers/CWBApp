@@ -43,24 +43,26 @@
   {% if allOrders %}
   <div class="queryTable">
     <div class="tablecontainer">
-      <table>
-        <tr>
-          <th>PO Number</th>
-          <th>Profile</th>
-          <th>Colour</th>
-          <th>Skids Remaining</th>
-          <th>Pcs</th>
-          <th>Pcs Sent</th>
-          <th>Pcs Inventorized</th>
-          <th>Pcs Remaining</th>
-          <th>Start Date</th>
-          <th>End Date</th>
-          <th>Length of run in Days</th>
-          <th>Priority</th>
-          <th>Due Date</th>
-          <th>Customer</th>
-          <th>Quality, Notes, etc</th>
-        </tr>
+      <table class="table table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th>PO Number</th>
+            <th>Profile</th>
+            <th>Colour</th>
+            <th>Skids Remaining</th>
+            <th>Pcs</th>
+            <th>Pcs Sent</th>
+            <th>Pcs Inventorized</th>
+            <th>Pcs Remaining</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Length of run in Days</th>
+            <th>Priority</th>
+            <th>Due Date</th>
+            <th>Customer</th>
+            <th>Quality, Notes, etc</th>
+          </tr>
+        </thead>
         {% for machine in allOrders %}
           {% for order in machine %}
             <tr>

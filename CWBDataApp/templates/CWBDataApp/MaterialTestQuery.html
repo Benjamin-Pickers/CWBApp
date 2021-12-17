@@ -35,26 +35,28 @@
 {% if allTests %}
 <div class="queryTable">
   <div class="tablecontainer">
-    <table>
-      <tr>
-        <th>Project Number</th>
-        <th>Test Name</th>
-        <th>Test Number</th>
-        <th>Test Date</th>
-        <th>Labour Used</th>
-        <th>Machine Time Used</th>
-        <th>Production Line</th>
-        <th>Materials Tested</th>
-        <th>Other Materials Tested</th>
-        <th>Moulds</th>
-        <th>Reason For Test</th>
-        <th>Expected Results</th>
-        <th>Difficulties Encountered</th>
-        <th>Next Step</th>
-        <th>Estimated Cost of Material</th>
-        <th>Estimated Cost of Labour</th>
-        <th>Total Cost of Test</th>
-      </tr>
+    <table class="table table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th>Project Number</th>
+          <th>Test Name</th>
+          <th>Test Number</th>
+          <th>Test Date</th>
+          <th>Labour Used</th>
+          <th>Machine Time Used</th>
+          <th>Production Line</th>
+          <th>Materials Tested</th>
+          <th>Other Materials Tested</th>
+          <th>Moulds</th>
+          <th>Reason For Test</th>
+          <th>Expected Results</th>
+          <th>Difficulties Encountered</th>
+          <th>Next Step</th>
+          <th>Estimated Cost of Material</th>
+          <th>Estimated Cost of Labour</th>
+          <th>Total Cost of Test</th>
+        </tr>
+      </thead>
       {% for test in allTests %}
         <tr>
           <td>{{ test.projectnumber }}</td>

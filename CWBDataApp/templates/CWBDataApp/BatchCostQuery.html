@@ -44,25 +44,27 @@
 {% if batch %}
 <div class="queryTable">
   <div class="tablecontainer">
-    <table>
-      <tr>
-        <th>Batch Name</th>
-        <th>Batch Date</th>
-        <th>Total Cost</th>
-        <th>Total Weight</th>
-        <th>Price/Pound</th>
-        {% for i in range %}
-          <th>Material_{{i}}</th>
-          <th>Weight_{{i}}</th>
-          <th>Cost</th>
-        {% endfor %}
-        <th>Colour</th>
-        <th>Colour Weight</th>
-        <th>Colour Cost</th>
-        <th>Foam Weight</th>
-        <th>Foam Cost</th>
-        <th>Total Shred Weight</th>
-      </tr>
+    <table class="table table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th>Batch Name</th>
+          <th>Batch Date</th>
+          <th>Total Cost</th>
+          <th>Total Weight</th>
+          <th>Price/Pound</th>
+          {% for i in range %}
+            <th>Material_{{i}}</th>
+            <th>Weight_{{i}}</th>
+            <th>Cost</th>
+          {% endfor %}
+          <th>Colour</th>
+          <th>Colour Weight</th>
+          <th>Colour Cost</th>
+          <th>Foam Weight</th>
+          <th>Foam Cost</th>
+          <th>Total Shred Weight</th>
+        </tr>
+      </thead>
       <tr>
         <td>{{ batch.batchname }}</td>
         <td>{{ batch.batchdate }}</td>

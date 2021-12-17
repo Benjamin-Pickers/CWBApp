@@ -37,15 +37,17 @@
 
   {% if all_materials %}
   <div class="queryTable justify-content-center row no-gutters">
-    <table>
-      <tr>
-        <th>Material</th>
-        <th>Supplier</th>
-        <th>Number of Boxes</th>
-        <th>Locations</th>
-        <th>Premixed</th>
-        <th>Price/Pound</th>
-      </tr>
+    <table class="table table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th>Material</th>
+          <th>Supplier</th>
+          <th>Number of Boxes</th>
+          <th>Locations</th>
+          <th>Premixed</th>
+          <th>Price/Pound</th>
+        </tr>
+      </thead>
       {% for material in all_materials %}
       <tr>
         <td>{{ material.materialname }}</td>
