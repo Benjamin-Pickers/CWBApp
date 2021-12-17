@@ -87,6 +87,7 @@
           <div class="inline-flex inputBox">
             <label for="colour">Colour: </label>
             <select id="colour" type="text" name="colour">
+              <option value="None"> </option>
               {% if allColours %}
                 {% for entry in allColours %}
                     <option value="{{ entry.colour }}">{{ entry.colour }}</option>

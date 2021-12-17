@@ -1,0 +1,21 @@
+{% extends 'registration/authbase.html'%}
+
+{% block title %} {{'Login'}} {% endblock title %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
+
+{% block content %}
+<div class="justify-content-center row no-gutters">
+  <form method="post">
+    <div class="d-inline-flex flex-column">
+      <h2 id="header">Log In</h2>
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Log In</button>
+    </div>
+  </form>
+</div>
+{% endblock content %}

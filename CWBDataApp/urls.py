@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 app_name = 'CWBDataApp'
@@ -40,4 +40,5 @@ urlpatterns = [
     path('UpdateSupplier/', views.UpdateSupplier, name='UpdateSupplier'),
     path('AddProfileAverage/', views.AddProfileAverage, name='AddProfileAverage'),
     path('UpdateProfileAverage/', views.UpdateProfileAverage, name='UpdateProfileAverage'),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]
