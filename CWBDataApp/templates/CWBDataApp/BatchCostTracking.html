@@ -35,6 +35,17 @@
             <input id="batchDate" type="date" name="batchDate" min="2021-01-01">
           </div>
 
+          <div class="inline-flex inputBox">
+            <label for="profile">Profile Used for Batch*: </label>
+            <select id="profile" type="text" name="profile">
+              {% if allProfiles %}
+                {% for entry in allProfiles %}
+                    <option value="{{ entry.productname }}">{{entry.productname}}</option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+
           <br>
 
           {% for i in range %}

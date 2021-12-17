@@ -50,6 +50,7 @@ class Batchcost(models.Model):
     foamweight = models.DecimalField(db_column='FoamWeight', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     foamvalue = models.DecimalField(db_column='FoamValue', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     totalshredweight = models.SmallIntegerField(db_column='TotalShredWeight', blank=True, null=True)  # Field name made lowercase.
+    profile = models.CharField(max_length=40, blank=True, null=True)
 
     class Meta:
         managed = False

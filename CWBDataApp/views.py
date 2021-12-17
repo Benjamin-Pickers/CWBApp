@@ -9,7 +9,7 @@ from datetime import date, timedelta
 from decimal import Decimal
 import math
 
-from .models import Batchcosttracking, Batchcost, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Picandsum, Productinventory, Productprofiles, Colour, Employees, Profileaverages
+from .models import Batchcost, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Picandsum, Productinventory, Productprofiles, Colour, Employees, Profileaverages
 
 numberOfMachines = 3
 num_of_materials = 11
@@ -22,6 +22,7 @@ def index(request):
 def BatchCostTracking(request):
     allColours = Colour.objects.all()
     allMaterials= Materialinventory.objects.all()
+    allProfiles= Productprofiles.objects.all()
 
     if request.method == 'POST':
 
@@ -30,7 +31,7 @@ def BatchCostTracking(request):
         try:
             #Check if batch already exists, if so stop and send an error message
             if Batchcost.objects.get(pk=request.POST['newBatch']):
-                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'range':range(1, num_of_materials), 'error_message' : "Batch already exists, please enter a new batch. If you wish to update a batch talk to an admin",})
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'error_message' : "Batch already exists, please enter a new batch. If you wish to update a batch talk to an admin",})
         except:
 
             #Calculate total price, weight and price/pound
@@ -46,7 +47,7 @@ def BatchCostTracking(request):
             weight += Decimal(form['colourWeight']) + Decimal(form['foamWeight'])
             #Check if weight was entered as 0, throw error if it is
             if weight == 0:
-                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'range':range(1, num_of_materials), 'error_message':"Total weight cannot be zero, please add a value to weight1",})
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'error_message':"Total weight cannot be zero, please add a value to weight1",})
 
             price = round(cost/weight, 2)
 
@@ -57,9 +58,9 @@ def BatchCostTracking(request):
                         box = Materialinventory.objects.get(pk=form['material'+str(i)])
 
                         if box.numberofboxes < Decimal(form['numofBoxes'+str(i)]):
-                            return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'range':range(1, num_of_materials), 'error_message' : form["material"+str(i)]+" does no have enough boxes for Material"+str(i)+"",})
+                            return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'error_message' : form["material"+str(i)]+" does no have enough boxes for Material"+str(i)+"",})
                 except:
-                    return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'range':range(1, num_of_materials), 'error_message' : "Couldn't find box in inventory",})
+                    return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'error_message' : "Couldn't find box in inventory",})
 
             for i in range(1, num_of_materials):
                 try:
@@ -70,7 +71,7 @@ def BatchCostTracking(request):
                         if box.numberofboxes <=0:
                             box.delete()
                 except:
-                    return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'range':range(1, num_of_materials), 'error_message' : form["material"+str(i)]+" does not have enough boxes for Material"+str(i)+"",})
+                    return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'error_message' : form["material"+str(i)]+" does not have enough boxes for Material"+str(i)+"",})
 
             #Create new batch entry
             batch = Batchcost(batchname=form['newBatch'].upper(),
@@ -113,13 +114,14 @@ def BatchCostTracking(request):
                                     colourvalue=form['colourPrice'],
                                     foamweight=form['foamWeight'],
                                     foamvalue=form['foamPrice'],
-                                    totalshredweight=form['shredWeight']
+                                    totalshredweight=form['shredWeight'],
+                                    profile=form['profile']
                                     )
             batch.save()
-            return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'range':range(1, num_of_materials), 'dataAcceptedMessage':"Batch Successfully Submitted and material used removedd from inventory"})
+            return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'dataAcceptedMessage':"Batch Successfully Submitted and material used was removed from inventory"})
 
 
-    return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'range':range(1, num_of_materials)})
+    return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials)})
 
 ###########################################################BATCH COST TRACKING QUERY
 def BatchCostQuery(request):
