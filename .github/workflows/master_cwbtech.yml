@@ -60,4 +60,4 @@ jobs:
         with:
           app-name: 'CWBTech'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C6D1CAA30BF74F42908DADDC4A49AE38 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_636B5EB3475547FEB943438F8194B623 }}
