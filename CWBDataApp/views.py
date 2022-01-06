@@ -299,8 +299,11 @@ def ProductInventory(request):
         elif form['numSkids'] == '' or int(form['numSkids']) <= 0:
             return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message' : "Cannot enter a product with zero skids",})
         else:
+            #Check to see if there is an order that contains this product
             orderDict = FindOrder(form['prodName'], form['colour'])
-            UpdateOrderInventory(orderDict.order, int(form['numSkids']), orderDict.orderSheet)
+            #If an order exists containing this product, then update its inventorized pieces
+            if orderDict:
+                UpdateOrderInventory(orderDict.order, int(form['numSkids']), orderDict.orderSheet)
 
             newProd = Productinventory(productname=form['prodName'],
                                        colour=form['colour'],
