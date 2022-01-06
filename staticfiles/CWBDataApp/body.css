@@ -1,0 +1,75 @@
+#header
+{
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+#descriptionParagraph
+{
+  margin-bottom: 3%;
+}
+
+input
+{
+  float: right;
+}
+
+select
+{
+  float: right;
+}
+
+.inputBox
+{
+  margin-bottom: 10px;
+}
+
+#error
+{
+  color: red;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+#accepted
+{
+  color: green;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+
+form
+{
+  margin-bottom: 5%;
+}
+
+table
+{
+  background-color: white;
+  border: 1px solid black;
+}
+
+tr, td, th
+{
+  border: 1px solid black;
+}
+
+.queryTable
+{
+  position: relative;
+  width: auto;
+  display: flex;
+  overflow: auto;
+  justify-content: space-evenly safe;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tablecontainer
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  margin: 0 5% 5% 5%;
+}
