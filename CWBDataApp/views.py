@@ -341,8 +341,11 @@ def ProductInventoryUpdateSkids(request):
             prod = Productinventory.objects.get(productname=form['prodName'], colour=form['colour'])
 
             differenceInPieces = int(form['numSkids']) - prod.numberofskids
+            #See if an order exists with this product
             orderDict = FindOrder(form['prodName'], form['colour'])
-            UpdateOrderInventory(orderDict.get('order'), differenceInPieces, orderDict.get('orderSheet'))
+            #If an order exists then update its inventorized pieces
+            if orderDict:
+                UpdateOrderInventory(orderDict.get('order'), differenceInPieces, orderDict.get('orderSheet'))
 
             if int(form['numSkids']) == 0:
                 prod.delete()
@@ -385,8 +388,11 @@ def ProductInventoryShipped(request):
 
             PiecesRemaining = prod.numberofskids - int(form['numSkids'])
 
+            #Check if there's an order with this product
             orderDict = FindOrder(form['prodName'], form['colour'])
-            updateOrderSent(orderDict.order, int(form['numSkids']), orderDict.orderSheet)
+            #If an order exists with this product then update its inventorized pieces 
+            if orderDict:
+                updateOrderSent(orderDict.order, int(form['numSkids']), orderDict.orderSheet)
 
             if PiecesRemaining <= 0:
                 prod.delete()
