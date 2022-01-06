@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.template import loader
 from django.db import connection
+from django.contrib.auth.forms import UserCreationForm
+from django.views import generic
 import pandas as pd
 import os
 from datetime import date, timedelta
@@ -989,3 +991,8 @@ def addDate(startDate, numDays):
         else:
             numDays -= 1
     return currentDate
+
+class signUpView(generic.CreateView):
+    form_class = UserCreationForm
+    success_url = reverse_lazy('CWBDataApp:login')
+    template_name = 'registration/signup.html'

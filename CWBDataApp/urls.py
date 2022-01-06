@@ -1,5 +1,6 @@
 from django.urls import path, include
 from . import views
+from .views import signUpView
 
 app_name = 'CWBDataApp'
 
@@ -41,4 +42,5 @@ urlpatterns = [
     path('AddProfileAverage/', views.AddProfileAverage, name='AddProfileAverage'),
     path('UpdateProfileAverage/', views.UpdateProfileAverage, name='UpdateProfileAverage'),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('signup/', signUpView.as_view(), name='signup'),
 ]

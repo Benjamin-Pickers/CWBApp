@@ -1,6 +1,6 @@
-{% extends 'registration/authbase.html'%}
+{% extends 'CWBDataApp/base.html' %}
 
-{% block title %} {{'Login'}} {% endblock title %}
+{% block title %}Sign Up{% endblock %}
 
 {% block css %}
   {% load static %}
@@ -11,13 +11,11 @@
 <div class="justify-content-center row no-gutters">
   <form method="post">
     <div class="d-inline-flex flex-column">
-      <h2 id="header">Log In</h2>
+      <h2>Sign up</h2>
       {% csrf_token %}
       {{ form.as_p }}
-      <button type="submit">Log In</button>
-      <p>No account<a href="{% url 'CWBDataApp:signup'%}"> Signup here</a></p>
+      <button type="submit">Sign Up</button>
     </div>
   </form>
-
 </div>
-{% endblock content %}
+{% endblock %}
