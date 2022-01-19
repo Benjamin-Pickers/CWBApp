@@ -132,22 +132,22 @@ def BatchCostQuery(request):
     if request.method == 'POST':
         form = request.POST
 
-        #try:
+        try:
             #Grab batch if it exists, throw error if it doesn't
-        batch = Batchcost.objects.get(pk=form['searchBatch'].upper())
-        dict= {}
-        for i in range(1, num_of_materials):
-            dict['material'+str(i)] = getattr(batch, 'material'+str(i))
-            dict['weight'+str(i)] = getattr(batch, 'weight'+str(i))
-            dict['value'+str(i)] = getattr(batch, 'value'+str(i))
-        return render(request, 'CWBDataApp/BatchCostQuery.html', {'batch' : batch, 'range':range(1,num_of_materials), 'dict':dict.items(),})
-        #except:
-            #return render(request, 'CWBDataApp/BatchCostQuery.html', {'error_message' : "Batch does not exist, please enter a valid batch",})
+            batch = Batchcost.objects.get(pk=form['searchBatch'].upper())
+            dict= {}
+            for i in range(1, num_of_materials):
+                dict['material'+str(i)] = getattr(batch, 'material'+str(i))
+                dict['weight'+str(i)] = getattr(batch, 'weight'+str(i))
+                dict['value'+str(i)] = getattr(batch, 'value'+str(i))
+            return render(request, 'CWBDataApp/BatchCostQuery.html', {'batch' : batch, 'range':range(1,num_of_materials), 'dict':dict.items(),})
+        except:
+            return render(request, 'CWBDataApp/BatchCostQuery.html', {'error_message' : "Batch does not exist, please enter a valid batch",})
     return render(request, 'CWBDataApp/BatchCostQuery.html')
 
 ###########################################################Batch Cost Excel File Download
 def BatchCostExcel(request):
-    query = str(Batchcosttracking.objects.all().query)
+    query = str(Batchcost.objects.all().query)
     df = pd.read_sql_query(query, connection)
     today = str(date.today())
 

@@ -73,7 +73,7 @@
         <td>{{ batch.totalcost }}</td>
         <td>{{ batch.totalweight }}</td>
         <td>{{ batch.priceperpound }}</td>
-        {% for k in dict %}
+        {% for k, v in dict %}
           <td>{{ v }}</td>
         {% endfor %}
         <td>{{ batch.colour }}</td>
