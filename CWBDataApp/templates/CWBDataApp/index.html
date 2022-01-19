@@ -2,6 +2,22 @@
 
 {% block title %} {{'Home'}} {% endblock title %}
 
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
+
 {% block content %}
-    <p>home page</p>
+  <div class="justify-content-center row no-gutters">
+    <div class="d-inline-flex flex-column">
+      <h2 id="header"> CWB Data Application </h2>
+      <p>
+        Welcome to the CWBTech Data Application! This application will be used by employees
+        to store various different data sources around the shop. Some of this data includes batches, material testing,
+        material inventory, product inventory and product orders. Use the nav bar on the top to navigate through the site.
+        You can report errors or bugs to my <a href="https://github.com/Benjamin-Pickers/CWBApp/issues" target="_blank"> GitHub</a> or to
+        the <a href="https://docs.google.com/document/d/1NA_AHIq7H0ekSRLn2P-kGQZiI4tfnk_d5_BCZ8BSAO4/edit" target="_blank">Google Doc</a>.
+      </p>
+    </div>
+  </div>
 {% endblock content %}
