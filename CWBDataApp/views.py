@@ -285,6 +285,22 @@ def MaterialTestQuery(request):
             return render(request, 'CWBDataApp/MaterialTestQuery.html', {'error_message':"Batch does not exist, please enter the batch in batch cost tracking"})
     return render(request, 'CWBDataApp/MaterialTestQuery.html')
 
+###########################################################Material Test Excel File Download
+def MaterialTestExcel(request):
+    query = str(Materialtesting.objects.all().query)
+    df = pd.read_sql_query(query, connection)
+    today = str(date.today())
+
+    df.to_excel(r'./CWBDataApp/MaterialTesting.xlsx', index=False)
+
+    with open(r'./CWBDataApp/MaterialTesting.xlsx', 'rb') as fh:
+        response = HttpResponse(fh.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        response['Content-Disposition'] = 'attachment; filename=MaterialTesting-'+today+'.xlsx'
+    os.remove(r'./CWBDataApp/MaterialTesting.xlsx')
+    return response
+
+    return render(request, 'CWBDataApp/MaterialTestQuery.html')
+
 
 ###########################################################PRODUCT INVENTORY
 def ProductInventory(request):
@@ -377,6 +393,22 @@ def ProductInventoryQuery(request):
             return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':"This product currently does not exist in inventory. If you wish to enter its data, press the link above"})
     return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours})
 
+###########################################################Product Inventory Excel File Download
+def ProductInventoryExcel(request):
+    query = str(Productinventory.objects.all().query)
+    df = pd.read_sql_query(query, connection)
+    today = str(date.today())
+
+    df.to_excel(r'./CWBDataApp/ProductInventory.xlsx', index=False)
+
+    with open(r'./CWBDataApp/ProductInventory.xlsx', 'rb') as fh:
+        response = HttpResponse(fh.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        response['Content-Disposition'] = 'attachment; filename=ProductInventory-'+today+'.xlsx'
+    os.remove(r'./CWBDataApp/ProductInventory.xlsx')
+    return response
+
+    return render(request, 'CWBDataApp/ProductInventoryQuery.html')
+
 ###########################################################PRODUCT INVENTORY SHIPPED
 def ProductInventoryShipped(request):
 
@@ -455,6 +487,22 @@ def MaterialInventoryQuery(request):
             return render(request, 'CWBDataApp/MaterialInventoryQuery.html', {'all_materials':mat_object})
         except:
             return render(request, 'CWBDataApp/MaterialInventoryQuery.html', {'error_message':"This material currently does not exist in inventory. If you wish to enter its data, press the link above"})
+
+    return render(request, 'CWBDataApp/MaterialInventoryQuery.html')
+
+###########################################################Material Inventory Excel File Download
+def MaterialInventoryExcel(request):
+    query = str(Materialinventory.objects.all().query)
+    df = pd.read_sql_query(query, connection)
+    today = str(date.today())
+
+    df.to_excel(r'./CWBDataApp/MaterialInventory.xlsx', index=False)
+
+    with open(r'./CWBDataApp/MaterialInventory.xlsx', 'rb') as fh:
+        response = HttpResponse(fh.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        response['Content-Disposition'] = 'attachment; filename=MaterialInventory-'+today+'.xlsx'
+    os.remove(r'./CWBDataApp/MaterialInventory.xlsx')
+    return response
 
     return render(request, 'CWBDataApp/MaterialInventoryQuery.html')
 

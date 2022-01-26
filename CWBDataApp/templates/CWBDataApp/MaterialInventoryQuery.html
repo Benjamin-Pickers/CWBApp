@@ -35,6 +35,15 @@
     </form>
   </div>
 
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:MaterialInventoryExcel'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        {% csrf_token %}
+        <input type="submit" name="Download" value="Download Excel File of Entire Material Inventory">
+      </div>
+    </form>
+  </div>
+
   {% if all_materials %}
   <div class="queryTable justify-content-center row no-gutters">
     <table class="table table-hover">

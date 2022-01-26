@@ -32,6 +32,15 @@
   </form>
 </div>
 
+<div class="justify-content-center row no-gutters">
+  <form action="{% url 'CWBDataApp:MaterialTestExcel'%}" method="post">
+    <div class="d-inline-flex flex-column">
+      {% csrf_token %}
+      <input type="submit" name="Download" value="Download Excel File of All Material Tests">
+    </div>
+  </form>
+</div>
+
 {% if allTests %}
 <div class="queryTable">
   <div class="tablecontainer">
