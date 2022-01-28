@@ -1,4 +1,4 @@
-from .models import Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3
+from .models import Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Productprofiles
 from datetime import date, timedelta
 import math
 
@@ -41,16 +41,23 @@ class OrderFunctions():
 
 
     #Helper method to update orders when product is shipped
-    def updateOrderSent(self, order, pcsSent):
+    def updateOrderSent(self, order, numSkids, orderSheet):
 
-        order.pcssent += pcsSent
-        order.pcsinventorized -= pcsSent
-        order.save()
+        try:
+            prod = Productprofiles.objects.get(pk=order.boardprofile)
+            pcsSent = int(Decimal(prod.pcsperskid) * numSkids)
+
+            order.pcssent += pcsSent
+            order.pcsinventorized -= pcsSent
+            order.save()
 
 
-        if order.pcssent >= order.pcs:
-            self.deletedOrder(order, orderSheet)
-            order.delete()
+            if order.pcssent >= order.pcs:
+                self.deletedOrder(order, orderSheet)
+                order.delete()
+            return ""
+        except:
+            return "Could not Update Order"
 
 
     #Given a Product and colour, find the Ordersheet that and order that needs that product

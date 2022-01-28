@@ -313,7 +313,7 @@ def ProductInventory(request):
         if Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).exists():
 
             return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message' : "Product already exists in database, please enter a new product. If you wish to update a product scroll down",})
-        elif form['numSkids'] == '' or int(form['numSkids']) <= 0:
+        elif form['numSkids'] == '' or Decimal(form['numSkids']) <= 0:
             return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message' : "Cannot enter a product with zero skids",})
         else:
             #Check to see if there is an order that contains this product
@@ -321,7 +321,11 @@ def ProductInventory(request):
             orderDict = Order.FindOrder(form['prodName'], form['colour'])
             #If an order exists containing this product, then update its inventorized pieces
             if orderDict:
-                Order.UpdateOrderInventory(orderDict.order, int(form['numSkids']), orderDict.orderSheet)
+                prodProf = Productprofiles.objects.get(pk=form['prodName'])
+                numPieces = int(numSkids * Decimal(prodProf.pcsperskid))
+                Order.UpdateOrderInventory(orderDict.order, numPieces, orderDict.orderSheet)
+
+            numSkids = int(form['numSkids'])
 
             newProd = Productinventory(productname=form['prodName'],
                                        colour=form['colour'],
@@ -344,7 +348,7 @@ def ProductInventoryUpdate(request):
             prod_object = Productinventory.objects.get(productname=form['prodName'], colour=form['colour'])
             return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'Forms':True, 'prod_object':prod_object})
         else:
-            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':"This product currently does not exist in inventory. If you wish to enter its data, press the link above"})
+            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message': ""+ form['colour'] + " " + form['prodName'] +" does not exist in inventory. If you wish to enter its data, press the Add Product tab"})
     return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours})
 
 ###########################################################PRODUCT INVENTORY UPDATE SKIDS
@@ -355,10 +359,19 @@ def ProductInventoryUpdateSkids(request):
     if request.method == 'POST':
         form = request.POST
 
-        if Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).exists() and int(form['numSkids']) >= 0:
+        if Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).exists():
             prod = Productinventory.objects.get(productname=form['prodName'], colour=form['colour'])
 
-            differenceInPieces = int(form['numSkids']) - prod.numberofskids
+            if form['numSkids'] == '':
+                numSkids = 0
+            else:
+                numSkids = Decimal(form['numSkids'])
+
+            if prod.numberofskids + numSkids < 0:
+                render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message': 'The number of Skids entered would leave the inventory with negative skids. Please enter a different number.'})
+
+            prodProf = Productprofiles.objects.get(pk=form['prodName'])
+            differenceInPieces = numSkids * Decimal(prodProf.pcsperskid)
             #See if an order exists with this product
             Order = OrderFunc()
             orderDict = Order.FindOrder(form['prodName'], form['colour'])
@@ -366,15 +379,15 @@ def ProductInventoryUpdateSkids(request):
             if orderDict:
                 Order.UpdateOrderInventory(orderDict.get('order'), differenceInPieces, orderDict.get('orderSheet'))
 
-            if int(form['numSkids']) == 0:
+            #If the added number of skids leaves 0 skids remaining, then remove thhat object from inventory
+            if prod.numberofskids + numSkids == 0:
                 prod.delete()
-                return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'dataAcceptedMessage':"Product Successfully Deleted Since No Skids Remain"})
             else:
-                prod.numberofskids = int(form['numSkids'])
+                prod.numberofskids += int(numSkids)
                 prod.save()
-                return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'dataAcceptedMessage':"Product Successfully Updated"})
+            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'dataAcceptedMessage':"Successfully Added "+str(numSkids)+" Skids to "+ form['colour'] + " " + form['prodName']})
         else:
-            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':"This product currently does not exist in inventory. If you wish to enter its data, press the link above"})
+            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':""+ form['colour'] + " " + form['prodName'] +" does not exist in inventory. If you wish to enter its data, press the Add Product tab"})
     return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours})
 
 ###########################################################PRODUCT INVENTORY QUERY
@@ -390,7 +403,7 @@ def ProductInventoryQuery(request):
             prod = Productinventory.objects.get(productname=form['prodName'], colour=form['colour'])
             return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours, 'product':prod})
         else:
-            return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':"This product currently does not exist in inventory. If you wish to enter its data, press the link above"})
+            return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':""+ form['colour'] + " " + form['prodName'] +" does not exist in inventory. If you wish to enter its data, press the link above"})
     return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours})
 
 ###########################################################Product Inventory Excel File Download
@@ -421,14 +434,18 @@ def ProductInventoryShipped(request):
         if Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).exists():
             prod = Productinventory.objects.get(productname=form['prodName'], colour=form['colour'])
 
-            PiecesRemaining = prod.numberofskids - int(form['numSkids'])
+            PiecesRemaining = prod.numberofskids - decimal(form['numSkids'])
 
             #Check if there's an order with this product
             Order = OrderFunc()
             orderDict = Order.FindOrder(form['prodName'], form['colour'])
             #If an order exists with this product then update its inventorized pieces
             if orderDict:
-                Order.updateOrderSent(orderDict.order, int(form['numSkids']), orderDict.orderSheet)
+                returnMessage = Order.updateOrderSent(orderDict.order, Decimal(form['numSkids']), orderDict.orderSheet)
+
+                #If an error occured during the update of the order, then exit and send error message
+                if returnMessage != '':
+                    return render(request, 'CWBDataApp/ProductInventoryShipped.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':returnMessage})
 
             if PiecesRemaining <= 0:
                 prod.delete()
