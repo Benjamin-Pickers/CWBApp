@@ -809,7 +809,7 @@ def OrdersExcel(request):
     with open(r'./CWBDataApp/OrderSheetMachine.xlsx', 'rb') as fh:
         response = HttpResponse(fh.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
         response['Content-Disposition'] = 'attachment; filename=OrderSheetMachine-'+today+'.xlsx'
-    #os.remove(r'./CWBDataApp/OrderSheetMachine.xlsx')
+    os.remove(r'./CWBDataApp/OrderSheetMachine.xlsx')
     return response
 
     return render(request, 'CWBDataApp/ViewOrders.html')
