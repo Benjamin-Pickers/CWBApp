@@ -1,7 +1,88 @@
 {% extends 'CWBDataApp/base.html'%}
 
-{% block title %} {{'Product Inventory'}} {% endblock title %}
+{% block title %} {{'Order Sheet Machine 2'}} {% endblock title %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
 
 {% block content %}
-      <p>Order sheets Machine 2</p>
+  <div>
+    <h2 id="header"> Add Orders For Machine 2 </h2>
+    <p id="descriptionParagraph">
+        Add an order to production line 2
+    </p>
+  </div>
+
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:OrderSheetsMachine2'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        <h4 id=header>Add an Order</h4>
+        {% csrf_token %}
+
+        <div class="inline-flex inputBox">
+          <label for="ponumber">PO Number*: </label>
+          <input id="ponumber" type="text" name="ponumber" maxlength="15">
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for="prodName">Product Name*: </label>
+          <select id="prodName" type="text" name="prodName">
+            {% if allProfiles %}
+              {% for profile in allProfiles %}
+                  <option value="{{ profile.productname }}">{{ profile.productname }}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for="colour">Colour*: </label>
+          <select id="colour" type="text" name="colour">
+            {% if allColours %}
+              {% for entry in allColours %}
+                  <option value="{{ entry.colour }}">{{ entry.colour }}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for="pcs">Pieces*: </label>
+          <input id="pcs" type="number" name="pcs" value="0" step="any" min="0">
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for="pcsSent">Pieces sent (optional): </label>
+          <input id="pcsSent" type="number" name="pcsSent" value="0" step="any" min="0">
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for="dueDate">Due Date (optional): </label>
+          <input id="dueDate" type="date" name="dueDate" min="2021-01-01">
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for="priority">Priority (optional): </label>
+          <input id="priority" type="number" name="priority" step="1" min="1">
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for="customer">Customer: </label>
+          <input id="customer" type="text" name="customer" maxlength="20">
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for="qualitynotes">Quality, Notes, etc: </label>
+          <input id="qualitynotes" type="text" name="qualitynotes" maxlength="500">
+        </div>
+
+        <br>
+
+          <input type="submit" name="enterNewOrder" value="Add">
+      </div>
+    </form>
+  </div>
+
 {% endblock content %}
