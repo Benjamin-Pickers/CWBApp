@@ -1,0 +1,41 @@
+{% extends 'CWBDataApp/base.html'%}
+
+{% block title %} {{'Update Orders'}} {% endblock title %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
+
+{% block content %}
+  <div>
+    <h2 id="header"> Update Orders </h2>
+    <p id="descriptionParagraph">
+        Update the DD Orders from the Google Sheets Page
+    </p>
+  </div>
+
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:UpdateOrders'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        <h4 id=header>Update DD Orders</h4>
+        {% csrf_token %}
+
+        <div class="inline-flex inputBox">
+          <label for="machine">Update Order For*: </label>
+          <select id="machine" type="text" name="machine">
+            {% if numberOfMachines %}
+              {% for i in numberOfMachines %}
+                  <option value="{{ i }}">Machine {{ i }}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+
+        <br>
+          <input type="submit" name="updateDD" formaction="{% url 'CWBDataApp:UpdateDDOrders'%}" value="Update DD Orders">
+      </div>
+    </form>
+  </div>
+
+{% endblock content %}

@@ -11,6 +11,7 @@ from datetime import date, timedelta
 from decimal import Decimal
 import math
 from .OrderFunctions import OrderFunctions as OrderFunc
+from .OrdersDD import OrdersDD
 
 from .models import Batchcost, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Picandsum, Productinventory, Productprofiles, Colour, Employees, Profileaverages
 
@@ -556,81 +557,203 @@ def OrderSheetsMachine1(request):
 
     if request.method == 'POST':
         form = request.POST
+        orderModel = globals()["Ordersheetmachine1"]
+        AddOrder(form, orderModel)
 
-        pcsinventorized = 0
-
-        if Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).exists() and Ordersheetmachine1.objects.filter(boardprofile=form['prodName'], colour=form['colour']).exists() == False:
-            product = Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).first()
-            pcsinventorized = int(product.numberofskids)
-
-        product = Productprofiles.objects.get(pk=form['prodName'])
-        productAverage = Profileaverages.objects.get(pk=form['prodName'])
-        pcsremaining = int(form['pcs']) - int(form['pcsSent']) - pcsinventorized
-        skidsremaining = pcsremaining / int(product.pcsperskid)
-        lengthofrunindays = Decimal(skidsremaining) / Decimal(productAverage.averageskidsperday)
-        priority = 0
-        startdate = date.today()
-        enddate = addDate(startdate, math.ceil(lengthofrunindays))
-        duedate = enddate
-        ponumber = form['ponumber']
-
-        if Ordersheetmachine1.objects.all() == None:
-            priority = 1
-        else:
-            if form['priority'] == '' :
-                #If no priority is given, grab the lowest priority entry and give this order a lower priority
-                lastOrder = Ordersheetmachine1.objects.all().order_by('-priorityrank').first()
-                priority = lastOrder.priorityrank + 1
-                startdate = lastOrder.projectedenddate
-                enddate = addDate(startdate, math.ceil(lengthofrunindays))
-
-
-            else:
-                lessPriority = Ordersheetmachine1.objects.filter(priorityrank__gt = (int(form['priority'])-1)).order_by('priorityrank')
-                if int(form['priority']) == 1:
-                    startdate = date.today()
-                else:
-                    higherpriority = Ordersheetmachine1.objects.filter(priorityrank=(int(form['priority'])-1)).first()
-                    startdate = higherpriority.projectedenddate
-                enddate = addDate(startdate, math.ceil(lengthofrunindays))
-                Order = OrderFunc()
-                Order.deprioritize(form['priority'], enddate, lessPriority)
-                priority = form['priority']
-
-        if form['dueDate'] == '':
-            duedate = enddate
-        else:
-            duedate = form['dueDate']
-
-        newOrder=Ordersheetmachine1( customerponumber=ponumber,
-                                      projectedstartdate=startdate,
-                                      projectedenddate=enddate,
-                                      duedate=duedate,
-                                      lengthofrunindays=lengthofrunindays,
-                                      priorityrank=priority,
-                                      boardprofile=form['prodName'],
-                                      colour=form['colour'],
-                                      skidsremaining=skidsremaining,
-                                      pcs=form['pcs'],
-                                      pcssent=form['pcsSent'],
-                                      pcsremaining=pcsremaining,
-                                      customer=form['customer'],
-                                      qualitynotes=form['qualitynotes'],
-                                      pcsinventorized=pcsinventorized)
-        newOrder.save()
         return render(request, 'CWBDataApp/OrderSheetsMachine1.html', {'allColours':allColours, 'allProfiles':allProfiles, 'dataAcceptedMessage':"Order Successfully Added"})
     return render(request, 'CWBDataApp/OrderSheetsMachine1.html', {'allColours':allColours, 'allProfiles':allProfiles})
 
 
 ###########################################################ORDER SHEET MACHINE 2
 def OrderSheetsMachine2(request):
-    return render(request, 'CWBDataApp/OrderSheetsMachine2.html')
+    allColours = Colour.objects.all()
+    allProfiles= Productprofiles.objects.all()
+
+    if request.method == 'POST':
+        form = request.POST
+        orderModel = globals()["Ordersheetmachine2"]
+        AddOrder(form, orderModel)
+
+        return render(request, 'CWBDataApp/OrderSheetsMachine2.html', {'allColours':allColours, 'allProfiles':allProfiles, 'dataAcceptedMessage':"Order Successfully Added"})
+    return render(request, 'CWBDataApp/OrderSheetsMachine2.html', {'allColours':allColours, 'allProfiles':allProfiles})
 
 ###########################################################ORDER SHEET MACHINE 3
 def OrderSheetsMachine3(request):
-    return render(request, 'CWBDataApp/OrderSheetsMachine3.html')
+    allColours = Colour.objects.all()
+    allProfiles= Productprofiles.objects.all()
 
-###########################################################ORDER SHEET MACHINE 3
+    if request.method == 'POST':
+        form = request.POST
+        orderModel = globals()["Ordersheetmachine3"]
+        AddOrder(form, orderModel)
+
+        return render(request, 'CWBDataApp/OrderSheetsMachine3.html', {'allColours':allColours, 'allProfiles':allProfiles, 'dataAcceptedMessage':"Order Successfully Added"})
+    return render(request, 'CWBDataApp/OrderSheetsMachine3.html', {'allColours':allColours, 'allProfiles':allProfiles})
+
+###########################################################Helper Function Used to Add Orders
+def AddOrder(form, Ordersheet):
+    pcsinventorized = 0
+    productProfile = Productprofiles.objects.get(pk=form['prodName'])
+    #If the product exists in inventory and it isnt already in the ordersheets, then add the inventory to this order
+    if Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).exists() and Ordersheet.objects.filter(boardprofile=form['prodName'], colour=form['colour']).exists() == False:
+        product = Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).first()
+        pcsinventorized = int(product.numberofskids) * productProfile.pcsperskid
+
+    #Initialize the orders variables
+
+    productAverage = Profileaverages.objects.get(pk=form['prodName'])
+    pcsremaining = int(form['pcs']) - int(form['pcsSent']) - pcsinventorized
+    skidsremaining = pcsremaining / int(productProfile.pcsperskid)
+    lengthofrunindays = Decimal(skidsremaining) / Decimal(productAverage.averageskidsperday)
+    priority = 0
+    startdate = date.today()
+    enddate = addDate(startdate, math.ceil(lengthofrunindays))
+    duedate = enddate
+    ponumber = form['ponumber']
+
+    #If there are no orders then priority should be 1
+    if Ordersheet.objects.all() == None:
+        priority = 1
+    else:
+        if form['priority'] == '' :
+            #If no priority is given, grab the lowest priority entry and give this order a lower priority
+            lastOrder = Ordersheet.objects.all().order_by('-priorityrank').first()
+            priority = lastOrder.priorityrank + 1
+            startdate = lastOrder.projectedenddate
+            enddate = addDate(startdate, math.ceil(lengthofrunindays))
+
+
+        else:
+            #If a priority is given, then find where it belongs and shuffle lower orders around
+            lessPriority = Ordersheet.objects.filter(priorityrank__gt = (int(form['priority'])-1)).order_by('priorityrank')
+            if int(form['priority']) == 1:
+                startdate = date.today()
+            else:
+                higherpriority = Ordersheet.objects.filter(priorityrank=(int(form['priority'])-1)).first()
+                startdate = higherpriority.projectedenddate
+            enddate = addDate(startdate, math.ceil(lengthofrunindays))
+            Order = OrderFunc()
+            #Call Function to update the priority of lower orders and their respective dates
+            Order.deprioritize(form['priority'], enddate, lessPriority)
+            priority = form['priority']
+
+    #If no due date is given use the orders end date
+    if form['dueDate'] == '':
+        duedate = enddate
+    else:
+        duedate = form['dueDate']
+
+    #Create and save the new order object
+    newOrder=Ordersheet( customerponumber=ponumber,
+                         projectedstartdate=startdate,
+                         projectedenddate=enddate,
+                         duedate=duedate,
+                         lengthofrunindays=lengthofrunindays,
+                         priorityrank=priority,
+                         boardprofile=form['prodName'],
+                         colour=form['colour'],
+                         skidsremaining=skidsremaining,
+                         pcs=form['pcs'],
+                         pcssent=form['pcsSent'],
+                         pcsremaining=pcsremaining,
+                         customer=form['customer'],
+                         qualitynotes=form['qualitynotes'],
+                         pcsinventorized=pcsinventorized)
+    newOrder.save()
+
+###########################################################Update DD Orders
+def UpdateDDOrders(request):
+
+    if request.method == 'POST':
+        form = request.POST
+        allProfiles= Productprofiles.objects.all()
+        allColours = Colour.objects.all()
+        orderModel = globals()["Ordersheetmachine" + form['machine']]
+        #Call DDOrder Function to grab DD Orders from Google sheets and clean data
+        order = OrdersDD()
+        orders = order.getDDOrders(allProfiles, allColours, form['machine'])
+
+
+
+        for key, value in orders.items():
+
+            #Split Key into product and colour
+            prodString = key.split('_')
+            product = prodString[0]
+            colour = prodString[1]
+
+            pcssent = value[1]
+            pcs = value[0]
+
+            productProfile = Productprofiles.objects.get(pk=product)
+            productAverage = Profileaverages.objects.get(pk=product)
+
+            #if an order already exists for this profile then update its values if needed
+            if orderModel.objects.filter(boardprofile=product, colour=colour).exists():
+                currentOrder = orderModel.objects.get(boardprofile=product, colour=colour)
+
+                #If the values of total pieces or total sent have changed then update the order
+                if currentOrder.pcssent != pcssent or currentOrder.pcs != pcs:
+
+                    currentOrder.pcssent = pcssent
+                    currentOrder.pcs = pcs
+                    currentOrder.pcsremaining = pcs - pcssent - currentOrder.pcsinventorized
+                    currentOrder.skidsremaining = currentOrder.pcsremaining / int(productProfile.pcsperskid)
+                    currentOrder.lengthofrunindays = Decimal(currentOrder.skidsremaining) / Decimal(productAverage.averageskidsperday)
+                    currentOrder.projectedenddate = addDate(currentOrder.projectedstartdate, math.ceil(currentOrder.lengthofrunindays))
+                    currentOrder.save()
+                    #Grab all orders with lower priority
+                    lowerOrders = orderModel.objects.filter(priorityrank__gt=form['priority']).order_by('priorityrank')
+                    endDate = order.projectedenddate
+                    for item in lowerOrders:
+                        item.projectedstartdate = endDate
+                        item.projectedenddate = addDate(endDate, math.ceil(item.lengthofrunindays))
+                        item.save()
+                        endDate = item.projectedenddate
+            else:
+
+                pcsinventorized = 0
+
+                #Check if this product has any inventory
+                if Productinventory.objects.filter(productname=product, colour=colour).exists() and orderModel.objects.filter(boardprofile=product, colour=colour).exists() == False:
+                    product = Productinventory.objects.filter(productname=product, colour=colour).first()
+                    pcsinventorized = int(product.numberofskids)
+
+                pcsremaining = pcs - pcssent - pcsinventorized
+                skidsremaining = pcsremaining / int(productProfile.pcsperskid)
+                lengthofrunindays = Decimal(skidsremaining) / Decimal(productAverage.averageskidsperday)
+                priority = 1
+                startdate = date.today()
+                enddate = addDate(startdate, math.ceil(lengthofrunindays))
+
+                #If Orders exist, then give this order the lowest priority
+                if orderModel.objects.all().order_by('-priorityrank').exists():
+                    lastOrder = orderModel.objects.all().order_by('-priorityrank').first()
+                    priority = lastOrder.priorityrank + 1
+                    startdate = lastOrder.projectedenddate
+                    enddate = addDate(startdate, math.ceil(lengthofrunindays))
+                duedate = enddate
+
+                newOrder= orderModel( customerponumber='',
+                                      projectedstartdate=startdate,
+                                      projectedenddate=enddate,
+                                      duedate=duedate,
+                                      lengthofrunindays=lengthofrunindays,
+                                      priorityrank=priority,
+                                      boardprofile=product,
+                                      colour=colour,
+                                      skidsremaining=skidsremaining,
+                                      pcs=pcs,
+                                      pcssent=pcssent,
+                                      pcsremaining=pcsremaining,
+                                      customer='DD',
+                                      qualitynotes='',
+                                      pcsinventorized=pcsinventorized)
+                newOrder.save()
+        return render(request, 'CWBDataApp/DDOrders.html', {'dataAcceptedMessage': 'Successfully Updated DDOrders', 'numberOfMachines':range(1, numberOfMachines+1)})
+    return render(request, 'CWBDataApp/DDOrders.html', {'numberOfMachines':range(1, numberOfMachines+1)})
+
+###########################################################ORDER SHEET Helpers
 def ViewOrders(request):
 
     if request.method == 'POST':
@@ -652,6 +775,27 @@ def ViewOrders(request):
             return render(request, 'CWBDataApp/ViewOrders.html', {'numberOfMachines':range(1, numberOfMachines+1), 'allOrders':dict.values()})
 
     return render(request, 'CWBDataApp/ViewOrders.html', {'numberOfMachines':range(1, numberOfMachines+1)})
+
+
+###########################################################Order Excel File Download
+def OrdersExcel(request):
+
+    writer = pd.ExcelWriter(r'./CWBDataApp/OrderSheetMachine.xlsx')
+    today = str(date.today())
+    for i in range(1, numberOfMachines+1):
+        orderModel = globals()["Ordersheetmachine" + str(i)]
+        query = str(orderModel.objects.all().query)
+        df = pd.read_sql_query(query, connection)
+        df.to_excel(writer, sheet_name= 'Machine'+str(i) ,index=False)
+    writer.close()
+
+    with open(r'./CWBDataApp/OrderSheetMachine.xlsx', 'rb') as fh:
+        response = HttpResponse(fh.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        response['Content-Disposition'] = 'attachment; filename=OrderSheetMachine-'+today+'.xlsx'
+    #os.remove(r'./CWBDataApp/OrderSheetMachine.xlsx')
+    return response
+
+    return render(request, 'CWBDataApp/ViewOrders.html')
 
 
 ###########################################################UPDATE ORDERS
