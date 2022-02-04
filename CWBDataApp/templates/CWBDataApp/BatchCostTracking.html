@@ -57,10 +57,15 @@
                 <option value="None">None</option>
                 {% if allMaterials %}
                   {% for entry in allMaterials %}
-                      <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }}-{{entry.priceperpound}})</option>
+                      <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
                   {% endfor %}
                 {% endif %}
               </select>
+            </div>
+
+            <div class="inline-flex inputBox">
+              <label for="material{{i}}2">Or Custom Material: </label>
+              <input id="material{{i}}2" type="text" name="material{{i}}2" maxlength="40">
             </div>
 
             <div class="inline-flex inputBox">

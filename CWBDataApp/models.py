@@ -1,34 +1,5 @@
 from django.db import models
 
-class Batchcosttracking(models.Model):
-    batchname = models.CharField(db_column='BatchName', primary_key=True, max_length=15)
-    batchdate = models.DateField(db_column='BatchDate', blank=True, null=True)
-    totalcost = models.DecimalField(db_column='TotalCost', decimal_places=2, max_digits=10)
-    totalweight = models.SmallIntegerField(db_column='TotalWeight')
-    priceperpound = models.DecimalField(db_column='PricePerPound', decimal_places=2, max_digits=10)
-    supplier1 = models.ForeignKey('Materialcost', models.DO_NOTHING, db_column='Supplier1',  related_name='supplier1')
-    weight1 = models.SmallIntegerField(db_column='Weight1', blank=True, null=True)
-    value1 = models.DecimalField(db_column='Value1', blank=True, null=True, decimal_places=3, max_digits=10)
-    supplier2 = models.ForeignKey('Materialcost', models.DO_NOTHING, db_column='Supplier2', related_name='supplier2', blank=True, null=True)
-    weight2 = models.SmallIntegerField(db_column='Weight2', blank=True, null=True)
-    value2 = models.DecimalField(db_column='Value2', blank=True, null=True, decimal_places=3, max_digits=10)
-    supplier3 = models.ForeignKey('Materialcost', models.DO_NOTHING, db_column='Supplier3', related_name='supplier3', blank=True, null=True)
-    weight3 = models.SmallIntegerField(db_column='Weight3', blank=True, null=True)
-    value3 = models.DecimalField(db_column='Value3', blank=True, null=True,  decimal_places=3, max_digits=10)
-    supplier4 = models.ForeignKey('Materialcost', models.DO_NOTHING, db_column='Supplier4', related_name='supplier4', blank=True, null=True)
-    weight4 = models.SmallIntegerField(db_column='Weight4', blank=True, null=True)
-    value4 = models.DecimalField(db_column='Value4', blank=True, null=True,  decimal_places=3, max_digits=10)
-    colour = models.CharField(db_column='Colour', max_length=20, blank=True, null=True)
-    colourweight = models.DecimalField(db_column='ColourWeight', blank=True, null=True, decimal_places=2, max_digits=10)
-    colourvalue = models.DecimalField(db_column='ColourValue', blank=True, null=True, decimal_places=3, max_digits=10)
-    foam = models.CharField(db_column='Foam', max_length=4, blank=True, null=True)
-    foamweight = models.DecimalField(db_column='FoamWeight', blank=True, null=True, decimal_places=2, max_digits=10)
-    foamvalue = models.DecimalField(db_column='FoamValue', blank=True, null=True,  decimal_places=3, max_digits=10)
-    totalshredweight = models.SmallIntegerField(db_column='TotalShredWeight', blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'BatchCostTracking'
 
 class Batchcost(models.Model):
     batchname = models.CharField(db_column='BatchName', primary_key=True, max_length=15)  # Field name made lowercase.
@@ -103,7 +74,7 @@ class Materialinventory(models.Model):
 
 class Materialtesting(models.Model):
     projectnumber = models.SmallIntegerField(db_column='ProjectNumber')  # Field name made lowercase.
-    testname = models.ForeignKey(Batchcosttracking, models.DO_NOTHING, db_column='TestName')  # Field name made lowercase.
+    testname = models.ForeignKey(Batchcost, models.DO_NOTHING, db_column='TestName')  # Field name made lowercase.
     testnumber = models.SmallIntegerField(db_column='TestNumber')  # Field name made lowercase.
     testdate = models.DateField(db_column='TestDate', blank=True, null=True)  # Field name made lowercase.
     labourused = models.CharField(db_column='LabourUsed', max_length=50)  # Field name made lowercase.

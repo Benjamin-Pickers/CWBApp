@@ -66,6 +66,9 @@ def BatchCostTracking(request):
                 except:
                     return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'error_message' : "Couldn't find box in inventory",})
 
+            materials = {}
+            #Remove boxes from inventory if material value given was from INVENTORY
+            #If a custom material was entered do not remove from inventory
             for i in range(1, num_of_materials):
                 try:
                     if form['material'+str(i)] != 'None':
@@ -74,6 +77,11 @@ def BatchCostTracking(request):
                         box.save()
                         if box.numberofboxes <=0:
                             box.delete()
+                        materials['material'+str(i)] = form['material'+str(i)]
+                    elif form['material'+str(i)] == 'None' and form['material'+str(i)+'2'] != '':
+                        materials['material'+str(i)] = form['material'+str(i)+'2']
+                    else:
+                        materials['material'+str(i)] = 'None'
                 except:
                     return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'error_message' : form["material"+str(i)]+" does not have enough boxes for Material"+str(i)+"",})
 
@@ -83,34 +91,34 @@ def BatchCostTracking(request):
                                     totalcost=cost,
                                     totalweight=weight,
                                     priceperpound=price,
-                                    material1=form['material1'],
+                                    material1=materials['material1'],
                                     weight1=form['weight1'],
                                     value1=form['value1'],
-                                    material2=form['material2'],
+                                    material2=materials['material2'],
                                     weight2=form['weight2'],
                                     value2=form['value2'],
-                                    material3=form['material3'],
+                                    material3=materials['material3'],
                                     weight3=form['weight3'],
                                     value3=form['value3'],
-                                    material4=form['material4'],
+                                    material4=materials['material4'],
                                     weight4=form['weight4'],
                                     value4=form['value4'],
-                                    material5=form['material5'],
+                                    material5=materials['material5'],
                                     weight5=form['weight5'],
                                     value5=form['value5'],
-                                    material6=form['material6'],
+                                    material6=materials['material6'],
                                     weight6=form['weight6'],
                                     value6=form['value6'],
-                                    material7=form['material7'],
+                                    material7=materials['material7'],
                                     weight7=form['weight7'],
                                     value7=form['value7'],
-                                    material8=form['material8'],
+                                    material8=materials['material8'],
                                     weight8=form['weight8'],
                                     value8=form['value8'],
-                                    material9=form['material9'],
+                                    material9=materials['material9'],
                                     weight9=form['weight9'],
                                     value9=form['value9'],
-                                    material10=form['material10'],
+                                    material10=materials['material10'],
                                     weight10=form['weight10'],
                                     value10=form['value10'],
                                     colour=form['colour'],
@@ -575,7 +583,10 @@ def OrderSheetsMachine1(request):
     if request.method == 'POST':
         form = request.POST
         orderModel = globals()["Ordersheetmachine1"]
-        AddOrder(form, orderModel)
+        message = AddOrder(form, orderModel)
+
+        if message['Error']:
+            return render(request, 'CWBDataApp/OrderSheetsMachine1.html', {'allColours':allColours, 'allProfiles':allProfiles, 'error_message':message['error_message']})
 
         return render(request, 'CWBDataApp/OrderSheetsMachine1.html', {'allColours':allColours, 'allProfiles':allProfiles, 'dataAcceptedMessage':"Order Successfully Added"})
     return render(request, 'CWBDataApp/OrderSheetsMachine1.html', {'allColours':allColours, 'allProfiles':allProfiles})
@@ -589,7 +600,10 @@ def OrderSheetsMachine2(request):
     if request.method == 'POST':
         form = request.POST
         orderModel = globals()["Ordersheetmachine2"]
-        AddOrder(form, orderModel)
+        message = AddOrder(form, orderModel)
+
+        if message['Error']:
+            return render(request, 'CWBDataApp/OrderSheetsMachine2.html', {'allColours':allColours, 'allProfiles':allProfiles, 'error_message':message['error_message']})
 
         return render(request, 'CWBDataApp/OrderSheetsMachine2.html', {'allColours':allColours, 'allProfiles':allProfiles, 'dataAcceptedMessage':"Order Successfully Added"})
     return render(request, 'CWBDataApp/OrderSheetsMachine2.html', {'allColours':allColours, 'allProfiles':allProfiles})
@@ -602,7 +616,10 @@ def OrderSheetsMachine3(request):
     if request.method == 'POST':
         form = request.POST
         orderModel = globals()["Ordersheetmachine3"]
-        AddOrder(form, orderModel)
+        message = AddOrder(form, orderModel)
+
+        if message['Error']:
+            return render(request, 'CWBDataApp/OrderSheetsMachine3.html', {'allColours':allColours, 'allProfiles':allProfiles, 'error_message':message['error_message']})
 
         return render(request, 'CWBDataApp/OrderSheetsMachine3.html', {'allColours':allColours, 'allProfiles':allProfiles, 'dataAcceptedMessage':"Order Successfully Added"})
     return render(request, 'CWBDataApp/OrderSheetsMachine3.html', {'allColours':allColours, 'allProfiles':allProfiles})
@@ -616,9 +633,16 @@ def AddOrder(form, Ordersheet):
         product = Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).first()
         pcsinventorized = int(product.numberofskids) * productProfile.pcsperskid
 
-    #Initialize the orders variables
 
-    productAverage = Profileaverages.objects.get(pk=form['prodName'])
+    avgSkidsDay = 1
+    #If no average skid number exist return error
+    if Profileaverages.objects.filter(pk=form['prodName']).exists():
+        productAverage = Profileaverages.objects.get(pk=form['prodName'])
+        avgSkidsDay = productAverage.averageskidsperday
+    else:
+        return {'Error' : True, 'error_message':'No average Skids per day exists for this profile. Please enter it through general tab'}
+
+    #Initialize the orders variables
     pcsremaining = int(form['pcs']) - int(form['pcsSent']) - pcsinventorized
     skidsremaining = pcsremaining / int(productProfile.pcsperskid)
     lengthofrunindays = Decimal(skidsremaining) / Decimal(productAverage.averageskidsperday)
@@ -677,6 +701,7 @@ def AddOrder(form, Ordersheet):
                          qualitynotes=form['qualitynotes'],
                          pcsinventorized=pcsinventorized)
     newOrder.save()
+    return {'Error': False}
 
 ###########################################################Update DD Orders
 def UpdateDDOrders(request):
