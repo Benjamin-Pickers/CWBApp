@@ -49,6 +49,7 @@ class OrderFunctions():
 
             order.pcssent += pcsSent
             order.pcsinventorized -= pcsSent
+
             order.save()
 
 
@@ -76,13 +77,22 @@ class OrderFunctions():
         return dict
 
     #Update an orders inventorized pieces
-    def UpdateOrderInventory(self, order, pcsinventorized, orderSheet):
+    def UpdateOrderInventory(self, order, pcsinventorized, orderSheet, prodProf, prodAv):
         order.pcsinventorized += pcsinventorized
         order.pcsremaining -= pcsinventorized
-        order.save()
-        if order.pcs <= 0:
-            self.deletedOrder(order, orderSheet)
-            order.delete()
+        order.skidsremaining = order.pcsremaining / int(prodProf.pcsperskid)
+        order.lengthofrunindays = Decimal(order.skidsremaining) / Decimal(prodAv.averageskidsperday)
+        endDate = addDate(startdate, math.ceil(order.lengthofrunindays))
+
+        if endDate != order.projectedenddate:
+            order.projectedenddate = endDate
+            order.save()
+            lowerOrders = orderSheet.filter(priorityrank__gt = (int(order.priorityrank))).order_by('priorityrank')
+            for item in lowerOrders:
+                item.projectedstartdate = endDate
+                item.projectedenddate = addDate(endDate, math.ceil(item.lengthofrunindays))
+                item.save()
+                endDate = item.projectedenddate
 
     #Reorder orders when an order needs to be deleted
     def deletedOrder(self, order, orderSheet):

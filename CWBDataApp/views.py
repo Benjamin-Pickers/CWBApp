@@ -54,7 +54,6 @@ def BatchCostTracking(request):
                 return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'error_message':"Total weight cannot be zero, please add a value to weight1",})
 
             price = round(cost/weight, 2)
-
             #Check if theres enough boxes before we subtract from inventory
             for i in range(1, num_of_materials):
                 try:
@@ -67,9 +66,13 @@ def BatchCostTracking(request):
                     return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'error_message' : "Couldn't find box in inventory",})
 
             materials = {}
+            numberofboxes = 0
             #Remove boxes from inventory if material value given was from INVENTORY
             #If a custom material was entered do not remove from inventory
             for i in range(1, num_of_materials):
+                #Sum total number of boxes
+
+
                 try:
                     if form['material'+str(i)] != 'None':
                         box = Materialinventory.objects.get(pk=form['material'+str(i)])
@@ -78,62 +81,101 @@ def BatchCostTracking(request):
                         if box.numberofboxes <=0:
                             box.delete()
                         materials['material'+str(i)] = form['material'+str(i)]
+                        numberofboxes += Decimal(form['numofBoxes'+str(i)])
                     elif form['material'+str(i)] == 'None' and form['material'+str(i)+'2'] != '':
                         materials['material'+str(i)] = form['material'+str(i)+'2']
+                        numberofboxes += Decimal(form['numofBoxes'+str(i)])
                     else:
                         materials['material'+str(i)] = 'None'
                 except:
                     return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'error_message' : form["material"+str(i)]+" does not have enough boxes for Material"+str(i)+"",})
+            sup_object = Materialcost.objects.get(pk='Free')
+            materialInv = Materialinventory(materialname=form['newBatch'],
+                                            supplier=sup_object,
+                                            numberofboxes=numberofboxes,
+                                            locations='None',
+                                            premixed='True',
+                                            priceperpound=price)
+            materialInv.save()
 
-            #Create new batch entry
-            batch = Batchcost(batchname=form['newBatch'].upper(),
-                                    batchdate=form['batchDate'],
-                                    totalcost=cost,
-                                    totalweight=weight,
-                                    priceperpound=price,
-                                    material1=materials['material1'],
-                                    weight1=form['weight1'],
-                                    value1=form['value1'],
-                                    material2=materials['material2'],
-                                    weight2=form['weight2'],
-                                    value2=form['value2'],
-                                    material3=materials['material3'],
-                                    weight3=form['weight3'],
-                                    value3=form['value3'],
-                                    material4=materials['material4'],
-                                    weight4=form['weight4'],
-                                    value4=form['value4'],
-                                    material5=materials['material5'],
-                                    weight5=form['weight5'],
-                                    value5=form['value5'],
-                                    material6=materials['material6'],
-                                    weight6=form['weight6'],
-                                    value6=form['value6'],
-                                    material7=materials['material7'],
-                                    weight7=form['weight7'],
-                                    value7=form['value7'],
-                                    material8=materials['material8'],
-                                    weight8=form['weight8'],
-                                    value8=form['value8'],
-                                    material9=materials['material9'],
-                                    weight9=form['weight9'],
-                                    value9=form['value9'],
-                                    material10=materials['material10'],
-                                    weight10=form['weight10'],
-                                    value10=form['value10'],
-                                    colour=form['colour'],
-                                    colourweight=form['colourWeight'],
-                                    colourvalue=form['colourPrice'],
-                                    foamweight=form['foamWeight'],
-                                    foamvalue=form['foamPrice'],
-                                    totalshredweight=form['shredWeight'],
-                                    profile=form['profile']
-                                    )
-            batch.save()
+            #Create new batch entry if this isnt a premix
+            if form['premixed'] == 'No':
+                batch = Batchcost(batchname=form['newBatch'].upper(),
+                                        batchdate=form['batchDate'],
+                                        totalcost=cost,
+                                        totalweight=weight,
+                                        priceperpound=price,
+                                        material1=materials['material1'],
+                                        weight1=form['weight1'],
+                                        value1=form['value1'],
+                                        material2=materials['material2'],
+                                        weight2=form['weight2'],
+                                        value2=form['value2'],
+                                        material3=materials['material3'],
+                                        weight3=form['weight3'],
+                                        value3=form['value3'],
+                                        material4=materials['material4'],
+                                        weight4=form['weight4'],
+                                        value4=form['value4'],
+                                        material5=materials['material5'],
+                                        weight5=form['weight5'],
+                                        value5=form['value5'],
+                                        material6=materials['material6'],
+                                        weight6=form['weight6'],
+                                        value6=form['value6'],
+                                        material7=materials['material7'],
+                                        weight7=form['weight7'],
+                                        value7=form['value7'],
+                                        material8=materials['material8'],
+                                        weight8=form['weight8'],
+                                        value8=form['value8'],
+                                        material9=materials['material9'],
+                                        weight9=form['weight9'],
+                                        value9=form['value9'],
+                                        material10=materials['material10'],
+                                        weight10=form['weight10'],
+                                        value10=form['value10'],
+                                        colour=form['colour'],
+                                        colourweight=form['colourWeight'],
+                                        colourvalue=form['colourPrice'],
+                                        foamweight=form['foamWeight'],
+                                        foamvalue=form['foamPrice'],
+                                        totalshredweight=form['shredWeight'],
+                                        profile=form['profile']
+                                        )
+                batch.save()
             return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'dataAcceptedMessage':"Batch Successfully Submitted and material used was removed from inventory"})
 
 
     return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials)})
+
+###########################################################UPDATE BATCH
+def UpdateBatch(request):
+
+    allBatchs = Batchcost.objects.all()
+
+    if request.method == 'POST':
+        form = request.POST
+        batchname = ''
+
+        if form['batch'] == 'None':
+            batchname = form['batch2']
+        else:
+            batchname = form['batch']
+
+        try:
+            #Try and grab existing batch, throws eception if failed
+            batch = Batchcost.objects.get(pk=batchname)
+
+            #Get values need for batch
+            allProfiles = Productprofiles.objects.all()
+            allColours = Colour.objects.all()
+            allMaterials= Materialinventory.objects.all()
+            return render(request, 'CWBDataApp/UpdateBatch.html', {'allBatchs':allBatchs, 'allProfiles':allProfiles, 'allColours':allColours, 'allMaterials':allMaterials, 'range':range(1, num_of_materials), 'batch':batch})
+        except:
+            return render(request, 'CWBDataApp/UpdateBatch.html', {'allBatchs':allBatchs})
+
+    return render(request, 'CWBDataApp/UpdateBatch.html', {'allBatchs':allBatchs})
 
 ###########################################################BATCH COST TRACKING QUERY
 def BatchCostQuery(request):
@@ -210,6 +252,9 @@ def MaterialTesting(request):
             elif int(form['machinetimeUsed']) == 8:
                 costofmaterial=900
                 costoflabour=400
+            elif Decimal(form['machinetimeUsed']) == 0.5:
+                costofmaterial=150
+                costoflabour=50
             else:
                 costofmaterial=1200
                 costoflabour=600
@@ -331,8 +376,8 @@ def ProductInventory(request):
             #If an order exists containing this product, then update its inventorized pieces
             if orderDict:
                 prodProf = Productprofiles.objects.get(pk=form['prodName'])
-                numPieces = int(numSkids * Decimal(prodProf.pcsperskid))
-                Order.UpdateOrderInventory(orderDict.order, numPieces, orderDict.orderSheet)
+                numPieces = int(Decimal(form['numSkids']) * Decimal(prodProf.pcsperskid))
+                Order.UpdateOrderInventory(orderDict['order'], numPieces, orderDict['orderSheet'])
 
             numSkids = int(form['numSkids'])
 
@@ -380,13 +425,14 @@ def ProductInventoryUpdateSkids(request):
                 render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message': 'The number of Skids entered would leave the inventory with negative skids. Please enter a different number.'})
 
             prodProf = Productprofiles.objects.get(pk=form['prodName'])
+            prodAv = Productaverages.objects.get(pk=form['prodName'])
             differenceInPieces = numSkids * Decimal(prodProf.pcsperskid)
             #See if an order exists with this product
             Order = OrderFunc()
             orderDict = Order.FindOrder(form['prodName'], form['colour'])
             #If an order exists then update its inventorized pieces
             if orderDict:
-                Order.UpdateOrderInventory(orderDict.get('order'), differenceInPieces, orderDict.get('orderSheet'))
+                Order.UpdateOrderInventory(orderDict.get('order'), differenceInPieces, orderDict.get('orderSheet'), prodProf, prodAv)
 
             #If the added number of skids leaves 0 skids remaining, then remove thhat object from inventory
             if prod.numberofskids + numSkids == 0:
@@ -872,6 +918,25 @@ def GetOrder(request):
             return render(request, 'CWBDataApp/UpdateOrders.html', {'numberOfMachines':range(1, numberOfMachines+1), 'error_message':"Could not grab orders"})
     return render(request, 'CWBDataApp/UpdateOrders.html', {'numberOfMachines':range(1, numberOfMachines+1)})
 
+
+###########################################################REMOVE SPECIFIC ORDER
+def RemoveOrder(request):
+
+    if request.method == 'POST':
+        form = request.POST
+
+        try:
+            orderModel = globals()["Ordersheetmachine" + form['machine']]
+            order = orderModel.objects.get(priorityrank=form['orderrank'])
+            orderFunc = OrderFunc()
+            #Call Function to update the priority of lower orders and their respective dates
+            orderFunc.deletedOrder(order, orderModel.objects.all())
+            order.delete()
+            return render(request, 'CWBDataApp/UpdateOrders.html', {'dataAcceptedMessage':'Order Successfully Removed', 'numberOfMachines':range(1, numberOfMachines+1)})
+        except:
+            return render(request, 'CWBDataApp/UpdateOrders.html', {'numberOfMachines':range(1, numberOfMachines+1), 'error_message':"Could not get Order"})
+    return render(request, 'CWBDataApp/UpdateOrders.html', {'numberOfMachines':range(1, numberOfMachines+1)})
+
 ###########################################################Change ORDER
 def ChangeOrder(request):
 
@@ -983,21 +1048,23 @@ def help(request):
 
 ###########################################################Add Employee
 def AddEmployee(request):
+    allEmployees = Employees.objects.all()
 
     if request.method == 'POST':
         form = request.POST
 
         try:
             employee = Employees.objects.get(pk=form['employeeName'])
-            return render(request, 'CWBDataApp/AddEmployee.html', {'error_message':"Employee already exists"})
+            return render(request, 'CWBDataApp/AddEmployee.html', {'allEmployees':allEmployees, 'error_message':"Employee already exists"})
         except:
             new_employee = Employees(employeename=form['employeeName'])
             new_employee.save()
-            return render(request, 'CWBDataApp/AddEmployee.html', {'dataAcceptedMessage':"Employee Successfully Added"})
-    return render(request, 'CWBDataApp/AddEmployee.html')
+            return render(request, 'CWBDataApp/AddEmployee.html', {'allEmployees':allEmployees,'dataAcceptedMessage':"Employee Successfully Added"})
+    return render(request, 'CWBDataApp/AddEmployee.html', {'allEmployees':allEmployees})
 
 ###########################################################Remove Employee
 def RemoveEmployee(request):
+    allEmployees = Employees.objects.all()
 
     if request.method == 'POST':
         form = request.POST
@@ -1005,41 +1072,46 @@ def RemoveEmployee(request):
         try:
             employee = Employees.objects.get(pk=form['employeeName'])
             employee.delete()
-            return render(request, 'CWBDataApp/AddEmployee.html', {'dataAcceptedMessage':"Employee Successfully Removed"})
+            return render(request, 'CWBDataApp/AddEmployee.html', {'allEmployees':allEmployees, 'dataAcceptedMessage':"Employee Successfully Removed"})
         except:
-            return render(request, 'CWBDataApp/AddEmployee.html', {'error_message':"Employee Cannot Be Removed Because They Do Not Exist"})
-    return render(request, 'CWBDataApp/AddEmployee.html')
+            return render(request, 'CWBDataApp/AddEmployee.html', {'allEmployees':allEmployees, 'error_message':"Employee Cannot Be Removed Because They Do Not Exist"})
+    return render(request, 'CWBDataApp/AddEmployee.html', {'allEmployees':allEmployees})
 
 ###########################################################Add Board Profile
 def AddBoardProfile(request):
+    allProfiles = Productprofiles.objects.all()
 
     if request.method == 'POST':
         form = request.POST
 
         try:
             profile = Productprofiles.objects.get(pk=form['profile'])
-            return render(request, 'CWBDataApp/AddBoardProfile.html', {'error_message':"Profile already exists"})
+            return render(request, 'CWBDataApp/AddBoardProfile.html', {'allProfiles':allProfiles, 'error_message':"Profile already exists"})
         except:
-            new_profile = Productprofiles(productname=form['profile'])
+            pcs=0
+            if form['pcsperskid'] != '':
+                pcs = int(form['pcsperskid'])
+            new_profile = Productprofiles(productname=form['profile'], pcsperskid=pcs)
             new_profile.save()
-            return render(request, 'CWBDataApp/AddBoardProfile.html', {'dataAcceptedMessage':"Profile Successfully Added"})
-    return render(request, 'CWBDataApp/AddBoardProfile.html')
+            return render(request, 'CWBDataApp/AddBoardProfile.html', {'allProfiles':allProfiles, 'dataAcceptedMessage':"Profile Successfully Added"})
+    return render(request, 'CWBDataApp/AddBoardProfile.html', {'allProfiles':allProfiles})
 
 ###########################################################Add Board Profile
 def RemoveBoardProfile(request):
+    allProfiles = Productprofiles.objects.all()
 
     if request.method == 'POST':
         form = request.POST
 
         try:
             if form['profile'] == '':
-                return render(request, 'CWBDataApp/AddBoardProfile.html', {'error_message':"Please enter a profile"})
+                return render(request, 'CWBDataApp/AddBoardProfile.html', {'allProfiles':allProfiles, 'error_message':"Please enter a profile"})
             profile = Productprofiles.objects.get(pk=form['profile'])
             profile.delete()
-            return render(request, 'CWBDataApp/AddBoardProfile.html', {'dataAcceptedMessage':"Profile Successfully Removed"} )
+            return render(request, 'CWBDataApp/AddBoardProfile.html', {'allProfiles':allProfiles, 'dataAcceptedMessage':"Profile Successfully Removed"} )
         except:
-            return render(request, 'CWBDataApp/AddBoardProfile.html', {'error_message':"Profile cannot be removed because it does not exist"})
-    return render(request, 'CWBDataApp/AddBoardProfile.html')
+            return render(request, 'CWBDataApp/AddBoardProfile.html', {'allProfiles':allProfiles, 'error_message':"Profile cannot be removed because it does not exist"})
+    return render(request, 'CWBDataApp/AddBoardProfile.html', {'allProfiles':allProfiles})
 
 
 ###########################################################Add Colour

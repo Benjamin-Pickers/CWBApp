@@ -18,7 +18,7 @@
   <div class="justify-content-center row no-gutters">
     <form action="{% url 'CWBDataApp:AddEmployee'%}" method="post">
       <div class="d-inline-flex flex-column">
-        <h4 id=header>Add/Remove an Employee</h4>
+        <h4 id=header>Add an Employee</h4>
         {% csrf_token %}
 
         <div class="inline-flex inputBox">
@@ -29,11 +29,37 @@
 
         <br>
         <div class="justify-content-center row">
-          <div class="col"><input type="submit" name="enterNewProfile" value="Enter"></div>
-          <div class="col"><input type="submit" name="removeProfile" formaction="{% url 'CWBDataApp:RemoveEmployee'%}" value="Remove"></div>
+          <div class="col"><input type="submit" name="enterNewProfile" value="Add"></div>
         </div>
       </div>
     </form>
   </div>
+
+
+    <div class="justify-content-center row no-gutters">
+      <form action="{% url 'CWBDataApp:RemoveEmployee'%}" method="post">
+        <div class="d-inline-flex flex-column">
+          <h4 id=header>Remove an Employee</h4>
+          {% csrf_token %}
+
+          <div class="inline-flex inputBox">
+            <label for="employeeName">Employees: </label>
+            <select id="employeeName" type="text" name="employeeName">
+              {% if allEmployees %}
+                {% for employee in allEmployees %}
+                    <option value="{{ employee.employeename }}">{{employee.employeename}}</option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+
+
+          <br>
+          <div class="justify-content-center row">
+            <div class="col"><input type="submit" name="removeProfile"  value="Remove"></div>
+          </div>
+        </div>
+      </form>
+    </div>
 
 {% endblock content %}

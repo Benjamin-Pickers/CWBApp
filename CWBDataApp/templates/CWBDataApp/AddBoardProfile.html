@@ -18,7 +18,7 @@
   <div class="justify-content-center row no-gutters">
     <form action="{% url 'CWBDataApp:AddBoardProfile'%}" method="post">
       <div class="d-inline-flex flex-column">
-        <h4 id=header>Add/Remove a Board Profile</h4>
+        <h4 id=header>Add a Board Profile</h4>
         {% csrf_token %}
 
         <div class="inline-flex inputBox">
@@ -26,10 +26,39 @@
           <input id="profile" type="text" name="profile" maxlength="40">
         </div>
 
+        <div class="inline-flex inputBox">
+          <label for="profile">Pcs per Skid: </label>
+          <input id="pcsperskid" type="number" name="pcsperskid" value='0' min='0'>
+        </div>
+
         <br>
         <div class="justify-content-center row">
-          <input type="submit" name="enterNewProfile" value="Enter">
-          <input type="submit" name="removeProfile" formaction="{% url 'CWBDataApp:RemoveBoardProfile'%}" value="Remove">
+          <input type="submit" name="enterNewProfile" value="Add">
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:RemoveBoardProfile'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        <h4 id=header>Remove a Board Profile</h4>
+        {% csrf_token %}
+
+        <div class="inline-flex inputBox">
+          <label for="profile">Board Profile: </label>
+          <select id="profile" type="text" name="profile">
+            {% if allProfiles %}
+              {% for profile in allProfiles %}
+                  <option value="{{ profile.productname }}">{{profile.productname}}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+
+        <br>
+        <div class="justify-content-center row">
+          <input type="submit" name="removeProfile" value="Remove">
         </div>
       </div>
     </form>

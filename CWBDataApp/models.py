@@ -78,7 +78,7 @@ class Materialtesting(models.Model):
     testnumber = models.SmallIntegerField(db_column='TestNumber')  # Field name made lowercase.
     testdate = models.DateField(db_column='TestDate', blank=True, null=True)  # Field name made lowercase.
     labourused = models.CharField(db_column='LabourUsed', max_length=50)  # Field name made lowercase.
-    machinetimeused = models.SmallIntegerField(db_column='MachineTimeUsed')  # Field name made lowercase.
+    machinetimeused = models.DecimalField(db_column='MachineTimeUsed', max_digits=3, decimal_places=1)  # Field name made lowercase.
     productionline = models.SmallIntegerField(db_column='ProductionLine', blank=True, null=True)  # Field name made lowercase.
     materialstested = models.CharField(db_column='MaterialsTested', max_length=200)  # Field name made lowercase.
     othermaterialstested = models.CharField(db_column='OtherMaterialsTested', max_length=200, blank=True, null=True)  # Field name made lowercase.

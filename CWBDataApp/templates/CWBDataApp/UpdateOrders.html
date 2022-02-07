@@ -57,7 +57,8 @@
           <input type="text" name="machine" value="{{machine}}" hidden>
           <br>
 
-            <input type="submit" name="chooseOrder" value="Choose">
+            <input type="submit" name="chooseOrder" value="Update Order">
+            <input type="submit" name="removeOrder" formaction="{% url 'CWBDataApp:RemoveOrder'%}" value="Remove Order">
         </div>
       </form>
     </div>

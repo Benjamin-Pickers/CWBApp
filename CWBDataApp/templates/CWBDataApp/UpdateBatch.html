@@ -1,6 +1,6 @@
 {% extends 'CWBDataApp/base.html'%}
 
-{% block title %} {{'Batch Cost Tracking'}} {% endblock title %}
+{% block title %} {{'Update Batch'}} {% endblock title %}
 
 {% block css %}
   {% load static %}
@@ -9,35 +9,56 @@
 
 {% block content %}
       <div>
-        <h2 id="header"> Batch Cost Tracking Form</h2>
+        <h2 id="header">Update  Batch</h2>
         <p id="descriptionParagraph">
-          Batch cost tracking form. Provide information on batchs made throughout the week. Supplier refers to the company that sent
-          us the material (ie Sudesh, Meltech, KalPoly). If a material used was made by us (premixes) enter 'self' as the supplier
-          and then added the corresponding price/pound value of that material. If material was given to us for free, then enter
-          'free' as the supplier and add 0 as the price/pound value. You do not have to fill all four supplier fields, only the
-          first is mandatory.
+          Update a batch that has already been entered
         </p>
-        <p id="descriptionParagraph">If you want to pull batch data click <a href="{% url 'CWBDataApp:BatchCostQuery'%}">HERE</a></p>
       </div>
 
 <div class="justify-content-center row no-gutters">
-      <form action="{% url 'CWBDataApp:BatchCost'%}" method="post">
+
+  <form action="{% url 'CWBDataApp:UpdateBatch'%}" method="post">
+    <div class="d-inline-flex flex-column">
+      <h4 id=header>Update Batch </h4>
+      {% csrf_token %}
+      <div class="inline-flex inputBox">
+        <label for="batch">Choose Batch To Update: </label>
+        <select id="batch" type="text" name="batch">
+          <option value='None'>None</option>
+          {% if allBatchs %}
+            {% for batch in allBatchs %}
+                <option value="{{ batch.batchname }}">{{batch.batchname}}</option>
+            {% endfor %}
+          {% endif %}
+        </select>
+      </div>
+
+      <div class="inline-flex inputBox">
+        <label for="batch2">Or Enter Batch Name: </label>
+        <input id="batch2" type="text" name="batch2" maxlength="40">
+      </div>
+      <input type="submit" name="enterNewBatch" value="Submit">
+    </div>
+  </form>
+
+    {% if batch %}
+      <form action="{% url 'CWBDataApp:UpdateBatch'%}" method="post">
         <div class="d-inline-flex flex-column">
-          <h4 id=header>Add New Batch </h4>
           {% csrf_token %}
           <div class="inline-flex inputBox">
             <label for="newbatch">Batch Name*: </label>
-            <input id="newBatch" type="text" name="newBatch" maxlength="15">
+            <input id="newBatch" type="text" name="newBatch" maxlength="15" value="{{batch.batchname}}">
           </div>
 
           <div class="inline-flex inputBox">
             <label for="batchDate">Date*: </label>
-            <input id="batchDate" type="date" name="batchDate" min="2021-01-01">
+            <input id="batchDate" type="date" name="batchDate" min="2021-01-01" value="{{batch.batchdate}}">
           </div>
 
           <div class="inline-flex inputBox">
             <label for="profile">Profile Used for Batch*: </label>
             <select id="profile" type="text" name="profile">
+              <option value="{{ batch.profile }}">{{batch.profile}}</option>
               {% if allProfiles %}
                 {% for entry in allProfiles %}
                     <option value="{{ entry.productname }}">{{entry.productname}}</option>
@@ -72,7 +93,7 @@
 
             <div class="inline-flex inputBox">
               <label for="material{{i}}2">Or Custom Material: </label>
-              <input id="material{{i}}2" type="text" name="material{{i}}2" maxlength="40">
+              <input id="material{{i}}2" type="text" name="material{{i}}2" value="{{batch.material}}{{i}}" maxlength="40">
             </div>
 
             <div class="inline-flex inputBox">
@@ -138,5 +159,7 @@
           <input type="submit" name="enterNewBatch" value="Submit">
         </div>
       </form>
-    </div>
+    {% endif %}
+</div>
+
 {% endblock content %}
