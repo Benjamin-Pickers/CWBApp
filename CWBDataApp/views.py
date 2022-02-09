@@ -99,7 +99,7 @@ def BatchCostTracking(request):
             materialInv.save()
 
             #Create new batch entry if this isnt a premix
-            if form['premixed'] == 'No':
+            if form['premix'] == 'No':
                 batch = Batchcost(batchname=form['newBatch'].upper(),
                                         batchdate=form['batchDate'],
                                         totalcost=cost,
