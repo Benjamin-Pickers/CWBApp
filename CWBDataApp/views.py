@@ -88,7 +88,7 @@ def BatchCostTracking(request):
                     else:
                         materials['material'+str(i)] = 'None'
                 except:
-                    return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'error_message' : form["material"+str(i)]+" does not have enough boxes for Material"+str(i)+"",})
+                    return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'dateToday':str(date.today), 'error_message' : form["material"+str(i)]+" does not have enough boxes for Material"+str(i)+"",})
             sup_object = Materialcost.objects.get(pk='Free')
             materialInv = Materialinventory(materialname=form['newBatch'],
                                             supplier=sup_object,
@@ -144,10 +144,10 @@ def BatchCostTracking(request):
                                         profile=form['profile']
                                         )
                 batch.save()
-            return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'dataAcceptedMessage':"Batch Successfully Submitted and material used was removed from inventory"})
+            return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'dateToday':str(date.today), 'dataAcceptedMessage':"Batch Successfully Submitted and material used was removed from inventory"})
 
 
-    return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials)})
+    return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'dateToday':date.today().isoformat()})
 
 ###########################################################UPDATE BATCH
 def UpdateBatch(request):
@@ -166,12 +166,12 @@ def UpdateBatch(request):
         try:
             #Try and grab existing batch, throws eception if failed
             batch = Batchcost.objects.get(pk=batchname)
-
+            batchDate = batch.batchdate.isoformat()
             #Get values need for batch
             allProfiles = Productprofiles.objects.all()
             allColours = Colour.objects.all()
             allMaterials= Materialinventory.objects.all()
-            return render(request, 'CWBDataApp/UpdateBatch.html', {'allBatchs':allBatchs, 'allProfiles':allProfiles, 'allColours':allColours, 'allMaterials':allMaterials, 'range':range(1, num_of_materials), 'batch':batch})
+            return render(request, 'CWBDataApp/UpdateBatch.html', {'allBatchs':allBatchs, 'allProfiles':allProfiles, 'allColours':allColours, 'allMaterials':allMaterials, 'range':range(1, num_of_materials), 'batch':batch, 'batchDate':batchDate})
         except:
             return render(request, 'CWBDataApp/UpdateBatch.html', {'allBatchs':allBatchs})
 
@@ -376,8 +376,9 @@ def ProductInventory(request):
             #If an order exists containing this product, then update its inventorized pieces
             if orderDict:
                 prodProf = Productprofiles.objects.get(pk=form['prodName'])
+                prodAv = Profileaverages.objects.get(pk=form['prodName'])
                 numPieces = int(Decimal(form['numSkids']) * Decimal(prodProf.pcsperskid))
-                Order.UpdateOrderInventory(orderDict['order'], numPieces, orderDict['orderSheet'])
+                Order.UpdateOrderInventory(orderDict['order'], numPieces, orderDict['orderSheet'], prodProf, prodAv)
 
             numSkids = int(form['numSkids'])
 
@@ -425,7 +426,7 @@ def ProductInventoryUpdateSkids(request):
                 render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message': 'The number of Skids entered would leave the inventory with negative skids. Please enter a different number.'})
 
             prodProf = Productprofiles.objects.get(pk=form['prodName'])
-            prodAv = Productaverages.objects.get(pk=form['prodName'])
+            prodAv = Profileaverages.objects.get(pk=form['prodName'])
             differenceInPieces = numSkids * Decimal(prodProf.pcsperskid)
             #See if an order exists with this product
             Order = OrderFunc()
@@ -489,14 +490,14 @@ def ProductInventoryShipped(request):
         if Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).exists():
             prod = Productinventory.objects.get(productname=form['prodName'], colour=form['colour'])
 
-            PiecesRemaining = prod.numberofskids - decimal(form['numSkids'])
+            PiecesRemaining = prod.numberofskids - Decimal(form['numSkids'])
 
             #Check if there's an order with this product
             Order = OrderFunc()
             orderDict = Order.FindOrder(form['prodName'], form['colour'])
             #If an order exists with this product then update its inventorized pieces
             if orderDict:
-                returnMessage = Order.updateOrderSent(orderDict.order, Decimal(form['numSkids']), orderDict.orderSheet)
+                returnMessage = Order.updateOrderSent(orderDict.get('order'), Decimal(form['numSkids']), orderDict.get('orderSheet'))
 
                 #If an error occured during the update of the order, then exit and send error message
                 if returnMessage != '':

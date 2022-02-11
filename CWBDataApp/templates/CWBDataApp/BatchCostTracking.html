@@ -32,7 +32,7 @@
 
           <div class="inline-flex inputBox">
             <label for="batchDate">Date*: </label>
-            <input id="batchDate" type="date" name="batchDate" min="2021-01-01">
+            <input id="batchDate" type="date" name="batchDate" min="2021-01-01" value={{dateToday}}>
           </div>
 
           <div class="inline-flex inputBox">
@@ -64,7 +64,7 @@
                 <option value="None">None</option>
                 {% if allMaterials %}
                   {% for entry in allMaterials %}
-                      <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
+                      <option value="{{ entry.materialname }}">{{entry.materialname}} (${{ entry.priceperpound }}, {{entry.numberofboxes}} boxes)</option>
                   {% endfor %}
                 {% endif %}
               </select>

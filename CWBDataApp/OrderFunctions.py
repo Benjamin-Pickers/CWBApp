@@ -1,6 +1,7 @@
 from .models import Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Productprofiles
 from datetime import date, timedelta
 import math
+from decimal import Decimal
 
 class OrderFunctions():
 
@@ -80,9 +81,9 @@ class OrderFunctions():
     def UpdateOrderInventory(self, order, pcsinventorized, orderSheet, prodProf, prodAv):
         order.pcsinventorized += pcsinventorized
         order.pcsremaining -= pcsinventorized
-        order.skidsremaining = order.pcsremaining / int(prodProf.pcsperskid)
+        order.skidsremaining = Decimal(order.pcsremaining) / Decimal(prodProf.pcsperskid)
         order.lengthofrunindays = Decimal(order.skidsremaining) / Decimal(prodAv.averageskidsperday)
-        endDate = addDate(startdate, math.ceil(order.lengthofrunindays))
+        endDate = self.addDate(order.projectedstartdate, math.ceil(order.lengthofrunindays))
 
         if endDate != order.projectedenddate:
             order.projectedenddate = endDate
@@ -90,7 +91,7 @@ class OrderFunctions():
             lowerOrders = orderSheet.filter(priorityrank__gt = (int(order.priorityrank))).order_by('priorityrank')
             for item in lowerOrders:
                 item.projectedstartdate = endDate
-                item.projectedenddate = addDate(endDate, math.ceil(item.lengthofrunindays))
+                item.projectedenddate = self.addDate(endDate, math.ceil(item.lengthofrunindays))
                 item.save()
                 endDate = item.projectedenddate
 

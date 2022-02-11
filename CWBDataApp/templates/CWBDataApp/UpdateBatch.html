@@ -52,7 +52,7 @@
 
           <div class="inline-flex inputBox">
             <label for="batchDate">Date*: </label>
-            <input id="batchDate" type="date" name="batchDate" min="2021-01-01" value="{{batch.batchdate}}">
+            <input id="batchDate" type="date" name="batchDate" min="2021-01-01" value="{{batchDate}}">
           </div>
 
           <div class="inline-flex inputBox">
@@ -76,43 +76,379 @@
           </div>
           <br>
 
-          {% for i in range %}
-            <h4 id="header">Material {{i}} </h4>
+          <!-- Material 1 -->
+          <h4 id="header">Material 1 </h4>
 
-            <div class="inline-flex inputBox">
-              <label for="material{{i}}">Material Name*: </label>
-              <select id="material{{i}}" type="text" name="material{{i}}">
-                <option value="None">None</option>
-                {% if allMaterials %}
-                  {% for entry in allMaterials %}
-                      <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
-                  {% endfor %}
-                {% endif %}
-              </select>
-            </div>
+          <div class="inline-flex inputBox">
+            <label for="material1">Material Name*: </label>
+            <select id="material1" type="text" name="material1">
+              <option value="None">None</option>
+              {% if allMaterials %}
+                {% for entry in allMaterials %}
+                    <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
 
-            <div class="inline-flex inputBox">
-              <label for="material{{i}}2">Or Custom Material: </label>
-              <input id="material{{i}}2" type="text" name="material{{i}}2" value="{{batch.material}}{{i}}" maxlength="40">
-            </div>
+          <div class="inline-flex inputBox">
+            <label for="material12">Or Custom Material: </label>
+            <input id="material12" type="text" name="material12" value="{{batch.material1}}" maxlength="40">
+          </div>
 
-            <div class="inline-flex inputBox">
-              <label for="weight{{i}}">Weight {{i}}*: </label>
-              <input id="weight{{i}}" type="number" name="weight{{i}}" {% if i == 1 %} value="1" min="1" {% else %} value="0" min="0"{% endif %}>
-            </div>
+          <div class="inline-flex inputBox">
+            <label for="weight1">Weight 1*: </label>
+            <input id="weight1" type="number" name="weight1" value="{{batch.weight1}}" min=0>
+          </div>
 
-            <div class="inline-flex inputBox">
-              <label for="value{{i}}">Price/Pound: </label>
-              <input id="value{{i}}" type="number" name="value{{i}}" value="0" step="any" min="0">
-            </div>
+          <div class="inline-flex inputBox">
+            <label for="value1">Price/Pound: </label>
+            <input id="value1" type="number" name="value1" value="{{batch.value1}}" step="any" min="0">
+          </div>
 
-            <div class="inline-flex inputBox">
-              <label for="numofBoxes{{i}}">Number of Boxes: </label>
-              <input id="numofBoxes{{i}}" type="number" name="numofBoxes{{i}}" value="1" step="0.5" min="1">
-            </div>
+          <div class="inline-flex inputBox">
+            <label for="numofBoxes1">Number of Boxes: </label>
+            <input id="numofBoxes1" type="number" name="numofBoxes1" value="1" step="0.5" min="1">
+          </div>
 
-            <br>
-          {% endfor %}
+          <br>
+
+          <!-- Material 2 -->
+          <h4 id="header">Material 2 </h4>
+
+          <div class="inline-flex inputBox">
+            <label for="material2">Material Name*: </label>
+            <select id="material2" type="text" name="material2">
+              <option value="None">None</option>
+              {% if allMaterials %}
+                {% for entry in allMaterials %}
+                    <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="material22">Or Custom Material: </label>
+            <input id="material22" type="text" name="material22" value="{{batch.material2}}" maxlength="40">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="weight2">Weight 2*: </label>
+            <input id="weight2" type="number" name="weight2" value="{{batch.weight2}}" min=0>
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="value2">Price/Pound: </label>
+            <input id="value2" type="number" name="value2" value="{{batch.value2}}" step="any" min="0">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="numofBoxes2">Number of Boxes: </label>
+            <input id="numofBoxes2" type="number" name="numofBoxes2" value="1" step="0.5" min="1">
+          </div>
+
+          <br>
+
+          <!-- Material 3 -->
+          <h4 id="header">Material 3 </h4>
+
+          <div class="inline-flex inputBox">
+            <label for="material3">Material Name*: </label>
+            <select id="material3" type="text" name="material3">
+              <option value="None">None</option>
+              {% if allMaterials %}
+                {% for entry in allMaterials %}
+                    <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="material32">Or Custom Material: </label>
+            <input id="material32" type="text" name="material32" value="{{batch.material3}}" maxlength="40">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="weight3">Weight 3*: </label>
+            <input id="weight3" type="number" name="weight3" value="{{batch.weight3}}" min=0>
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="value3">Price/Pound: </label>
+            <input id="value3" type="number" name="value3" value="{{batch.value3}}" step="any" min="0">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="numofBoxes3">Number of Boxes: </label>
+            <input id="numofBoxes3" type="number" name="numofBoxes3" value="1" step="0.5" min="1">
+          </div>
+
+          <br>
+
+          <!-- Material 4 -->
+          <h4 id="header">Material 4 </h4>
+
+          <div class="inline-flex inputBox">
+            <label for="material4">Material Name*: </label>
+            <select id="material4" type="text" name="material4">
+              <option value="None">None</option>
+              {% if allMaterials %}
+                {% for entry in allMaterials %}
+                    <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="material42">Or Custom Material: </label>
+            <input id="material42" type="text" name="material42" value="{{batch.material4}}" maxlength="40">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="weight4">Weight 4*: </label>
+            <input id="weight4" type="number" name="weight4" value="{{batch.weight4}}" min=0>
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="value4">Price/Pound: </label>
+            <input id="value4" type="number" name="value4" value="{{batch.value4}}" step="any" min="0">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="numofBoxes4">Number of Boxes: </label>
+            <input id="numofBoxes4" type="number" name="numofBoxes4" value="1" step="0.5" min="1">
+          </div>
+
+          <br>
+
+          <!-- Material 5 -->
+          <h4 id="header">Material 5 </h4>
+
+          <div class="inline-flex inputBox">
+            <label for="material5">Material Name*: </label>
+            <select id="material5" type="text" name="material5">
+              <option value="None">None</option>
+              {% if allMaterials %}
+                {% for entry in allMaterials %}
+                    <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="material52">Or Custom Material: </label>
+            <input id="material52" type="text" name="material52" value="{{batch.material5}}" maxlength="40">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="weight5">Weight 5*: </label>
+            <input id="weight5" type="number" name="weight5" value="{{batch.weight5}}" min=0>
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="value5">Price/Pound: </label>
+            <input id="value5" type="number" name="value5" value="{{batch.value5}}" step="any" min="0">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="numofBoxes5">Number of Boxes: </label>
+            <input id="numofBoxes5" type="number" name="numofBoxes5" value="1" step="0.5" min="1">
+          </div>
+
+          <br>
+
+          <!-- Material 6 -->
+          <h4 id="header">Material 6 </h4>
+
+          <div class="inline-flex inputBox">
+            <label for="material6">Material Name*: </label>
+            <select id="material6" type="text" name="material6">
+              <option value="None">None</option>
+              {% if allMaterials %}
+                {% for entry in allMaterials %}
+                    <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="materia62">Or Custom Material: </label>
+            <input id="material62" type="text" name="material62" value="{{batch.material6}}" maxlength="40">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="weight6">Weight 6*: </label>
+            <input id="weight6" type="number" name="weight6" value="{{batch.weight6}}" min=0>
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="value6">Price/Pound: </label>
+            <input id="value6" type="number" name="value6" value="{{batch.value6}}" step="any" min="0">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="numofBoxes6">Number of Boxes: </label>
+            <input id="numofBoxes6" type="number" name="numofBoxes6" value="1" step="0.5" min="1">
+          </div>
+
+          <br>
+
+          <!-- Material 7 -->
+          <h4 id="header">Material 7 </h4>
+
+          <div class="inline-flex inputBox">
+            <label for="material7">Material Name*: </label>
+            <select id="material7" type="text" name="material7">
+              <option value="None">None</option>
+              {% if allMaterials %}
+                {% for entry in allMaterials %}
+                    <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+
+          <!-- -->
+          <div class="inline-flex inputBox">
+            <label for="material72">Or Custom Material: </label>
+            <input id="material72" type="text" name="material72" value="{{batch.material7}}" maxlength="40">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="weight7">Weight 7*: </label>
+            <input id="weight7" type="number" name="weight7" value="{{batch.weight7}}" min=0>
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="value7">Price/Pound: </label>
+            <input id="value7" type="number" name="value7" value="{{batch.value7}}" step="any" min="0">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="numofBoxes7">Number of Boxes: </label>
+            <input id="numofBoxes7" type="number" name="numofBoxes7" value="1" step="0.5" min="1">
+          </div>
+
+          <br>
+
+          <!-- Material 8 -->
+          <h4 id="header">Material 8 </h4>
+
+          <div class="inline-flex inputBox">
+            <label for="material8">Material Name*: </label>
+            <select id="material8" type="text" name="material8">
+              <option value="None">None</option>
+              {% if allMaterials %}
+                {% for entry in allMaterials %}
+                    <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+
+          <!-- -->
+          <div class="inline-flex inputBox">
+            <label for="material82">Or Custom Material: </label>
+            <input id="material82" type="text" name="material82" value="{{batch.material8}}" maxlength="40">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="weight8">Weight 8*: </label>
+            <input id="weight8" type="number" name="weight8" value="{{batch.weight8}}" min=0>
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="value8">Price/Pound: </label>
+            <input id="value8" type="number" name="value8" value="{{batch.value8}}" step="any" min="0">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="numofBoxes8">Number of Boxes: </label>
+            <input id="numofBoxes8" type="number" name="numofBoxes8" value="1" step="0.5" min="1">
+          </div>
+
+          <br>
+
+          <!-- Material 9 -->
+          <h4 id="header">Material 9 </h4>
+
+          <div class="inline-flex inputBox">
+            <label for="material9">Material Name*: </label>
+            <select id="material9" type="text" name="material9">
+              <option value="None">None</option>
+              {% if allMaterials %}
+                {% for entry in allMaterials %}
+                    <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+
+          <!-- -->
+          <div class="inline-flex inputBox">
+            <label for="material92">Or Custom Material: </label>
+            <input id="material92" type="text" name="material92" value="{{batch.material9}}" maxlength="40">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="weight9">Weight 9*: </label>
+            <input id="weight9" type="number" name="weight9" value="{{batch.weight9}}" min=0>
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="value9">Price/Pound: </label>
+            <input id="value9" type="number" name="value9" value="{{batch.value9}}" step="any" min="0">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="numofBoxes9">Number of Boxes: </label>
+            <input id="numofBoxes9" type="number" name="numofBoxes9" value="1" step="0.5" min="1">
+          </div>
+
+          <br>
+
+          <!-- Material 10 -->
+          <h4 id="header">Material 10 </h4>
+
+          <div class="inline-flex inputBox">
+            <label for="material10">Material Name*: </label>
+            <select id="material10" type="text" name="material10">
+              <option value="None">None</option>
+              {% if allMaterials %}
+                {% for entry in allMaterials %}
+                    <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+
+          <!-- -->
+          <div class="inline-flex inputBox">
+            <label for="material102">Or Custom Material: </label>
+            <input id="material102" type="text" name="material102" value="{{batch.material10}}" maxlength="40">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="weight10">Weight 10*: </label>
+            <input id="weight10" type="number" name="weight10" value="{{batch.weight10}}" min=0>
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="value10">Price/Pound: </label>
+            <input id="value10" type="number" name="value10" value="{{batch.value10}}" step="any" min="0">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="numofBoxes10">Number of Boxes: </label>
+            <input id="numofBoxes10" type="number" name="numofBoxes10" value="1" step="0.5" min="1">
+          </div>
+
+          <br>
 
 
           <h4 id="header"> Colour & Foam </h4>
@@ -120,7 +456,7 @@
           <div class="inline-flex inputBox">
             <label for="colour">Colour: </label>
             <select id="colour" type="text" name="colour">
-              <option value="None"> </option>
+              <option value="{{batch.colour}}"> </option>
               {% if allColours %}
                 {% for entry in allColours %}
                     <option value="{{ entry.colour }}">{{ entry.colour }}</option>
@@ -131,19 +467,19 @@
 
           <div class="inline-flex inputBox">
             <label for="colourWeight">Colour Weight: </label>
-            <input id="colourWeight" type="number" name="colourWeight" value="0" step="any">
+            <input id="colourWeight" type="number" name="colourWeight" value="{{batch.colourweight}}" step="any">
           </div>
 
           <div class="inline-flex inputBox">
             <label for="colourPrice">Colour Price/Pound: </label>
-            <input id="colourPrice" type="number" name="colourPrice" value="0" step="any">
+            <input id="colourPrice" type="number" name="colourPrice" value="{{batch.colourvalue}}" step="any">
           </div>
 
           <br>
 
           <div class="inline-flex inputBox">
             <label for="foamWeight">Foam Weight: </label>
-            <input id="foamWeight" type="number" name="foamWeight" value="0" step="any">
+            <input id="foamWeight" type="number" name="foamWeight" value="{{batch.foamweight}}" step="any">
           </div>
 
           <div class="inline-flex inputBox">
@@ -153,7 +489,7 @@
 
           <div class="inline-flex inputBox">
             <label for="shredWeight">TotalShredWeight: </label>
-            <input id="shredWeight" type="number" name="shredWeight" value="0">
+            <input id="shredWeight" type="number" name="shredWeight" value="{{batch.totalshredweight}}">
           </div>
 
           <input type="submit" name="enterNewBatch" value="Submit">
