@@ -89,14 +89,21 @@ def BatchCostTracking(request):
                         materials['material'+str(i)] = 'None'
                 except:
                     return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'dateToday':str(date.today), 'error_message' : form["material"+str(i)]+" does not have enough boxes for Material"+str(i)+"",})
+
             sup_object = Materialcost.objects.get(pk='Free')
-            materialInv = Materialinventory(materialname=form['newBatch'],
-                                            supplier=sup_object,
-                                            numberofboxes=numberofboxes,
-                                            locations='None',
-                                            premixed='True',
-                                            priceperpound=price)
-            materialInv.save()
+
+            #If batch exists in inventory then add the number of boxes to it, this SHOULD NOT HAPPEN THOUGH
+            if Materialinventory.objects.filter(materialname=form['newBatch']).exists():
+                materialInv .Materialinventory.objects.get(pk=form['newBatch'])
+                materialInv.numberofboxes += numberofboxes
+            else:
+                materialInv = Materialinventory(materialname=form['newBatch'],
+                                                supplier=sup_object,
+                                                numberofboxes=numberofboxes,
+                                                locations='None',
+                                                premixed='True',
+                                                priceperpound=price)
+                materialInv.save()
 
             #Create new batch entry if this isnt a premix
             if form['premix'] == 'No':
@@ -582,45 +589,52 @@ def MaterialInventoryExcel(request):
 ###########################################################MATERIAL INVENTORY UPDATE
 def MaterialInventoryUpdate(request):
 
+    allMaterials = Materialinventory.objects.all()
+
     if request.method == 'POST':
         form = request.POST
         try:
-            if Materialinventory.objects.get(pk=form['matName'].upper()):
+            if form['matName2'] != 'None':
+                mat_object = Materialinventory.objects.get(pk=form['matName2'].upper())
+                return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'allMaterials':allMaterials, 'Forms':True, 'Material':mat_object})
+            elif Materialinventory.objects.get(pk=form['matName'].upper()):
                 mat_object = Materialinventory.objects.get(pk=form['matName'].upper())
-                return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'Forms':True, 'Material':mat_object})
+                return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'allMaterials':allMaterials, 'Forms':True, 'Material':mat_object})
             else:
-                return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'error_message':"Material does not exist in inventory, check your spelling"})
+                return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'allMaterials':allMaterials, 'error_message':"Material does not exist in inventory, check your spelling"})
 
         except:
-            return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'error_message':"This material currently does not exist in inventory. If you wish to enter its data, press the link above"})
+            return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'allMaterials':allMaterials, 'error_message':"This material currently does not exist in inventory. If you wish to enter its data, press the link above"})
 
 
-    return render(request, 'CWBDataApp/MaterialInventoryUpdate.html')
+    return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'allMaterials':allMaterials})
 
 ###########################################################MATERIAL INVENTORY UPDATE NUMBER of SKIDS
 def MaterialInventoryUpdateNumSkids(request):
+
+    allMaterials = Materialinventory.objects.all()
 
     if request.method == 'POST':
         form = request.POST
         try:
             if form['numBoxes'] == '' or float(form['numBoxes']) < 0 or float(form['price']) < 0:
-                return render(request, 'CWBDataApp/MaterialInventoryUpdate.html',{'error_message':"Cannot enter zero for number of boxes"})
+                return render(request, 'CWBDataApp/MaterialInventoryUpdate.html',{'allMaterials':allMaterials, 'error_message':"Cannot enter less than zero for number of boxes"})
             elif float(form['numBoxes']) == 0:
                 mat_object = Materialinventory.objects.get(pk=form['matName'].upper())
                 mat_object.delete()
-                return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'dataAcceptedMessage':"Material Was Successfully Deleted Since Zero Boxes Remained"})
+                return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'allMaterials':allMaterials, 'dataAcceptedMessage':"Material Was Successfully Deleted Since Zero Boxes Remained"})
 
             mat_object = Materialinventory.objects.get(pk=form['matName'].upper())
             mat_object.numberofboxes = form['numBoxes']
             mat_object.locations = form['location']
             mat_object.priceperpound = form['price']
             mat_object.save()
-            return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'dataAcceptedMessage':"Material Updated"})
+            return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'allMaterials':allMaterials, 'dataAcceptedMessage':"Material Updated"})
         except:
-            return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'error_message':"Could not update material, try again"})
+            return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'allMaterials':allMaterials, 'error_message':"Could not update material, try again"})
 
 
-    return render(request, 'CWBDataApp/MaterialInventoryUpdate.html')
+    return render(request, 'CWBDataApp/MaterialInventoryUpdate.html', {'allMaterials':allMaterials})
 
 ###########################################################ORDER SHEET MACHINE 1
 def OrderSheetsMachine1(request):

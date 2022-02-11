@@ -23,12 +23,24 @@
         {% csrf_token %}
 
         <div class="inline-flex inputBox">
-          <label for="matName">Material Name*: </label>
+          <label for="matName2">Choose a Material: </label>
+          <select id="matName2" type="text" name="matName2">
+            <option value="None">None</option>
+            {% if allMaterials %}
+              {% for entry in allMaterials %}
+                  <option value="{{ entry.materialname }}">{{entry.materialname}} (${{ entry.priceperpound }}, {{entry.numberofboxes}} boxes)</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for="matName">or Enter Name Here: </label>
           <input id="matName" type="text" name="matName" maxlength="30">
         </div>
 
         <br>
-        <input type="submit" name="enterNewBatch" value="Submit">
+        <input type="submit" name="enterNewBatch" value="Search">
       </div>
     </form>
   </div>
@@ -38,6 +50,8 @@
     <form action="{% url 'CWBDataApp:MaterialInventoryUpdateNumSkids'%}" method="post">
       <div class="d-inline-flex flex-column">
         {% csrf_token %}
+
+        <h3> Update Data for {{Material.materialname}}</h3>
 
         <div class="inline-flex inputBox">
           <label for="numBoxes">Number of Boxes: </label>
