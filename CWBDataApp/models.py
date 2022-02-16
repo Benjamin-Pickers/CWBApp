@@ -220,7 +220,7 @@ class Productinventory(models.Model):
     colour = models.CharField(db_column='colour', max_length=15)
     embossed = models.BooleanField(db_column='Embossed')
     doublesided = models.BooleanField(db_column='DoubleSided')
-    numberofskids = models.DecimalField(db_column='NumberOfSkids', max_digits=7, decimal_places=1)
+    numberofskids = models.DecimalField(db_column='NumberOfSkids', max_digits=7, decimal_places=2)
 
     class Meta:
         managed = False

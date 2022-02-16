@@ -40,9 +40,11 @@
       <input type="submit" name="enterNewBatch" value="Submit">
     </div>
   </form>
+</div>
 
     {% if batch %}
-      <form action="{% url 'CWBDataApp:UpdateBatch'%}" method="post">
+    <div class="justify-content-center row no-gutters">
+      <form action="{% url 'CWBDataApp:ChangeBatch'%}" method="post">
         <div class="d-inline-flex flex-column">
           {% csrf_token %}
           <div class="inline-flex inputBox">
@@ -53,6 +55,10 @@
           <div class="inline-flex inputBox">
             <label for="batchDate">Date*: </label>
             <input id="batchDate" type="date" name="batchDate" min="2021-01-01" value="{{batchDate}}">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="batchPrice">Batch Price Per Pound*: {{batch.priceperpound}} </label>
           </div>
 
           <div class="inline-flex inputBox">
@@ -456,7 +462,7 @@
           <div class="inline-flex inputBox">
             <label for="colour">Colour: </label>
             <select id="colour" type="text" name="colour">
-              <option value="{{batch.colour}}"> </option>
+              <option value="{{batch.colour}}"> {{batch.colour}}</option>
               {% if allColours %}
                 {% for entry in allColours %}
                     <option value="{{ entry.colour }}">{{ entry.colour }}</option>

@@ -71,8 +71,6 @@ def BatchCostTracking(request):
             #If a custom material was entered do not remove from inventory
             for i in range(1, num_of_materials):
                 #Sum total number of boxes
-
-
                 try:
                     if form['material'+str(i)] != 'None':
                         box = Materialinventory.objects.get(pk=form['material'+str(i)])
@@ -94,10 +92,10 @@ def BatchCostTracking(request):
 
             #If batch exists in inventory then add the number of boxes to it, this SHOULD NOT HAPPEN THOUGH
             if Materialinventory.objects.filter(materialname=form['newBatch']).exists():
-                materialInv .Materialinventory.objects.get(pk=form['newBatch'])
+                materialInv = Materialinventory.objects.get(pk=form['newBatch'])
                 materialInv.numberofboxes += numberofboxes
             else:
-                materialInv = Materialinventory(materialname=form['newBatch'],
+                materialInv = Materialinventory(materialname=form['newBatch'].upper(),
                                                 supplier=sup_object,
                                                 numberofboxes=numberofboxes,
                                                 locations='None',
@@ -184,6 +182,159 @@ def UpdateBatch(request):
 
     return render(request, 'CWBDataApp/UpdateBatch.html', {'allBatchs':allBatchs})
 
+def ChangeBatch(request):
+    allBatchs = Batchcost.objects.all()
+
+    if request.method == 'POST':
+
+        form = request.POST
+
+        allProfiles = Productprofiles.objects.all()
+        allColours = Colour.objects.all()
+        allMaterials= Materialinventory.objects.all()
+
+        batch = Batchcost.objects.get(pk=form['newBatch'].upper())
+
+        #Calculate total price, weight and price/pound
+        cost = 0
+        weight = 0
+        weightDict = {}
+        valueDict = {}
+        for i in range(1, num_of_materials):
+
+            #Check if empty values exists, fill in blanks with 0
+            if form['weight'+ str(i)] == '':
+                weightDict['weight'+ str(i)] = 0
+            else:
+                weightDict['weight'+ str(i)] = form['weight'+ str(i)]
+
+            if form['value'+ str(i)] == '':
+                valueDict['value'+ str(i)] = 0
+            else:
+                valueDict['value'+ str(i)] = form['value'+ str(i)]
+
+            #Sum up cost of materials
+            cost += int(weightDict['weight'+ str(i)]) * Decimal(valueDict['value'+ str(i)])
+
+        #Add cost of colour and foam
+        cost += (Decimal(form['colourWeight']) * Decimal(form['colourPrice'])) + (Decimal(form['foamWeight']) * Decimal(form['foamPrice']))
+        cost=round(cost, 2)
+
+        for i in range(1, num_of_materials):
+            weight += int(weightDict['weight'+str(i)])
+        weight += Decimal(form['colourWeight']) + Decimal(form['foamWeight'])
+        #Check if weight was entered as 0, throw error if it is
+        if weight == 0:
+            return render(request, 'CWBDataApp/UpdateBatch.html', {'allBatchs':allBatchs, 'allProfiles':allProfiles, 'allColours':allColours, 'allMaterials':allMaterials, 'range':range(1, num_of_materials), 'batch':batch, 'batchDate':form['batchDate'], 'error_message':'Weights cannot be zero, please enter a new value' })
+
+        price = round(cost/weight, 2)
+        #Check if theres enough boxes before we subtract from inventory
+        for i in range(1, num_of_materials):
+            try:
+                if form['material'+str(i)] != 'None':
+                    box = Materialinventory.objects.get(pk=form['material'+str(i)])
+
+                    if box.numberofboxes < Decimal(form['numofBoxes'+str(i)]):
+                        return render(request, 'CWBDataApp/UpdateBatch.html', {'allBatchs':allBatchs, 'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'batch':batch, 'batchDate':form['batchDate'], 'error_message' : form["material"+str(i)]+" does no have enough boxes for Material"+str(i)+"",})
+            except:
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allBatchs':allBatchs, 'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'batch':batch, 'batchDate':form['batchDate'], 'error_message' : "Couldn't find box in inventory",})
+
+        materials = {}
+        numberofboxes = 0
+        #Remove boxes from inventory if material value given was from INVENTORY
+        #If a custom material was entered do not remove from inventory
+        for i in range(1, num_of_materials):
+            #Sum total number of boxes
+            try:
+                #Grab current materials weight from inventory
+                weightBatch = getattr(batch, 'weight'+str(i))
+
+                #Check if a new material was added or if the weight increased from the current weight, this indicates we should remove boxes from inventory
+                if form['material'+str(i)] != 'None' or int(form['weight'+str(i)]) != weightBatch :
+                    if  Materialinventory.objects.filter(pk=form['material'+str(i)]).exists():
+                        box = Materialinventory.objects.get(pk=form['material'+str(i)])
+                        box.numberofboxes -= Decimal(form['numofBoxes'+str(i)])
+                        box.save()
+                        if box.numberofboxes <=0:
+                            box.delete()
+                    materials['material'+str(i)] = form['material'+str(i)]
+                    numberofboxes += Decimal(form['numofBoxes'+str(i)])
+                elif form['material'+str(i)+'2'] != '':
+                    materials['material'+str(i)] = form['material'+str(i)+'2']
+                    numberofboxes += Decimal(form['numofBoxes'+str(i)])
+                else:
+                    materials['material'+str(i)] = 'None'
+            except:
+                return render(request, 'CWBDataApp/UpdateBatch.html', {'allBatchs':allBatchs,'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'batch':batch, 'batchDate':form['batchDate'], 'error_message' : form["material"+str(i)]+" does not have enough boxes for Material"+str(i)+"",})
+
+        sup_object = Materialcost.objects.get(pk='Free')
+
+        #If batch exists in inventory then add the number of boxes to it, this SHOULD HAPPEN
+        if Materialinventory.objects.filter(materialname=form['newBatch']).exists():
+            materialInv= Materialinventory.objects.get(pk=form['newBatch'])
+            materialInv.numberofboxes = numberofboxes
+            materialInv.priceperpounds = price
+            materialInv.save()
+        else:
+            materialInv = Materialinventory(materialname=form['newBatch'].upper(),
+                                            supplier=sup_object,
+                                            numberofboxes=numberofboxes,
+                                            locations='None',
+                                            premixed='True',
+                                            priceperpound=price)
+            materialInv.save()
+
+        #Create new batch entry if this isnt a premix
+        if form['premix'] == 'No':
+
+            batch.batchdate=form['batchDate']
+            batch.totalcost=cost
+            batch.totalweight=weight
+            batch.priceperpound=price
+            batch.material1=materials['material1']
+            batch.weight1=weightDict['weight1']
+            batch.value1=valueDict['value1']
+            batch.material2=materials['material2']
+            batch.weight2=weightDict['weight2']
+            batch.value2=valueDict['value2']
+            batch.material3=materials['material3']
+            batch.weight3=weightDict['weight3']
+            batch.value3=valueDict['value3']
+            batch.material4=materials['material4']
+            batch.weight4=weightDict['weight4']
+            batch.value4=valueDict['value4']
+            batch.material5=materials['material5']
+            batch.weight5=weightDict['weight5']
+            batch.value5=valueDict['value5']
+            batch.material6=materials['material6']
+            batch.weight6=weightDict['weight6']
+            batch.value6=valueDict['value6']
+            batch.material7=materials['material7']
+            batch.weight7=weightDict['weight7']
+            batch.value7=valueDict['value7']
+            batch.material8=materials['material8']
+            batch.weight8=weightDict['weight8']
+            batch.value8=valueDict['value8']
+            batch.material9=materials['material9']
+            batch.weight9=weightDict['weight9']
+            batch.value9=valueDict['value9']
+            batch.material10=materials['material10']
+            batch.weight10=weightDict['weight10']
+            batch.value10=valueDict['value10']
+            batch.colour=form['colour']
+            batch.colourweight=form['colourWeight']
+            batch.colourvalue=form['colourPrice']
+            batch.foamweight=form['foamWeight']
+            batch.foamvalue=form['foamPrice']
+            batch.totalshredweight=form['shredWeight']
+            batch.profile=form['profile']
+
+            batch.save()
+        return render(request, 'CWBDataApp/UpdateBatch.html', {'allBatchs':allBatchs, 'dataAcceptedMessage':"Batch "+form['newBatch']+" was successfully updated"})
+
+
+
+    return render(request, 'CWBDataApp/UpdateBatch.html', {'allBatchs':allBatchs})
 ###########################################################BATCH COST TRACKING QUERY
 def BatchCostQuery(request):
 
@@ -380,43 +531,42 @@ def ProductInventory(request):
             #Check to see if there is an order that contains this product
             Order = OrderFunc()
             orderDict = Order.FindOrder(form['prodName'], form['colour'])
+            prodProf = Productprofiles.objects.get(pk=form['prodName'])
             #If an order exists containing this product, then update its inventorized pieces
             if orderDict:
-                prodProf = Productprofiles.objects.get(pk=form['prodName'])
                 prodAv = Profileaverages.objects.get(pk=form['prodName'])
-                numPieces = int(Decimal(form['numSkids']) * Decimal(prodProf.pcsperskid))
+                numPieces = int(Decimal(form['numSkids']) * Decimal(prodProf.pcsperskid)) + int(form['pcs'])
                 Order.UpdateOrderInventory(orderDict['order'], numPieces, orderDict['orderSheet'], prodProf, prodAv)
 
-            numSkids = int(form['numSkids'])
+            #Turn numofskids and extra peices into a decimal number
+            numSkids = Decimal(form['numSkids']) + (int(form['pcs']) / Decimal(prodProf.pcsperskid))
 
             newProd = Productinventory(productname=form['prodName'],
                                        colour=form['colour'],
                                        embossed=form['embossed'],
                                        doublesided=form['doubleSide'],
-                                       numberofskids=form['numSkids'])
+                                       numberofskids=numSkids)
             newProd.save()
             return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'allColours':allColours, 'dataAcceptedMessage':"Data Successfully Submitted"})
     return render(request, 'CWBDataApp/ProductInventory.html', {'allProfiles':allProfiles, 'allColours':allColours})
 
 ###########################################################PRODUCT INVENTORY UPDATE
 def ProductInventoryUpdate(request):
-    allProfiles= Productprofiles.objects.all()
-    allColours = Colour.objects.all()
+    allProduct = Productinventory.objects.all()
 
     if request.method == 'POST':
         form = request.POST
 
-        if Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).exists():
-            prod_object = Productinventory.objects.get(productname=form['prodName'], colour=form['colour'])
-            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'Forms':True, 'prod_object':prod_object})
+        if Productinventory.objects.filter(pk=form['prodName']).exists():
+            prod_object = Productinventory.objects.get(pk=form['prodName'])
+            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProduct':allProduct, 'Forms':True, 'prod_object':prod_object})
         else:
-            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message': ""+ form['colour'] + " " + form['prodName'] +" does not exist in inventory. If you wish to enter its data, press the Add Product tab"})
-    return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours})
+            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProduct':allProduct, 'error_message': ""+ form['colour'] + " " + form['prodName'] +" does not exist in inventory. If you wish to enter its data, press the Add Product tab"})
+    return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProduct':allProduct})
 
 ###########################################################PRODUCT INVENTORY UPDATE SKIDS
 def ProductInventoryUpdateSkids(request):
-    allProfiles= Productprofiles.objects.all()
-    allColours = Colour.objects.all()
+    allProduct = Productinventory.objects.all()
 
     if request.method == 'POST':
         form = request.POST
@@ -430,7 +580,7 @@ def ProductInventoryUpdateSkids(request):
                 numSkids = Decimal(form['numSkids'])
 
             if prod.numberofskids + numSkids < 0:
-                render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message': 'The number of Skids entered would leave the inventory with negative skids. Please enter a different number.'})
+                render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProduct':allProduct, 'error_message': 'The number of Skids entered would leave the inventory with negative skids. Please enter a different number.'})
 
             prodProf = Productprofiles.objects.get(pk=form['prodName'])
             prodAv = Profileaverages.objects.get(pk=form['prodName'])
@@ -446,12 +596,12 @@ def ProductInventoryUpdateSkids(request):
             if prod.numberofskids + numSkids == 0:
                 prod.delete()
             else:
-                prod.numberofskids += int(numSkids)
+                prod.numberofskids += Decimal(numSkids)
                 prod.save()
-            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'dataAcceptedMessage':"Successfully Added "+str(numSkids)+" Skids to "+ form['colour'] + " " + form['prodName']})
+            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProduct':allProduct, 'dataAcceptedMessage':"Successfully Added "+str(numSkids)+" Skids to "+ form['colour'] + " " + form['prodName']})
         else:
-            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':""+ form['colour'] + " " + form['prodName'] +" does not exist in inventory. If you wish to enter its data, press the Add Product tab"})
-    return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProfiles':allProfiles, 'allColours':allColours})
+            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProduct':allProduct, 'allColours':allColours, 'error_message':""+ form['colour'] + " " + form['prodName'] +" does not exist in inventory. If you wish to enter its data, press the Add Product tab"})
+    return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProduct':allProduct, 'allColours':allColours})
 
 ###########################################################PRODUCT INVENTORY QUERY
 def ProductInventoryQuery(request):
@@ -488,27 +638,26 @@ def ProductInventoryExcel(request):
 ###########################################################PRODUCT INVENTORY SHIPPED
 def ProductInventoryShipped(request):
 
-    allProfiles= Productprofiles.objects.all()
-    allColours = Colour.objects.all()
+    allProduct = Productinventory.objects.all()
 
     if request.method == 'POST':
         form = request.POST
 
-        if Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).exists():
-            prod = Productinventory.objects.get(productname=form['prodName'], colour=form['colour'])
+        if Productinventory.objects.filter(pk=form['prodName']).exists():
+            prod = Productinventory.objects.get(pk=form['prodName'])
 
             PiecesRemaining = prod.numberofskids - Decimal(form['numSkids'])
 
             #Check if there's an order with this product
             Order = OrderFunc()
-            orderDict = Order.FindOrder(form['prodName'], form['colour'])
+            orderDict = Order.FindOrder(prod.productname, prod.colour)
             #If an order exists with this product then update its inventorized pieces
             if orderDict:
                 returnMessage = Order.updateOrderSent(orderDict.get('order'), Decimal(form['numSkids']), orderDict.get('orderSheet'))
 
                 #If an error occured during the update of the order, then exit and send error message
                 if returnMessage != '':
-                    return render(request, 'CWBDataApp/ProductInventoryShipped.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':returnMessage})
+                    return render(request, 'CWBDataApp/ProductInventoryShipped.html', {'allProduct':allProduct, 'error_message':returnMessage})
 
             if PiecesRemaining <= 0:
                 prod.delete()
@@ -516,10 +665,10 @@ def ProductInventoryShipped(request):
             else:
                 prod.numberofskids = PiecesRemaining
                 prod.save()
-            return render(request, 'CWBDataApp/ProductInventoryShipped.html', {'allProfiles':allProfiles, 'allColours':allColours, 'dataAcceptedMessage':"Number of Skids Successfully Updated", 'skids':str(PiecesRemaining)})
+            return render(request, 'CWBDataApp/ProductInventoryShipped.html', {'allProduct':allProduct, 'dataAcceptedMessage':"Number of Skids Successfully Updated, "+str(PiecesRemaining)+" are remaining of "+str(prod.colour)+" "+str(prod.productname)+".",})
         else:
-            return render(request, 'CWBDataApp/ProductInventoryShipped.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':"This product currently does not exist in inventory. If you wish to enter its data, press the link above"})
-    return render(request, 'CWBDataApp/ProductInventoryShipped.html', {'allProfiles':allProfiles, 'allColours':allColours})
+            return render(request, 'CWBDataApp/ProductInventoryShipped.html', {'allProduct':allProduct, 'error_message':"This product currently does not exist in inventory. If you wish to enter its data, press the link above"})
+    return render(request, 'CWBDataApp/ProductInventoryShipped.html', {'allProduct':allProduct})
 
 ###########################################################MATERIAL INVENTORY
 def MaterialInventory(request):

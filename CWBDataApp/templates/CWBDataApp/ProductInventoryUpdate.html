@@ -23,26 +23,16 @@
       <h4 id=header>Update Product </h4>
       {% csrf_token %}
       <div class="inline-flex inputBox">
-        <label for="prodName">Product Name*: </label>
+        <label for="prodName">Product*: </label>
         <select id="prodName" type="text" name="prodName">
-          {% if allProfiles %}
-            {% for profile in allProfiles %}
-                <option value="{{ profile.productname }}">{{ profile.productname }}</option>
+          {% if allProduct %}
+            {% for product in allProduct %}
+                <option value="{{ product.id }}">{{product.colour}} {{ product.productname }}- {{product.numberofskids}} skids in inventory</option>
             {% endfor %}
           {% endif %}
         </select>
       </div>
 
-      <div class="inline-flex inputBox">
-        <label for="colour">Colour*: </label>
-        <select id="colour" type="text" name="colour">
-          {% if allColours %}
-            {% for entry in allColours %}
-                <option value="{{ entry.colour }}">{{ entry.colour }}</option>
-            {% endfor %}
-          {% endif %}
-        </select>
-      </div>
       <br>
 
       <input type="submit" name="enterNewProduct" value="Search">
@@ -56,11 +46,11 @@
       <div class="d-inline-flex flex-column">
         {% csrf_token %}
 
-        <div> <p> {{ prod_object.colour }} {{ prod_object.productname }} currently has {{ prod_object.numberofskids }} skids in inventory</div>
+        <div> <h4> {{ prod_object.colour }} {{ prod_object.productname }} currently has {{ prod_object.numberofskids }} skids in inventory</h4></div>
 
         <div class="inline-flex inputBox">
           <label for="numSkids">Added Number of Skids*: </label>
-          <input id="numSkids" type="number" name="numSkids" step=0.1 max="1000">
+          <input id="numSkids" type="number" name="numSkids" step="any" max="1000">
         </div>
 
         <input id="prodName" type="text" name="prodName" value="{{ prod_object.productname }}" hidden>

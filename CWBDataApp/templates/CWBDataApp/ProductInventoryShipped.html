@@ -15,8 +15,6 @@
   </p>
   <p id="descriptionParagraph">If you want to pull product inventory data click <a href="{% url 'CWBDataApp:ProductInventoryQuery'%}">QUERY</a> or enter inventory data click <a href="{% url 'CWBDataApp:ProductInventory'%}">ENTER</a></p>
 
-  {% if skids %} <p>{{skids}} remain </p> {% endif %}
-
 </div>
 
 
@@ -28,28 +26,18 @@
       <div class="inline-flex inputBox">
         <label for="prodName">Product Name*: </label>
         <select id="prodName" type="text" name="prodName">
-          {% if allProfiles %}
-            {% for profile in allProfiles %}
-                <option value="{{ profile.productname }}">{{ profile.productname }}</option>
+          {% if allProduct %}
+            {% for product in allProduct %}
+                <option value="{{ product.id }}">{{product.colour}} {{ product.productname }}- {{product.numberofskids}} skids in inventory</option>
             {% endfor %}
           {% endif %}
         </select>
       </div>
 
-      <div class="inline-flex inputBox">
-        <label for="colour">Colour*: </label>
-        <select id="colour" type="text" name="colour">
-          {% if allColours %}
-            {% for entry in allColours %}
-                <option value="{{ entry.colour }}">{{ entry.colour }}</option>
-            {% endfor %}
-          {% endif %}
-        </select>
-      </div>
 
       <div class="inline-flex inputBox">
         <label for="numSkids">Number of Skids Shipped*: </label>
-        <input id="numSkids" type="number" name="numSkids" step=0.1 max="1000">
+        <input id="numSkids" type="number" name="numSkids" step="any" max="1000">
       </div>
 
       <br>
