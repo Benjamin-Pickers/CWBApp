@@ -7,6 +7,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.views import generic
 import pandas as pd
 import os
+import smtplib
 from datetime import date, timedelta
 from decimal import Decimal
 import math
@@ -1392,6 +1393,22 @@ def UpdateProfileAverage(request):
 
     return render(request, 'CWBDataApp/UpdateProfileAverage.html', {'allAverages':allAverages})
 
+###########################################################REPORT ERRORS AND SUGGESTIONS
+def Report(request):
+
+    if request.method == 'POST':
+        form = request.POST
+
+        message = sendEmail(form['subject'], form['message'])
+
+        if message['state'] == True:
+            return render(request, 'CWBDataApp/report.html', {'dataAcceptedMessage':message['returnMessage']})
+        else:
+            return render(request, 'CWBDataApp/report.html', {'error_message':message['returnMessage']})
+
+
+    return render(request, 'CWBDataApp/report.html')
+
 
 ###########################################################ADMIN
 def admin(request):
@@ -1410,6 +1427,41 @@ def addDate(startDate, numDays):
         else:
             numDays -= 1
     return currentDate
+
+def sendEmail(emailSubject, message):
+
+    gmail_user = 'cwbtech1234@gmail.com'
+    gmail_password = 'cwbtech123'
+
+    sent_from = gmail_user
+    to = 'tom@cwbtech.com'
+    subject = emailSubject
+    body = message
+    return_message = ''
+    state = True
+
+    email_text="""\
+    From: %s
+    To: %s
+    Subject: %s
+
+    %s
+
+    """%(sent_from, to, subject, body)
+
+    #try:
+    smtp_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+    smtp_server.ehlo()
+    smtp_server.login(gmail_user, gmail_password)
+    smtp_server.sendmail(sent_from, to, email_text)
+    smtp_server.close()
+    returnMessage = "Email sent successfully! Thankyou for your input"
+    #except Exception as ex:
+    #    state = False
+    #    returnMessage = "Could not Send the email. Try again later"
+
+
+    return {'state':state, 'returnMessage':returnMessage}
 
 class signUpView(generic.CreateView):
     form_class = UserCreationForm

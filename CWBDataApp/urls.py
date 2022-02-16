@@ -49,6 +49,7 @@ urlpatterns = [
     path('UpdateSupplier/', views.UpdateSupplier, name='UpdateSupplier'),
     path('AddProfileAverage/', views.AddProfileAverage, name='AddProfileAverage'),
     path('UpdateProfileAverage/', views.UpdateProfileAverage, name='UpdateProfileAverage'),
+    path('Report/', views.Report, name='Report'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('signup/', signUpView.as_view(), name='signup'),
 ]

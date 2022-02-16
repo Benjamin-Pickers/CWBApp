@@ -14,6 +14,11 @@ input
   float: right;
 }
 
+textarea
+{
+  float: right;
+}
+
 select
 {
   float: right;

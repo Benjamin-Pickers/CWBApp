@@ -1,0 +1,41 @@
+{% extends 'CWBDataApp/base.html'%}
+
+{% block title %} {{'Suggestions & Errors'}} {% endblock title %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
+
+{% block content %}
+  <div>
+    <h2 id="header"> Report Errors & Suggestions </h2>
+    <p id="descriptionParagraph">
+        Report errors or bugs to the managers or give suggestions on how the site can be improved
+    </p>
+  </div>
+
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:Report'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        <h4 id=header>Report Error or Suggest an Improvement</h4>
+        {% csrf_token %}
+
+        <div class="inline-flex form-group">
+          <label for="subject">Subject*: </label>
+          <input class="form-control" id="subject" type="text" name="subject" maxlength="100">
+        </div>
+
+        <div class="inline-flex form-group">
+          <label for="message">Message: </label>
+          <textarea class="form-control" id="message" name="message" rows="15" columns="40"></textarea>
+        </div>
+
+        <br>
+
+          <input type="submit" name="enterNewAverage" value="Update">
+      </div>
+    </form>
+  </div>
+
+{% endblock content %}
