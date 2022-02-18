@@ -36,7 +36,7 @@ def BatchCostTracking(request):
         try:
             #Check if batch already exists, if so stop and send an error message
             if Batchcost.objects.get(pk=request.POST['newBatch']):
-                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'error_message' : "Batch already exists, please enter a new batch. If you wish to update a batch talk to an admin",})
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'batch':form, 'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'error_message' : "Batch already exists, please enter a new batch. If you wish to update a batch talk to an admin",})
         except:
 
             #Calculate total price, weight and price/pound
@@ -52,7 +52,7 @@ def BatchCostTracking(request):
             weight += Decimal(form['colourWeight']) + Decimal(form['foamWeight'])
             #Check if weight was entered as 0, throw error if it is
             if weight == 0:
-                return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'error_message':"Total weight cannot be zero, please add a value to weight1",})
+                return render(request, 'CWBDataApp/BatchCostTracking.html', {'batch':form, 'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'error_message':"Total weight cannot be zero, please add a value to weight1",})
 
             price = round(cost/weight, 2)
             #Check if theres enough boxes before we subtract from inventory
@@ -62,9 +62,9 @@ def BatchCostTracking(request):
                         box = Materialinventory.objects.get(pk=form['material'+str(i)])
 
                         if box.numberofboxes < Decimal(form['numofBoxes'+str(i)]):
-                            return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'error_message' : form["material"+str(i)]+" does no have enough boxes for Material"+str(i)+"",})
+                            return render(request, 'CWBDataApp/BatchCostTracking.html', {'batch':form, 'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'error_message' : form["material"+str(i)]+" does no have enough boxes for Material"+str(i)+"",})
                 except:
-                    return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'error_message' : "Couldn't find box in inventory",})
+                    return render(request, 'CWBDataApp/BatchCostTracking.html', {'batch':form, 'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'error_message' : "Couldn't find box in inventory",})
 
             materials = {}
             numberofboxes = 0
@@ -87,7 +87,7 @@ def BatchCostTracking(request):
                     else:
                         materials['material'+str(i)] = 'None'
                 except:
-                    return render(request, 'CWBDataApp/BatchCostTracking.html', {'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'dateToday':str(date.today), 'error_message' : form["material"+str(i)]+" does not have enough boxes for Material"+str(i)+"",})
+                    return render(request, 'CWBDataApp/BatchCostTracking.html', {'batch':form, 'allMaterials':allMaterials, 'allColours':allColours, 'allProfiles':allProfiles, 'range':range(1, num_of_materials), 'dateToday':str(date.today), 'error_message' : form["material"+str(i)]+" does not have enough boxes for Material"+str(i)+"",})
 
             sup_object = Materialcost.objects.get(pk='Free')
 
@@ -607,18 +607,17 @@ def ProductInventoryUpdateSkids(request):
 ###########################################################PRODUCT INVENTORY QUERY
 def ProductInventoryQuery(request):
 
-    allProfiles= Productprofiles.objects.all()
-    allColours = Colour.objects.all()
+    allProduct = Productinventory.objects.all()
 
     if request.method == 'POST':
         form = request.POST
 
-        if Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).exists():
-            prod = Productinventory.objects.get(productname=form['prodName'], colour=form['colour'])
-            return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours, 'product':prod})
+        if Productinventory.objects.filter(pk=form['prodId']).exists():
+            prod = Productinventory.objects.get(pk=form['prodId'])
+            return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProduct':allProduct, 'product':prod})
         else:
-            return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours, 'error_message':""+ form['colour'] + " " + form['prodName'] +" does not exist in inventory. If you wish to enter its data, press the link above"})
-    return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProfiles':allProfiles, 'allColours':allColours})
+            return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProduct':allProduct, 'error_message':""+ form['colour'] + " " + form['prodName'] +" does not exist in inventory. If you wish to enter its data, press the link above"})
+    return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProduct':allProduct})
 
 ###########################################################Product Inventory Excel File Download
 def ProductInventoryExcel(request):
@@ -705,20 +704,21 @@ def MaterialInventory(request):
 ###########################################################MATERIAL INVENTORY QUERY
 def MaterialInventoryQuery(request):
 
+    allMaterial = Materialinventory.objects.all()
+
     if request.method == 'POST':
         form = request.POST
         try:
             if form['matName'].upper() == 'ALL':
-                all_materials = Materialinventory.objects.all()
-                return render(request, 'CWBDataApp/MaterialInventoryQuery.html', {'all_materials':all_materials})
+                return render(request, 'CWBDataApp/MaterialInventoryQuery.html', {'allMaterial':allMaterial, 'all_materials':all_materials})
 
 
             mat_object =  Materialinventory.objects.filter(pk=form['matName'].upper())
-            return render(request, 'CWBDataApp/MaterialInventoryQuery.html', {'all_materials':mat_object})
+            return render(request, 'CWBDataApp/MaterialInventoryQuery.html', {'allMaterial':allMaterial, 'all_materials':mat_object})
         except:
-            return render(request, 'CWBDataApp/MaterialInventoryQuery.html', {'error_message':"This material currently does not exist in inventory. If you wish to enter its data, press the link above"})
+            return render(request, 'CWBDataApp/MaterialInventoryQuery.html', {'allMaterial':allMaterial, 'error_message':"This material currently does not exist in inventory. If you wish to enter its data, press the link above"})
 
-    return render(request, 'CWBDataApp/MaterialInventoryQuery.html')
+    return render(request, 'CWBDataApp/MaterialInventoryQuery.html', {'allMaterial':allMaterial})
 
 ###########################################################Material Inventory Excel File Download
 def MaterialInventoryExcel(request):
@@ -1428,13 +1428,14 @@ def addDate(startDate, numDays):
             numDays -= 1
     return currentDate
 
+#Function to create and send email
 def sendEmail(emailSubject, message):
 
     gmail_user = 'cwbtech1234@gmail.com'
     gmail_password = 'cwbtech123'
 
     sent_from = gmail_user
-    to = 'tom@cwbtech.com'
+    to = 'tom@greenwellplastics.ca'
     subject = emailSubject
     body = message
     return_message = ''

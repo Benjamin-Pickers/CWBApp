@@ -1,6 +1,6 @@
 {% extends 'CWBDataApp/base.html'%}
 
-{% block title %} {{'Product Inventory'}} {% endblock title %}
+{% block title %} {{'View Product Inventory'}} {% endblock title %}
 
 {% block css %}
   {% load static %}
@@ -9,10 +9,12 @@
 
 {% block content %}
 <div>
-  <h2 id="header"> Product Inventory Query Form </h2>
+  <h2 id="header"> View Product Inventory </h2>
   <p id="descriptionParagraph">
-      Product inventory query is to be used to pull data regarding the finshed product skids in the shop. You can either
-      pull a single products data or pull data of all the product currently in the shop
+      View Product Inventory is to be used to view data of the finshed product  in the shop. You can either
+      pull a single products data or download an excel file of all Product. Use the drop down to select a product
+      that is currently in the shop. If a product does not appear in the dropdown then it does not exist in inventory and you\
+      can add it using 'Enter a Product' tab.
   </p>
   <p id="descriptionParagraph">If you want to enter product inventory data click <a href="{% url 'CWBDataApp:ProductInventory'%}">ENTER</a> or update inventory click <a href="{% url 'CWBDataApp:ProductInventoryUpdate'%}">UPDATE</a></p>
 </div>
@@ -23,22 +25,11 @@
       <h4 id=header>Search for Product </h4>
       {% csrf_token %}
       <div class="inline-flex inputBox">
-        <label for="prodName">Product Name*: </label>
-        <select id="prodName" type="text" name="prodName">
-          {% if allProfiles %}
-            {% for profile in allProfiles %}
-                <option value="{{ profile.productname }}">{{ profile.productname }}</option>
-            {% endfor %}
-          {% endif %}
-        </select>
-      </div>
-
-      <div class="inline-flex inputBox">
-        <label for="colour">Colour*: </label>
-        <select id="colour" type="text" name="colour">
-          {% if allColours %}
-            {% for entry in allColours %}
-                <option value="{{ entry.colour }}">{{ entry.colour }}</option>
+        <label for="prodId">Product*: </label>
+        <select id="prodId" type="text" name="prodId">
+          {% if allProduct %}
+            {% for product in allProduct %}
+                <option value="{{ product.id }}">{{product.colour}} {{ product.productname }}</option>
             {% endfor %}
           {% endif %}
         </select>

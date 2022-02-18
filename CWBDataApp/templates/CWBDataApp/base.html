@@ -43,7 +43,7 @@
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkBatch">
                   <a class="dropdown-item" href="{% url 'CWBDataApp:BatchCost'%}"> Enter Batch </a>
                   <a class="dropdown-item" href="{% url 'CWBDataApp:UpdateBatch'%}"> Update Batch </a>
-                  <a class="dropdown-item" href="{% url 'CWBDataApp:BatchCostQuery'%}"> Search Batch </a>
+                  <a class="dropdown-item" href="{% url 'CWBDataApp:BatchCostQuery'%}"> View Batch </a>
                   <a class="dropdown-item" href="{% url 'CWBDataApp:MaterialTest'%}"> Enter a Material Test </a>
                   <a class="dropdown-item" href="{% url 'CWBDataApp:MaterialTestQuery'%}"> Search for a Test </a>
                 </div>
@@ -54,7 +54,7 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkProduct">
                   <a class="dropdown-item" href="{% url 'CWBDataApp:ProductInventory'%}"> Enter a Product</a>
-                  <a class="dropdown-item" href="{% url 'CWBDataApp:ProductInventoryQuery'%}"> Search for Product</a>
+                  <a class="dropdown-item" href="{% url 'CWBDataApp:ProductInventoryQuery'%}"> View Product</a>
                   <a class="dropdown-item" href="{% url 'CWBDataApp:ProductInventoryUpdate'%}"> Update Product</a>
                   <a class="dropdown-item" href="{% url 'CWBDataApp:ProductInventoryShipped'%}"> Shipped Product</a>
                 </div>
@@ -65,7 +65,7 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkMaterialInventory">
                   <a class="dropdown-item" href="{% url 'CWBDataApp:MaterialInventory'%}"> Enter Material</a>
-                  <a class="dropdown-item" href="{% url 'CWBDataApp:MaterialInventoryQuery'%}"> Search for Material</a>
+                  <a class="dropdown-item" href="{% url 'CWBDataApp:MaterialInventoryQuery'%}"> View Material</a>
                   <a class="dropdown-item" href="{% url 'CWBDataApp:MaterialInventoryUpdate'%}"> Update Material</a>
                 </div>
               </li>
@@ -74,9 +74,9 @@
                   Order Sheets
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                  <a class="dropdown-item" href="{% url 'CWBDataApp:OrderSheetsMachine1'%}"> Machine 1 </a>
-                  <a class="dropdown-item" href="{% url 'CWBDataApp:OrderSheetsMachine2'%}"> Machine 2 </a>
-                  <a class="dropdown-item" href="{% url 'CWBDataApp:OrderSheetsMachine3'%}"> Machine 3 </a>
+                  <a class="dropdown-item" href="{% url 'CWBDataApp:OrderSheetsMachine1'%}">Add Order to Machine 1 </a>
+                  <a class="dropdown-item" href="{% url 'CWBDataApp:OrderSheetsMachine2'%}">Add Order to Machine 2 </a>
+                  <a class="dropdown-item" href="{% url 'CWBDataApp:OrderSheetsMachine3'%}">Add Order to Machine 3 </a>
                   <a class="dropdown-item" href="{% url 'CWBDataApp:ViewOrders'%}"> View Orders </a>
                   <a class="dropdown-item" href="{% url 'CWBDataApp:UpdateOrders'%}"> Update Orders </a>
                   <a class="dropdown-item" href="{% url 'CWBDataApp:UpdateDDOrders'%}"> Update DD Orders </a>

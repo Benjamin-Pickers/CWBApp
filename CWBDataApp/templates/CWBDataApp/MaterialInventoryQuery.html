@@ -1,6 +1,6 @@
 {% extends 'CWBDataApp/base.html'%}
 
-{% block title %} {{'Material Inventory Query'}} {% endblock title %}
+{% block title %} {{'View Material Inventory'}} {% endblock title %}
 
 {% block css %}
   {% load static %}
@@ -10,10 +10,11 @@
 
 {% block content %}
   <div>
-    <h2 id="header"> Material Inventory Search </h2>
+    <h2 id="header"> View Material Inventory </h2>
     <p id="descriptionParagraph">
-        Material inventory search is used to find raw materials, premixes, batches, and shred in the warehouse. Currently the location value
-        isn't being used but in the future will be used to locate boxes within the shop.
+        View Material inventory is used to view raw materials, premixes, batches, and shred in the warehouse. Currently the location value
+        isn't being used but in the future can be used to locate boxes within the shop. Use the dropdown to select the inventory to look at.
+        If a certain material is not in the dropdown, then it is not in inventory but can be entered through 'Enter Material Tab'
     </p>
     <p id="descriptionParagraph">If you want to enter material inventory data click <a href="{% url 'CWBDataApp:MaterialInventory'%}">HERE</a> if you want to update a material entry click <a href="{% url 'CWBDataApp:MaterialInventoryUpdate'%}">HERE</a></p>
   </div>
@@ -25,8 +26,15 @@
         {% csrf_token %}
 
         <div class="inline-flex inputBox">
-          <label for="matName">Material Name*: </label>
-          <input id="matName" type="text" name="matName" maxlength="30">
+          <label for="matName">Material*: </label>
+          <select id="matName" type="text" name="matName">
+            {% if allMaterial %}
+              <option value="ALL"> All </option>
+              {% for material in allMaterial %}
+                  <option value="{{ material.materialname }}">{{material.materialname}}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
         </div>
 
         <br>

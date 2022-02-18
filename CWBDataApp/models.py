@@ -236,6 +236,7 @@ class Productprofiles(models.Model):
 
 class Colour(models.Model):
     colour = models.CharField(max_length=15, primary_key=True)
+    priceperpound = models.DecimalField(max_digits=5, decimal_places=2, null=True)
 
 class Employees(models.Model):
     employeename = models.CharField(db_column='EmployeeName', primary_key=True, max_length=40)  # Field name made lowercase.
