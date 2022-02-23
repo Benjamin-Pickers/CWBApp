@@ -69,7 +69,7 @@
               <option {% if batch %} value="{{batch.material1}}" {% else %} value="None" {% endif %}>{% if batch %} {{batch.material1}} {% else %} None {% endif %}</option>
               {% if allMaterials %}
                 {% for entry in allMaterials %}
-                    <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
+                    <option value="{{ entry.materialname }}">{{entry.materialname}} (${{ entry.priceperpound }} - {{entry.numberofboxes}} boxes)</option>
                 {% endfor %}
               {% endif %}
             </select>
@@ -106,7 +106,7 @@
               <option {% if batch %} value="{{batch.material2}}" {% else %} value="None" {% endif %}>{% if batch %} {{batch.material2}} {% else %} None {% endif %}</option>
               {% if allMaterials %}
                 {% for entry in allMaterials %}
-                    <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
+                    <option value="{{ entry.materialname }}">{{entry.materialname}} (${{ entry.priceperpound }} - {{entry.numberofboxes}} boxes)</option>
                 {% endfor %}
               {% endif %}
             </select>
@@ -143,7 +143,7 @@
               <option {% if batch %} value="{{batch.material3}}" {% else %} value="None" {% endif %}>{% if batch %} {{batch.material3}} {% else %} None {% endif %}</option>
               {% if allMaterials %}
                 {% for entry in allMaterials %}
-                    <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
+                    <option value="{{ entry.materialname }}">{{entry.materialname}} (${{ entry.priceperpound }} - {{entry.numberofboxes}} boxes)</option>
                 {% endfor %}
               {% endif %}
             </select>
@@ -180,7 +180,7 @@
               <option {% if batch %} value="{{batch.material4}}" {% else %} value="None" {% endif %}>{% if batch %} {{batch.material4}} {% else %} None {% endif %}</option>
               {% if allMaterials %}
                 {% for entry in allMaterials %}
-                    <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
+                    <option value="{{ entry.materialname }}">{{entry.materialname}} (${{ entry.priceperpound }} - {{entry.numberofboxes}} boxes)</option>
                 {% endfor %}
               {% endif %}
             </select>
@@ -217,7 +217,7 @@
               <option {% if batch %} value="{{batch.material5}}" {% else %} value="None" {% endif %}>{% if batch %} {{batch.material5}} {% else %} None {% endif %}</option>
               {% if allMaterials %}
                 {% for entry in allMaterials %}
-                    <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
+                    <option value="{{ entry.materialname }}">{{entry.materialname}} (${{ entry.priceperpound }} - {{entry.numberofboxes}} boxes)</option>
                 {% endfor %}
               {% endif %}
             </select>
@@ -254,7 +254,7 @@
               <option {% if batch %} value="{{batch.material6}}" {% else %} value="None" {% endif %}>{% if batch %} {{batch.material6}} {% else %} None {% endif %}</option>
               {% if allMaterials %}
                 {% for entry in allMaterials %}
-                    <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
+                    <option value="{{ entry.materialname }}">{{entry.materialname}} (${{ entry.priceperpound }} - {{entry.numberofboxes}} boxes)</option>
                 {% endfor %}
               {% endif %}
             </select>
@@ -291,7 +291,7 @@
               <option {% if batch %} value="{{batch.material7}}" {% else %} value="None" {% endif %}>{% if batch %} {{batch.material7}} {% else %} None {% endif %}</option>
               {% if allMaterials %}
                 {% for entry in allMaterials %}
-                    <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
+                    <option value="{{ entry.materialname }}">{{entry.materialname}} (${{ entry.priceperpound }} - {{entry.numberofboxes}} boxes)</option>
                 {% endfor %}
               {% endif %}
             </select>
@@ -329,7 +329,7 @@
               <option {% if batch %} value="{{batch.material8}}" {% else %} value="None" {% endif %}>{% if batch %} {{batch.material8}} {% else %} None {% endif %}</option>
               {% if allMaterials %}
                 {% for entry in allMaterials %}
-                    <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
+                    <option value="{{ entry.materialname }}">{{entry.materialname}} (${{ entry.priceperpound }} - {{entry.numberofboxes}} boxes)</option>
                 {% endfor %}
               {% endif %}
             </select>
@@ -367,7 +367,7 @@
               <option {% if batch %} value="{{batch.material9}}" {% else %} value="None" {% endif %}>{% if batch %} {{batch.material9}} {% else %} None {% endif %}</option>
               {% if allMaterials %}
                 {% for entry in allMaterials %}
-                    <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
+                    <option value="{{ entry.materialname }}">{{entry.materialname}} (${{ entry.priceperpound }} - {{entry.numberofboxes}} boxes)</option>
                 {% endfor %}
               {% endif %}
             </select>
@@ -405,7 +405,7 @@
               <option {% if batch %} value="{{batch.material10}}" {% else %} value="None" {% endif %}>{% if batch %} {{batch.material10}} {% else %} None {% endif %}</option>
               {% if allMaterials %}
                 {% for entry in allMaterials %}
-                    <option value="{{ entry.materialname }}">{{entry.materialname}} ({{ entry.supplier.supplier }} {{entry.numberofboxes}} boxes)</option>
+                    <option value="{{ entry.materialname }}">{{entry.materialname}} (${{ entry.priceperpound }} - {{entry.numberofboxes}} boxes)</option>
                 {% endfor %}
               {% endif %}
             </select>
