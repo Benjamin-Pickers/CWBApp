@@ -1,6 +1,6 @@
 {% extends 'CWBDataApp/base.html'%}
 
-{% block title %} {{'Suggestions & Errors'}} {% endblock title %}
+{% block title %} {{'Continuous Improvement System'}} {% endblock title %}
 
 {% block css %}
   {% load static %}
@@ -9,21 +9,28 @@
 
 {% block content %}
   <div>
-    <h2 id="header"> Report Errors & Suggestions </h2>
+    <h2 id="header"> Continuous Improvement System </h2>
     <p id="descriptionParagraph">
-        Report errors or bugs to the managers or give suggestions on how the site can be improved
+        Report on how the shop can improved in general or safety wise. Report safety concerns and things that the shop needs or is missing.
+        And report any system bugs or errors here as well.
     </p>
   </div>
 
   <div class="justify-content-center row no-gutters">
     <form action="{% url 'CWBDataApp:Report'%}" method="post">
       <div class="d-inline-flex flex-column">
-        <h4 id=header>Report Error or Suggest an Improvement</h4>
+        <h4 id=header>Continuous Improvement System</h4>
         {% csrf_token %}
 
         <div class="inline-flex form-group">
           <label for="subject">Subject*: </label>
-          <input class="form-control" id="subject" type="text" name="subject" maxlength="100">
+          <select id="subject" type="text" name="subject">
+            <option value="Continuous Improvement"> Continuous Improvement </option>
+            <option value="Safety Improvement"> Safety Improvement </option>
+            <option value="Safety Concerns"> Safety Concerns </option>
+            <option value="Items We Need"> Items We Need </option>
+            <option value="System Bugs&Erros"> System Bugs&Errors </option>
+          </select>
         </div>
 
         <div class="inline-flex form-group">

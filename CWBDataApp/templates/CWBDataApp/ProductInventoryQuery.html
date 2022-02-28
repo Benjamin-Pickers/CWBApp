@@ -44,10 +44,18 @@
   <form action="{% url 'CWBDataApp:ProductInventoryExcel'%}" method="post">
     <div class="d-inline-flex flex-column">
       {% csrf_token %}
-      <input type="submit" name="Download" value="Download Excel File of Entire Product Inventory">
+      <input class="submitButton" type="submit" name="Download" value="Download Excel File of Entire Product Inventory">
+    </div>
+  </form>
+
+  <form action="{% url 'CWBDataApp:ProductInventoryPdf'%}" method="post">
+    <div class="d-inline-flex flex-column">
+      {% csrf_token %}
+      <input class="submitButton" type="submit" name="Download" value="Print Data">
     </div>
   </form>
 </div>
+
 
 
     {% if product %}

@@ -1,7 +1,44 @@
 {% extends 'CWBDataApp/base.html'%}
 
-{% block title %} {{'Help'}} {% endblock title %}
+{% block title %} {{'General Help'}} {% endblock title %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
 
 {% block content %}
-      <p>help page</p>
+  <div>
+    <h2 id="header"> General Help </h2>
+    <p id="descriptionParagraph">
+        This page provides a general description of the functions of the system. If this page doesn't have what you are looking form
+        then refer to your supervisor or manager.
+    </p>
+  </div>
+
+  <div class="justify-content-center row no-gutters">
+
+    <div>
+      <h3 id="header"> Batch Cost Tracking & Material Testing </h3>
+      <p id="descriptionParagraph">
+          All functions for Batch Cost Tracking and Material Testing can be found under the "Batch Cost & Testing" tab found in the navagation bar.
+          Batch Cost has three main functions, you can add a new batch to the database, update a batch thats already in the database or view a batch thats
+          in the database.
+
+          <br>
+          <br>
+
+          Adding a batch consists of adding a new batch to the system. Ensure that this batch doesn't use a name thats already being used. When you create
+          a new batch it adds the batch to the batch database and material inventory. If you set the "Is this a premix?" option to "Yes", then the System
+          assumes this is a premix and not a batch, and will add the premix to material inventory but not the batch database. There are 10 material entry
+          inputs, which should be more than enough. If you have a couple boxes of the same type, for instance 3 kalpoly, you can add them in one slot
+          rather than 3 different ones. Each slot has an input for the number of boxes, only enter boxes in multiples of 0.25, 0.5 and 1. The "Custom Material"
+          input is used when a material we want isn't in material inventory yet, in this case type the material into "Custom Material" and leave the material
+          dropdown on "None". As mentioned before, the system adds all batchs to material inventory but it guesses the number of boxes of the batch. After entering
+          a batch, it is a good idea to check material inventory and update the number of boxes for that batch if it is incorrect.
+      </p>
+    </div>
+
+  </div>
+
 {% endblock content %}

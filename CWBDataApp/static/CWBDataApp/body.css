@@ -29,6 +29,11 @@ select
   margin-bottom: 10px;
 }
 
+.submitButton
+{
+  margin: 0 5px 0 5px;
+}
+
 #error
 {
   color: red;

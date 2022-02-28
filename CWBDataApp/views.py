@@ -5,12 +5,19 @@ from django.template import loader
 from django.db import connection
 from django.contrib.auth.forms import UserCreationForm
 from django.views import generic
+
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages
+import webbrowser
+import platform
 import os
 import smtplib
 from datetime import date, timedelta
 from decimal import Decimal
 import math
+
 from .OrderFunctions import OrderFunctions as OrderFunc
 from .OrdersDD import OrdersDD
 
@@ -621,6 +628,7 @@ def ProductInventoryQuery(request):
 
 ###########################################################Product Inventory Excel File Download
 def ProductInventoryExcel(request):
+    allProduct = Productinventory.objects.all()
     query = str(Productinventory.objects.all().query)
     df = pd.read_sql_query(query, connection)
     today = str(date.today())
@@ -633,7 +641,31 @@ def ProductInventoryExcel(request):
     os.remove(r'./CWBDataApp/ProductInventory.xlsx')
     return response
 
-    return render(request, 'CWBDataApp/ProductInventoryQuery.html')
+    return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProduct':allProduct})
+
+###########################################################Product Inventory Excel File Download
+def ProductInventoryPdf(request):
+    allProduct = Productinventory.objects.all()
+    query = str(Productinventory.objects.all().query)
+    df = pd.read_sql_query(query, connection)
+    fig, ax = plt.subplots(figsize=(12,4))
+    today = date.today()
+
+    ax.axis('tight')
+    ax.axis('off')
+    ax.set_title("Product Inventory " + str(today))
+    the_table = ax.table(cellText=df.values, colLabels=df.columns, loc='center')
+
+    pp = PdfPages(r'./CWBDataApp/ProductInventoryPdf.pdf')
+    pp.savefig(fig, bbox_inches='tight')
+    pp.close()
+
+    if platform.system() == "Windows":
+        webbrowser.get(using='windows-default').open('file:///' + os.getcwd() + '/CWBDataApp/ProductInventoryPdf.pdf')
+    else:
+        webbrowser.open('file:///' + os.getcwd() + 'CWBDataApp/ProductInventoryPdf.pdf')
+
+    return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProduct':allProduct})
 
 ###########################################################PRODUCT INVENTORY SHIPPED
 def ProductInventoryShipped(request):
@@ -722,6 +754,7 @@ def MaterialInventoryQuery(request):
 
 ###########################################################Material Inventory Excel File Download
 def MaterialInventoryExcel(request):
+    allMaterial = Materialinventory.objects.all()
     query = str(Materialinventory.objects.all().query)
     df = pd.read_sql_query(query, connection)
     today = str(date.today())
@@ -734,7 +767,34 @@ def MaterialInventoryExcel(request):
     os.remove(r'./CWBDataApp/MaterialInventory.xlsx')
     return response
 
-    return render(request, 'CWBDataApp/MaterialInventoryQuery.html')
+    return render(request, 'CWBDataApp/MaterialInventoryQuery.html', {'allMaterial':allMaterial})
+
+###########################################################Material Inventory PDF Print Download
+def MaterialInventoryPdf(request):
+    allMaterial = Materialinventory.objects.all()
+    query = str(Materialinventory.objects.all().query)
+    df = pd.read_sql_query(query, connection)
+    fig, ax = plt.subplots()
+    today = date.today()
+
+
+    ax.axis('off')
+    ax.axis('tight')
+    ax.set_title("Material Inventory " + str(today) + "\n\n\n", fontsize="20")
+    the_table = ax.table(cellText=df.values, colLabels=df.columns, loc='center')
+    fig.tight_layout()
+
+    pp = PdfPages(r'./CWBDataApp/MaterialInventoryPdf.pdf')
+    pp.savefig(fig, bbox_inches='tight')
+    pp.close()
+
+    if platform.system() == "Windows":
+        webbrowser.get(using='windows-default').open('file:///' + os.getcwd() + '/CWBDataApp/MaterialInventoryPdf.pdf')
+    else:
+        webbrowser.open('file:///' + os.getcwd() + 'CWBDataApp/MaterialInventoryPdf.pdf')
+
+    return render(request, 'CWBDataApp/MaterialInventoryQuery.html', {'allMaterial':allMaterial})
+
 
 ###########################################################MATERIAL INVENTORY UPDATE
 def MaterialInventoryUpdate(request):
