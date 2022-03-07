@@ -660,10 +660,7 @@ def ProductInventoryPdf(request):
     pp.savefig(fig, bbox_inches='tight')
     pp.close()
 
-    if platform.system() == "Windows":
-        webbrowser.get(using='windows-default').open('file:///' + os.getcwd() + '/CWBDataApp/ProductInventoryPdf.pdf')
-    else:
-        webbrowser.open('file:///' + os.getcwd() + '/CWBDataApp/ProductInventoryPdf.pdf')
+    webbrowser.open('file://' + os.getcwd() + '/CWBDataApp/ProductInventoryPdf.pdf')
 
     return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProduct':allProduct})
 
@@ -788,10 +785,7 @@ def MaterialInventoryPdf(request):
     pp.savefig(fig, bbox_inches='tight')
     pp.close()
 
-    if platform.system() == "Windows":
-        webbrowser.get(using='windows-default').open('file:///' + os.getcwd() + '/CWBDataApp/MaterialInventoryPdf.pdf')
-    else:
-        webbrowser.open('file:///' + os.getcwd() + '/CWBDataApp/MaterialInventoryPdf.pdf')
+    webbrowser.open('file://' + os.getcwd() + '/CWBDataApp/MaterialInventoryPdf.pdf')
 
     return render(request, 'CWBDataApp/MaterialInventoryQuery.html', {'allMaterial':allMaterial})
 
