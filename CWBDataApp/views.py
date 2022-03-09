@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, FileResponse
 from django.urls import reverse, reverse_lazy
 from django.template import loader
 from django.db import connection
@@ -1176,9 +1176,17 @@ def ChangeOrder(request):
         order.customer = form['customer']
         order.qualitynotes = form['qualitynotes']
 
-        if order.pcs != int(form['pcs']):
-            order.pcs = form['pcs']
-            order.pcsremaining = int(form['pcs']) - order.pcssent - order.pcsinventorized
+        #If the total number of pieces or the number of pieces sent changes, then update all values and shuffle dates around
+        if order.pcs != int(form['pcs']) or order.pcssent != int(form['pcsSent']):
+
+            if order.pcs != int(form['pcs']):
+                order.pcs = int(form['pcs'])
+
+            if order.pcssent != int(form['pcsSent']):
+                order.pcssent = int(form['pcsSent'])
+
+            order.save()
+            order.pcsremaining = order.pcs - order.pcssent - order.pcsinventorized
             product = Productprofiles.objects.get(pk=order.boardprofile)
             productAverage = Profileaverages.objects.get(pk=order.boardprofile)
             order.skidsremaining = order.pcsremaining / int(product.pcsperskid)
@@ -1479,7 +1487,7 @@ def PrintForms(request):
 
         #Open PDF from pdf folder
         #webbrowser.open_new('file:///' + os.path.realpath('PdfForms/Mixing_Form.pdf'))
-        webbrowser.open_new('https://getbootstrap.com/docs/4.3/components/buttons/')
+        return FileResponse(open( os.path.realpath('PdfForms/'+ form['filePrint'] +'.pdf'), 'rb'), content_type='application/pdf')
     return render(request, 'CWBDataApp/Forms.html')
 
 

@@ -16,7 +16,7 @@
   </div>
 
   <div class="justify-content-center row no-gutters">
-    <form action="{% url 'CWBDataApp:PrintForms'%}" method="post">
+    <form action="{% url 'CWBDataApp:PrintForms'%}" target="_blank" method="post">
       <div class="d-inline-flex flex-column btn-group btn-group-toggle">
         {% csrf_token %}
 

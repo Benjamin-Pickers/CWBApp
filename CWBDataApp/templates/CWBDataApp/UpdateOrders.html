@@ -74,13 +74,18 @@
           {% csrf_token %}
 
           <div class="inline-flex inputBox">
-            <label for="ponumber">PO Number*: </label>
+            <label for="ponumber">PO Number: </label>
             <input id="ponumber" type="text" name="ponumber" value="{{orderChange.customerponumber}}" maxlength="15">
           </div>
 
           <div class="inline-flex inputBox">
-            <label for="pcs">Pieces*: </label>
+            <label for="pcs">Pieces: </label>
             <input id="pcs" type="number" name="pcs" value="{{orderChange.pcs}}" step="any" min="0">
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for="pcsSent">Pieces Sent: </label>
+            <input id="pcsSent" type="number" name="pcsSent" value="{{orderChange.pcssent}}" step="any" min="0">
           </div>
 
           <div class="inline-flex inputBox">
