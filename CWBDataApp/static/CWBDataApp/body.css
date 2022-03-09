@@ -9,6 +9,11 @@
   margin-bottom: 3%;
 }
 
+#boldMessage
+{
+  font-weight: bold;
+}
+
 input
 {
   float: right;
