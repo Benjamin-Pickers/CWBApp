@@ -1,0 +1,46 @@
+{% extends 'CWBDataApp/base.html'%}
+
+{% block title %} {{'Forms'}} {% endblock title %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
+
+{% block content %}
+  <div>
+    <h2 id="header"> Forms </h2>
+    <p id="descriptionParagraph">
+        General Forms available to print, such as daily production sheets
+    </p>
+  </div>
+
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:PrintForms'%}" method="post">
+      <div class="d-inline-flex flex-column btn-group btn-group-toggle">
+        {% csrf_token %}
+
+        <fieldset>
+         <legend>Choose a File to Print:</legend>
+         <label class="btn btn-secondary" for="file1">
+           <input type="radio" name="filePrint" id="file1" value="Production_Tracking_Form_Single_Line">Daily Production Sheet Single Line
+         </label>
+         <br><br>
+         <label class="btn btn-secondary" for="file2">
+           <input type="radio" name="filePrint"  id="file2" value="Production_Tracking_Form_Triple_Line">Daily Production Sheet Triple Line
+         </label>
+         <br><br>
+         <label class="btn btn-secondary" for="file3">
+           <input type="radio" name="filePrint"  id="file3" value="Mixing_Form">Mixing Form
+         </label>
+         <br><br>
+        </fieldset>
+
+        <br>
+        <input type="submit" name="openForm" value="Open">
+      </div>
+
+    </form>
+  </div>
+
+{% endblock content %}

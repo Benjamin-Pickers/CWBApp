@@ -14,6 +14,8 @@ import webbrowser
 import platform
 import os
 import smtplib
+import ssl
+from email.message import EmailMessage
 from datetime import date, timedelta
 from decimal import Decimal
 import math
@@ -1469,6 +1471,18 @@ def Report(request):
     return render(request, 'CWBDataApp/report.html')
 
 
+###########################################################PRINT FORMS
+def PrintForms(request):
+
+    if request.method == 'POST':
+        form = request.POST
+
+        #Open PDF from pdf folder
+        webbrowser.open('file://' + os.getcwd() + '/PdfForms/'+form['filePrint']+'.pdf')
+
+    return render(request, 'CWBDataApp/Forms.html')
+
+
 ###########################################################ADMIN
 def admin(request):
     return reverse('admin:index')
@@ -1490,35 +1504,35 @@ def addDate(startDate, numDays):
 #Function to create and send email
 def sendEmail(emailSubject, message):
 
-    gmail_user = 'cwbtech1234@gmail.com'
-    gmail_password = 'cwbtech123'
+    gmail_user = os.getenv('GMAIL_USER')
+    gmail_password = os.getenv('GMAIL_PASSWORD')
 
     sent_from = gmail_user
     to = 'tom@greenwellplastics.ca'
-    subject = emailSubject
-    body = message
+    #to = 'ben10pickers@gmail.com'
     return_message = ''
     state = True
 
-    email_text="""\
-    From: %s
-    To: %s
-    Subject: %s
+    msg = EmailMessage()
+    msg.set_content(message)
 
-    %s
+    msg['Subject'] = emailSubject
+    msg['From'] = sent_from
+    msg['To'] = to
 
-    """%(sent_from, to, subject, body)
-
-    #try:
-    smtp_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-    smtp_server.ehlo()
-    smtp_server.login(gmail_user, gmail_password)
-    smtp_server.sendmail(sent_from, to, email_text)
-    smtp_server.close()
-    returnMessage = "Email sent successfully! Thankyou for your input"
-    #except Exception as ex:
-    #    state = False
-    #    returnMessage = "Could not Send the email. Try again later"
+    try:
+        context = ssl.create_default_context()
+        smtp_server = smtplib.SMTP('smtp.gmail.com', 587)
+        smtp_server.ehlo()
+        smtp_server.starttls(context=context)
+        smtp_server.ehlo()
+        smtp_server.login(gmail_user, gmail_password)
+        smtp_server.sendmail(sent_from, to, msg.as_string())
+        smtp_server.close()
+        returnMessage = "Email sent successfully! Thankyou for your input"
+    except Exception as ex:
+       state = False
+       returnMessage = "Could not Send the email. Try again later"
 
 
     return {'state':state, 'returnMessage':returnMessage}
