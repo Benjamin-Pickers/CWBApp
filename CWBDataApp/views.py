@@ -785,6 +785,11 @@ def MaterialInventoryPdf(request):
     pp.savefig(fig, bbox_inches='tight')
     pp.close()
 
+    with open(r'./CWBDataApp/MaterialInventoryPdf.pdf', 'rb') as fh:
+        response = HttpResponse(fh.read(), content_type="application/pdf")
+        response['Content-Disposition'] = 'attachment; filename=MaterialInventory.pdf'
+    return response
+
     webbrowser.open('file://' + os.getcwd() + '/CWBDataApp/MaterialInventoryPdf.pdf')
 
     return render(request, 'CWBDataApp/MaterialInventoryQuery.html', {'allMaterial':allMaterial})
