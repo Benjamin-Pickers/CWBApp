@@ -48,7 +48,7 @@
     </div>
   </form>
 
-  <form action="{% url 'CWBDataApp:ProductInventoryPdf'%}" method="post">
+  <form action="{% url 'CWBDataApp:ProductInventoryPdf'%}" target="_blank" method="post">
     <div class="d-inline-flex flex-column">
       {% csrf_token %}
       <input class="submitButton" type="submit" name="Download" value="Print Data">

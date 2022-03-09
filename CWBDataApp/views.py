@@ -662,7 +662,7 @@ def ProductInventoryPdf(request):
     pp.savefig(fig, bbox_inches='tight')
     pp.close()
 
-    webbrowser.open('file://' + os.getcwd() + '/CWBDataApp/ProductInventoryPdf.pdf')
+    return FileResponse(open(r'./CWBDataApp/ProductInventoryPdf.pdf', 'rb'), content_type='application/pdf')
 
     return render(request, 'CWBDataApp/ProductInventoryQuery.html', {'allProduct':allProduct})
 
@@ -787,12 +787,8 @@ def MaterialInventoryPdf(request):
     pp.savefig(fig, bbox_inches='tight')
     pp.close()
 
-    with open(r'./CWBDataApp/MaterialInventoryPdf.pdf', 'rb') as fh:
-        response = HttpResponse(fh.read(), content_type="application/pdf")
-        response['Content-Disposition'] = 'attachment; filename=MaterialInventory.pdf'
-    return response
 
-    webbrowser.open('file://' + os.getcwd() + '/CWBDataApp/MaterialInventoryPdf.pdf')
+    return FileResponse(open(r'./CWBDataApp/MaterialInventoryPdf.pdf', 'rb'), content_type='application/pdf')
 
     return render(request, 'CWBDataApp/MaterialInventoryQuery.html', {'allMaterial':allMaterial})
 
@@ -1109,7 +1105,7 @@ def OrdersExcel(request):
     os.remove(r'./CWBDataApp/OrderSheetMachine.xlsx')
     return response
 
-    return render(request, 'CWBDataApp/ViewOrders.html')
+    return render(request, 'CWBDataApp/ViewOrders.html', {'numberOfMachines':range(1, numberOfMachines+1)})
 
 
 ###########################################################UPDATE ORDERS
