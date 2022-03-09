@@ -42,14 +42,17 @@
   {% if orders and not orderChange%}
     <div class="justify-content-center row no-gutters">
       <form action="{% url 'CWBDataApp:GetOrder'%}" method="post">
-        <div class="d-inline-flex flex-column">
+        <div class="d-inline-flex flex-column btn-group btn-group-toggle">
           {% csrf_token %}
 
           <div class="inline-flex inputBox">
             <fieldset>
               <legend> Choose an Order to Update:</legend>
               {% for order in orders %}
-                <input type="radio" name="orderrank" value="{{order.priorityrank}}">{{order.customerponumber}}- {{order.colour}} {{order.boardprofile}} with priority {{order.priorityrank}}<br>
+                <label class="btn btn-secondary">
+                <input type="radio" name="orderrank" value="{{order.priorityrank}}">Order #{{order.customerponumber}} - {{order.colour}} {{order.boardprofile}} with priority {{order.priorityrank}}<br>
+                </label>
+                <br>
               {% endfor %}
             </fieldset>
           </div>

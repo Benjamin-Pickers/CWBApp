@@ -1478,7 +1478,7 @@ def PrintForms(request):
         form = request.POST
 
         #Open PDF from pdf folder
-        webbrowser.open('file://' + os.getcwd() + '/PdfForms/'+form['filePrint']+'.pdf')
+        webbrowser.open('file://' + os.path.realpath('PdfForms/Mixing_Form.pdf'))
 
     return render(request, 'CWBDataApp/Forms.html')
 
