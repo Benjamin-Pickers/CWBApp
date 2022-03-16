@@ -23,4 +23,4 @@ urlpatterns = [
     path('CWBDataApp/', include('CWBDataApp.urls')),
     path('', views.index, name='index'),
     path('admin/', admin.site.urls),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

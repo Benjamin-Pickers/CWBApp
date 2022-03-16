@@ -16,14 +16,14 @@ import os
 import smtplib
 import ssl
 from email.message import EmailMessage
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from decimal import Decimal
 import math
 
 from .OrderFunctions import OrderFunctions as OrderFunc
 from .OrdersDD import OrdersDD
 
-from .models import Batchcost, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Picandsum, Productinventory, Productprofiles, Colour, Employees, Profileaverages
+from .models import Batchcost, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Productinventory, Productprofiles, Colour, Employees, Profileaverages, picsum, picsumForm
 
 numberOfMachines = 3
 num_of_materials = 11
@@ -283,7 +283,7 @@ def ChangeBatch(request):
         if Materialinventory.objects.filter(materialname=form['newBatch']).exists():
             materialInv= Materialinventory.objects.get(pk=form['newBatch'])
             materialInv.numberofboxes = numberofboxes
-            materialInv.priceperpounds = price
+            materialInv.priceperpound = price
             materialInv.save()
         else:
             materialInv = Materialinventory(materialname=form['newBatch'].upper(),
@@ -563,15 +563,16 @@ def ProductInventory(request):
 ###########################################################PRODUCT INVENTORY UPDATE
 def ProductInventoryUpdate(request):
     allProduct = Productinventory.objects.all()
+    allColours = Colour.objects.all()
 
     if request.method == 'POST':
         form = request.POST
 
         if Productinventory.objects.filter(pk=form['prodName']).exists():
             prod_object = Productinventory.objects.get(pk=form['prodName'])
-            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProduct':allProduct, 'Forms':True, 'prod_object':prod_object})
+            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProduct':allProduct, 'allColours':allColours, 'Forms':True, 'prod_object':prod_object})
         else:
-            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProduct':allProduct, 'error_message': ""+ form['colour'] + " " + form['prodName'] +" does not exist in inventory. If you wish to enter its data, press the Add Product tab"})
+            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProduct':allProduct, 'allColours':allColours, 'error_message': ""+ form['colour'] + " " + form['prodName'] +" does not exist in inventory. If you wish to enter its data, press the Add Product tab"})
     return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProduct':allProduct})
 
 ###########################################################PRODUCT INVENTORY UPDATE SKIDS
@@ -581,36 +582,62 @@ def ProductInventoryUpdateSkids(request):
     if request.method == 'POST':
         form = request.POST
 
-        if Productinventory.objects.filter(productname=form['prodName'], colour=form['colour']).exists():
+        #if our colour has changed then update the inventory and ordersheets
+        if form['newcolour'] != form['colour']:
+            #Check if a product already exists with this new colour
+            if Productinventory.objects.filter(productname=form['prodName'], colour=form['newcolour']).exists():
+                return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProduct':allProduct, 'error_message': 'A Product with this profile and colour already exists'})
+
             prod = Productinventory.objects.get(productname=form['prodName'], colour=form['colour'])
-
-            if form['numSkids'] == '':
-                numSkids = 0
-            else:
-                numSkids = Decimal(form['numSkids'])
-
-            if prod.numberofskids + numSkids < 0:
-                render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProduct':allProduct, 'error_message': 'The number of Skids entered would leave the inventory with negative skids. Please enter a different number.'})
+            prod.colour = form['newcolour']
+            prod.save()
 
             prodProf = Productprofiles.objects.get(pk=form['prodName'])
             prodAv = Profileaverages.objects.get(pk=form['prodName'])
-            differenceInPieces = numSkids * Decimal(prodProf.pcsperskid)
-            #See if an order exists with this product
+
+            pieces = prod.numberofskids * Decimal(prodProf.pcsperskid)
+
+            #See if an order exists with the product old colour and substract that from inventory
             Order = OrderFunc()
             orderDict = Order.FindOrder(form['prodName'], form['colour'])
             #If an order exists then update its inventorized pieces
             if orderDict:
-                Order.UpdateOrderInventory(orderDict.get('order'), differenceInPieces, orderDict.get('orderSheet'), prodProf, prodAv)
+                Order.UpdateOrderInventory(orderDict.get('order'), (-1 * pieces), orderDict.get('orderSheet'), prodProf, prodAv)
 
-            #If the added number of skids leaves 0 skids remaining, then remove thhat object from inventory
-            if prod.numberofskids + numSkids == 0:
-                prod.delete()
+            #See if an order exists with the producs new colour and add that to inventory
+            Order = OrderFunc()
+            orderDict = Order.FindOrder(form['prodName'], form['newcolour'])
+            #If an order exists then update its inventorized pieces
+            if orderDict:
+                Order.UpdateOrderInventory(orderDict.get('order'), pieces, orderDict.get('orderSheet'), prodProf, prodAv)
+
+        #Check if any new skids were added, if numskids is 0 then skip
+        if form['numSkids'] != '' and form['numSkids'] != 0:
+
+            if Productinventory.objects.filter(productname=form['prodName'], colour=form['newcolour']).exists():
+                prod = Productinventory.objects.get(productname=form['prodName'], colour=form['newcolour'])
+
+                numSkids = Decimal(form['numSkids'])
+
+                prodProf = Productprofiles.objects.get(pk=form['prodName'])
+                prodAv = Profileaverages.objects.get(pk=form['prodName'])
+                differenceInPieces = numSkids * Decimal(prodProf.pcsperskid)
+                #See if an order exists with this product
+                Order = OrderFunc()
+                orderDict = Order.FindOrder(form['prodName'], form['newcolour'])
+                #If an order exists then update its inventorized pieces
+                if orderDict:
+                    Order.UpdateOrderInventory(orderDict.get('order'), differenceInPieces, orderDict.get('orderSheet'), prodProf, prodAv)
+
+                #If the added number of skids leaves 0 skids remaining, then remove thhat object from inventory
+                if prod.numberofskids + numSkids == 0:
+                    prod.delete()
+                else:
+                    prod.numberofskids += Decimal(numSkids)
+                    prod.save()
+                return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProduct':allProduct, 'dataAcceptedMessage':"Successfully Added "+str(numSkids)+" Skids to "+ form['newcolour'] + " " + form['prodName']})
             else:
-                prod.numberofskids += Decimal(numSkids)
-                prod.save()
-            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProduct':allProduct, 'dataAcceptedMessage':"Successfully Added "+str(numSkids)+" Skids to "+ form['colour'] + " " + form['prodName']})
-        else:
-            return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProduct':allProduct, 'allColours':allColours, 'error_message':""+ form['colour'] + " " + form['prodName'] +" does not exist in inventory. If you wish to enter its data, press the Add Product tab"})
+                return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProduct':allProduct, 'allColours':allColours, 'error_message':""+ form['newcolour'] + " " + form['prodName'] +" does not exist in inventory. If you wish to enter its data, press the Add Product tab"})
     return render(request, 'CWBDataApp/ProductInventoryUpdate.html', {'allProduct':allProduct, 'allColours':allColours})
 
 ###########################################################PRODUCT INVENTORY QUERY
@@ -1270,7 +1297,46 @@ def ChangeOrder(request):
 
 ###########################################################PIC & SUM
 def PicSum(request):
-    return render(request, 'CWBDataApp/PicSum.html')
+    allEmployees = Employees.objects.all()
+
+    if request.method == 'POST':
+        form = picsumForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            form.save()
+            return render(request, 'CWBDataApp/PicSum.html', {'allEmployees':allEmployees, 'dateToday':date.today().isoformat(), 'dataAcceptedMessage':"Pic&Sum Successfully Uploaded"})
+        else:
+            print(form.errors)
+            return render(request, 'CWBDataApp/PicSum.html', {'allEmployees':allEmployees, 'dateToday':date.today().isoformat(), 'error_message':"Something went wrong could not upload. Check to make sure everything is entered correctly"})
+
+
+    return render(request, 'CWBDataApp/PicSum.html', {'allEmployees':allEmployees, 'dateToday':date.today().isoformat()})
+
+###########################################################PIC & SUM
+def PicSumForms(request):
+
+    if request.method == 'POST':
+        form = request.POST
+
+        if form['startdate'] != None:
+            print(form['startdate'])
+            query = str(picsum.objects.filter(testdate__gt=datetime.strptime(form['startdate'], '%Y-%m-%d').date()).query)
+        query = str(picsum.objects.all().query)
+        df = pd.read_sql_query(query, connection)
+        today = str(date.today())
+        df.drop(columns=['image', 'description'], inplace=True)
+        df.rename(columns={'title': 'Test Name', 'testdate':'Test Date', 'supervisor':'Supervisor (Not a temp)', 'machineoperator':'Machine Operator', 'temp1':'Is the Machine Operator a Temp', 'mixer':'Mixer', 'temp2':'Is the Mixer a temp'}, inplace=True)
+
+        df.to_excel(r'./CWBDataApp/picsum.xlsx', index=False)
+
+        with open(r'./CWBDataApp/picsum.xlsx', 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            response['Content-Disposition'] = 'attachment; filename=PicSum-'+today+'.xlsx'
+        os.remove(r'./CWBDataApp/picsum.xlsx')
+        return response
+
+
+    return render(request, 'CWBDataApp/PicSumForms.html')
 
 ###########################################################HELP
 def help(request):

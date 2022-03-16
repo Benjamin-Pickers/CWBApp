@@ -39,6 +39,7 @@ urlpatterns = [
     path('GetOrder/', views.GetOrder, name='GetOrder'),
     path('ChangeOrder/', views.ChangeOrder, name='ChangeOrder'),
     path('PicSum/', views.PicSum, name='PicSum'),
+    path('PicSumForms/', views.PicSumForms, name='PicSumForms'),
     path('help/', views.help, name='help'),
     path('AddEmployee/', views.AddEmployee, name='AddEmployee'),
     path('RemoveEmployee/', views.RemoveEmployee, name='RemoveEmployee'),

@@ -1,6 +1,6 @@
 {% extends 'CWBDataApp/base.html'%}
 
-{% block title %} {{'Update Supplier'}} {% endblock title %}
+{% block title %} {{'Pic & Sum'}} {% endblock title %}
 
 {% block css %}
   {% load static %}
@@ -11,8 +11,102 @@
   <div>
     <h2 id="header"> Pic & Sum </h2>
     <p id="descriptionParagraph">
-        Upload a picture and summary of a test
+        Picture and general description of a material test
     </p>
+  </div>
+
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:PicSum'%}" method="post" enctype="multipart/form-data">
+      <div class="d-inline-flex flex-column">
+        <h4 id=header>Pic & Sum</h4>
+        {% csrf_token %}
+
+        <div class="inline-flex form-group">
+          <label for="title">Title: </label>
+          <input id="title" type="text" name="title" maxlength="20">
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for=testdate">Date*: </label>
+          <input id="testdate" type="date" name="testdate" min="2021-01-01" {% if dateToday %} value={{dateToday}} {% endif %}>
+        </div>
+
+        <br>
+        <p> --------------------------------------------------------</p>
+
+        <div class="inline-flex input-box">
+          <label for="supervisor">Supervisor: </label>
+          <select id="supervisor" name="supervisor">
+            {% if allEmployees %}
+              {% for employee in allEmployees %}
+                  <option value="{{ employee.employeename }}">{{ employee.employeename }}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+
+
+        <br>
+        <p> --------------------------------------------------------</p>
+
+        <div class="inline-flex input-box">
+          <label for="machineoperator">Machine Operator: </label>
+          <select id="machineoperator" name="machineoperator">
+            {% if allEmployees %}
+              {% for employee in allEmployees %}
+                  <option value="{{ employee.employeename }}">{{ employee.employeename }}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+
+        <div class="inline-flex input-box">
+          <label for="temp1">Are they a Temp Employee: </label>
+          <select id="temp1" type="text" name="temp1">
+            <option value='False'>No</option>
+            <option value='True'>Yes</option>
+          </select>
+        </div>
+        <br>
+
+        <p> --------------------------------------------------------</p>
+
+        <div class="inline-flex input-box">
+          <label for="mixer">Mixer: </label>
+          <select id="mixer" name="mixer">
+            {% if allEmployees %}
+              {% for employee in allEmployees %}
+                  <option value="{{ employee.employeename }}">{{ employee.employeename }}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+
+        <div class="inline-flex input-box">
+          <label for="temp2">Are they a Temp Employee: </label>
+          <select id="temp2" type="text" name="temp2">
+            <option value='False'>No</option>
+            <option value='True'>Yes</option>
+          </select>
+        </div>
+
+        <br>
+
+        <p> --------------------------------------------------------</p>
+
+        <div class="inline-flex form-group">
+          <label for="image">Image: </label>
+          <input id="image" type="file" name="image" accept="image/png, image/jpeg">
+        </div>
+
+        <div class="inline-flex form-group">
+          <label for="description">Description: </label>
+          <textarea class="form-control" id="description" name="description" rows="15" columns="40"></textarea>
+        </div>
+
+          <input type="submit" name="enterNewAverage" value="Save">
+      </div>
+    </form>
   </div>
 
 {% endblock content %}

@@ -44,7 +44,7 @@
   </div>
 
   <div class="justify-content-center row no-gutters">
-    <form action="{% url 'CWBDataApp:MaterialInventoryPdf'%}" method="post">
+    <form action="{% url 'CWBDataApp:MaterialInventoryExcel'%}" method="post">
       <div class="d-inline-flex flex-column">
         {% csrf_token %}
         <input class="submitButton" type="submit" name="Download" value="Download Excel File of Entire Material Inventory">

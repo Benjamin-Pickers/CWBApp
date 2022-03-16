@@ -49,6 +49,18 @@
         <div> <h4> {{ prod_object.colour }} {{ prod_object.productname }} currently has {{ prod_object.numberofskids }} skids in inventory</h4></div>
 
         <div class="inline-flex inputBox">
+          <label for="newcolour">Colour*: </label>
+          <select id="newcolour" type="text" name="newcolour">
+            <option value="{{ prod_object.colour }}">{{ prod_object.colour }}</option>
+            {% if allColours %}
+              {% for entry in allColours %}
+                  <option value="{{ entry.colour }}">{{ entry.colour }}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+
+        <div class="inline-flex inputBox">
           <label for="numSkids">Added Number of Skids*: </label>
           <input id="numSkids" type="number" name="numSkids" step="any" max="1000">
         </div>

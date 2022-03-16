@@ -82,8 +82,14 @@
                   <a class="dropdown-item" href="{% url 'CWBDataApp:UpdateDDOrders'%}"> Update DD Orders </a>
                 </div>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'CWBDataApp:PicSum'%}">Pic&Sum</a>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true "aria-expanded="false">
+                  Pic&Sum
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  <a class="dropdown-item" href="{% url 'CWBDataApp:PicSum'%}">Enter a new Pic&Sum</a>
+                  <a class="dropdown-item" href="{% url 'CWBDataApp:PicSumForms'%}">Download Data </a>
+                </div>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'CWBDataApp:Report'%}"> C.I.S</a>

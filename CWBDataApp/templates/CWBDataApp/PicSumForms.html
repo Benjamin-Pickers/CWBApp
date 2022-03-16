@@ -1,0 +1,47 @@
+{% extends 'CWBDataApp/base.html'%}
+
+{% block title %} {{'Pic & Sum Forms'}} {% endblock title %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
+
+{% block content %}
+  <div>
+    <h2 id="header"> Pic & Sum </h2>
+    <p id="descriptionParagraph">
+        Download Pic&Sum data as a doc or excel file
+    </p>
+  </div>
+
+
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:PicSumForms'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        {% csrf_token %}
+
+        <div class="inline-flex inputBox">
+          <label for=startdate">Start Date: </label>
+          <input id="startdate" type="date" name="startdate" min="2021-01-01">
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for=enddate">End Date: </label>
+          <input id="enddate" type="date" name="enddate" min="2021-01-01" {% if dateToday %} value={{dateToday}} {% endif %}>
+        </div>
+
+        <input class="submitButton" type="submit" name="Download" value="Download Excel File of Pic&Sum Data">
+      </div>
+    </form>
+
+    <form action="{% url 'CWBDataApp:MaterialInventoryPdf'%}" target="_blank" method="post">
+      <div class="d-inline-flex flex-column">
+        {% csrf_token %}
+        <input class="submitButton" type="submit" name="Download" value="Print Data">
+      </div>
+    </form>
+  </div>
+
+
+{% endblock content %}

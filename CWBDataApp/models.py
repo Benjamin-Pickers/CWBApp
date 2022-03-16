@@ -1,4 +1,6 @@
 from django.db import models
+from django.forms import ModelForm
+import datetime
 
 
 class Batchcost(models.Model):
@@ -205,15 +207,6 @@ class Ordersheetmachine3(models.Model):
         managed = False
         db_table = 'OrderSheetMachine3'
 
-class Picandsum(models.Model):
-    startdate = models.DateField(db_column='StartDate', primary_key=True)
-    enddate = models.DateField(db_column='EndDate', blank=True, null=True)
-    link = models.CharField(db_column='Link', max_length=100)
-
-    class Meta:
-        managed = False
-        db_table = 'PicAndSum'
-
 
 class Productinventory(models.Model):
     productname = models.CharField(db_column='ProductName', max_length=40)
@@ -252,3 +245,19 @@ class Profileaverages(models.Model):
     class Meta:
         managed = False
         db_table = 'ProfileAverages'
+
+class picsum(models.Model):
+    title = models.CharField(max_length=40, primary_key=True, default="Test")
+    testdate = models.DateField(default=datetime.date.today)
+    supervisor = models.CharField(max_length=40, null=True)
+    machineoperator = models.CharField(max_length=40, null=True)
+    temp1 = models.BooleanField()
+    mixer = models.CharField(max_length=40, null=True)
+    temp2 = models.BooleanField()
+    image = models.ImageField(upload_to="PicAndSum/%Y/%m", blank=True)
+    description = models.TextField(null=True)
+
+class picsumForm(ModelForm):
+    class Meta:
+        model = picsum
+        fields = ['title', 'testdate', 'machineoperator', 'temp1', 'mixer', 'temp2', 'image', 'description']

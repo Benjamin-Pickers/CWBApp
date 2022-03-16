@@ -16,14 +16,14 @@ jQuery(document).ready(function($) {
     $percent.on('input', function(e) {
         var percent = 0;
         if(!Number.isNaN(parseFloat(this.value, 10)))
-            percent = $('#weightSum').val() * parseFloat(this.value, 10);
+            percent = $('#weightSum').val() * (parseFloat(this.value, 10) / 100);
 
         $weight.val(percent);
     });
     $foampercent.on('input', function(e) {
         var percent = 0;
         if(!Number.isNaN(parseFloat(this.value, 10)))
-            percent = $('#weightSum').val() * parseFloat(this.value, 10);
+            percent = $('#weightSum').val() * (parseFloat(this.value, 10) / 100);
 
         $foamweight.val(percent);
     });
