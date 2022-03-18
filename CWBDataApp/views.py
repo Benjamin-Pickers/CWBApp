@@ -19,6 +19,7 @@ from email.message import EmailMessage
 from datetime import date, timedelta, datetime
 from decimal import Decimal
 import math
+import docx
 
 from .OrderFunctions import OrderFunctions as OrderFunc
 from .OrdersDD import OrdersDD
@@ -1318,14 +1319,21 @@ def PicSumForms(request):
     if request.method == 'POST':
         form = request.POST
 
-        if form['startdate'] != None:
-            print(form['startdate'])
-            query = str(picsum.objects.filter(testdate__gt=datetime.strptime(form['startdate'], '%Y-%m-%d').date()).query)
         query = str(picsum.objects.all().query)
         df = pd.read_sql_query(query, connection)
         today = str(date.today())
         df.drop(columns=['image', 'description'], inplace=True)
         df.rename(columns={'title': 'Test Name', 'testdate':'Test Date', 'supervisor':'Supervisor (Not a temp)', 'machineoperator':'Machine Operator', 'temp1':'Is the Machine Operator a Temp', 'mixer':'Mixer', 'temp2':'Is the Mixer a temp'}, inplace=True)
+
+        df['Test Date'] = pd.to_datetime(df['Test Date'], format='%Y-%m-%d')
+
+        if form['startdate'] != '':
+            startdate = datetime.strptime(form['startdate'], '%Y-%m-%d')
+            df = df.loc[(df['Test Date'] >= startdate)]
+
+        if form['enddate'] != '':
+            enddate = datetime.strptime(form['enddate'], '%Y-%m-%d')
+            df = df.loc[(df['Test Date'] <= enddate)]
 
         df.to_excel(r'./CWBDataApp/picsum.xlsx', index=False)
 
@@ -1337,6 +1345,53 @@ def PicSumForms(request):
 
 
     return render(request, 'CWBDataApp/PicSumForms.html')
+
+###########################################################PIC & SUM Doc generator
+def PicSumDoc(request):
+
+    if request.method == 'POST':
+        form = request.POST
+
+        #Check if end and start dates are given
+        if form['startdate'] != '':
+            startdate = datetime.strptime(form['startdate'], '%Y-%m-%d').date()
+
+            if form['enddate'] != '':
+                enddate = datetime.strptime(form['enddate'], '%Y-%m-%d').date()
+                allPics = picsum.objects.filter(testdate__gte=startdate, testdate__lte=enddate)
+            else:
+                allPics = picsum.objects.filter(testdate__gte=startdate)
+        elif form['enddate'] != '':
+            enddate = datetime.strptime(form['enddate'], '%Y-%m-%d').date()
+            allPics = picsum.objects.filter(testdate__lte=enddate)
+        else:
+            allPics = picsum.objects.all()
+
+
+        myDoc = docx.Document()
+
+        #Create doc with all pic&PicSum
+        #Include title, testdate, decription and image
+        for pic in allPics:
+            header = myDoc.add_paragraph().add_run(pic.title)
+            header.font.underline = True
+            header.font.size = docx.shared.Pt(18)
+            header.font.bold = True
+            myDoc.add_heading(str(pic.testdate), 2)
+
+            myDoc.add_paragraph(pic.description)
+            myDoc.add_picture(pic.image, width=docx.shared.Inches(4), height=docx.shared.Inches(3))
+            myDoc.save(r'./CWBDataApp/Pic&SumDoc.docx')
+
+        with open(r'./CWBDataApp/Pic&SumDoc.docx', 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+            response['Content-Disposition'] = 'attachment; filename=PicSumDoc.docx'
+        os.remove(r'./CWBDataApp/Pic&SumDoc.docx')
+        return response
+
+
+    return render(request, 'CWBDataApp/PicSumForms.html')
+
 
 ###########################################################HELP
 def help(request):

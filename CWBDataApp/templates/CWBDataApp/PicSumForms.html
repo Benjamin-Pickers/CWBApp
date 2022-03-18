@@ -32,15 +32,10 @@
         </div>
 
         <input class="submitButton" type="submit" name="Download" value="Download Excel File of Pic&Sum Data">
+        <input class="submitButton" type="submit" name="Download" formaction="{% url 'CWBDataApp:PicSumDoc'%}" value="Download Word Doc of Data">
       </div>
     </form>
 
-    <form action="{% url 'CWBDataApp:MaterialInventoryPdf'%}" target="_blank" method="post">
-      <div class="d-inline-flex flex-column">
-        {% csrf_token %}
-        <input class="submitButton" type="submit" name="Download" value="Print Data">
-      </div>
-    </form>
   </div>
 
 
