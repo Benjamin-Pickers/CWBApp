@@ -1,0 +1,62 @@
+{% extends 'CWBDataApp/base.html'%}
+
+{% block title %} {{'Add Subject'}} {% endblock title %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
+
+{% block content %}
+  <div>
+    <h2 id="header"> Add/Remove Email Subject </h2>
+    <p id="descriptionParagraph">
+        Add or remove a email subject to be added to the subject dropdown in C.I.S
+    </p>
+  </div>
+
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:AddSubject'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        <h4 id=header>Add an Email Subject</h4>
+        {% csrf_token %}
+
+        <div class="inline-flex inputBox">
+          <label for="subject">Email Subjects: </label>
+          <input id="subject" type="text" name="subject" maxlength="100">
+        </div>
+
+        <br>
+        <div class="justify-content-center row">
+          <input type="submit" name="enterSubject" value="Add">
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:RemoveSubject'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        <h4 id=header>Remove a Email Subject</h4>
+        {% csrf_token %}
+
+        <div class="inline-flex inputBox">
+          <label for="subject">Email Subject: </label>
+          <select id="subject" type="text" name="subject">
+            {% if allSubjects %}
+              {% for subject in allSubjects %}
+                  <option value="{{ subject.subject }}">{{subject.subject}}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+
+        <br>
+        <div class="justify-content-center row">
+          <input type="submit" name="removeSubject" value="Remove">
+        </div>
+      </div>
+    </form>
+  </div>
+
+{% endblock content %}

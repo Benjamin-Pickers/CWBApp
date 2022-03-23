@@ -23,13 +23,13 @@
         {% csrf_token %}
 
         <div class="inline-flex form-group">
-          <label for="subject">Subject*: </label>
+          <label for="subject">Subject: </label>
           <select id="subject" type="text" name="subject">
-            <option value="Continuous Improvement"> Continuous Improvement </option>
-            <option value="Safety Improvement"> Safety Improvement </option>
-            <option value="Safety Concerns"> Safety Concerns </option>
-            <option value="Items We Need"> Items We Need </option>
-            <option value="System Bugs&Erros"> System Bugs&Errors </option>
+            {% if allSubjects %}
+              {% for subject in allSubjects %}
+                <option value={{subject.subject}}> {{subject.subject}} </option>
+              {% endfor %}
+            {% endif %}
           </select>
         </div>
 

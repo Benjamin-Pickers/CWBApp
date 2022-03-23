@@ -53,6 +53,8 @@ urlpatterns = [
     path('UpdateSupplier/', views.UpdateSupplier, name='UpdateSupplier'),
     path('AddProfileAverage/', views.AddProfileAverage, name='AddProfileAverage'),
     path('UpdateProfileAverage/', views.UpdateProfileAverage, name='UpdateProfileAverage'),
+    path('AddSubject/', views.AddSubject, name='AddSubject'),
+    path('RemoveSubject/', views.RemoveSubject, name='RemoveSubject'),
     path('Report/', views.Report, name='Report'),
     path('PrintForms/', views.PrintForms, name='PrintForms'),
     path('accounts/', include('django.contrib.auth.urls')),

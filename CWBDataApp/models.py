@@ -257,6 +257,9 @@ class picsum(models.Model):
     image = models.ImageField(upload_to="PicAndSum/%Y/%m", blank=True)
     description = models.TextField(null=True)
 
+class cisEmailSubject(models.Model):
+    subject = models.CharField(max_length=100, primary_key=True)
+
 class picsumForm(ModelForm):
     class Meta:
         model = picsum

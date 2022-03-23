@@ -24,7 +24,7 @@ import docx
 from .OrderFunctions import OrderFunctions as OrderFunc
 from .OrdersDD import OrdersDD
 
-from .models import Batchcost, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Productinventory, Productprofiles, Colour, Employees, Profileaverages, picsum, picsumForm
+from .models import Batchcost, Materialcost, Materialinventory, Materialtesting, Ordersheetmachine1, Ordersheetmachine2, Ordersheetmachine3, Productinventory, Productprofiles, Colour, Employees, Profileaverages, picsum, picsumForm, cisEmailSubject
 
 numberOfMachines = 3
 num_of_materials = 11
@@ -1579,8 +1579,41 @@ def UpdateProfileAverage(request):
 
     return render(request, 'CWBDataApp/UpdateProfileAverage.html', {'allAverages':allAverages})
 
+###########################################################Add CIS Email subject
+def AddSubject(request):
+    allSubjects = cisEmailSubject.objects.all()
+
+    if request.method == 'POST':
+        form = request.POST
+
+        try:
+            subject = cisEmailSubject.objects.get(pk=form['subject'])
+            return render(request, 'CWBDataApp/AddSubject.html', {'error_message':"Subject already exists", 'allSubjects':allSubjects})
+        except:
+            new_subject = cisEmailSubject(subject=form['subject'])
+            new_subject.save()
+            return render(request, 'CWBDataApp/AddSubject.html', {'dataAcceptedMessage':"Subject Successfully Added", 'allSubjects':allSubjects})
+    return render(request, 'CWBDataApp/AddSubject.html', {'allSubjects':allSubjects})
+
+###########################################################Remove Subject
+def RemoveSubject(request):
+    allSubjects = cisEmailSubject.objects.all()
+
+    if request.method == 'POST':
+        form = request.POST
+
+        try:
+            subject = cisEmailSubject.objects.get(pk=form['subject'])
+            subject.delete()
+            return render(request, 'CWBDataApp/AddSubject.html', {'dataAcceptedMessage':"Subject Successfully Deleted", 'allSubjects':allSubjects})
+        except:
+            return render(request, 'CWBDataApp/AddSubject.html', {'error_message':"Subjectt could not be removed because it does not exist", 'allSubjects':allSubjects})
+    return render(request, 'CWBDataApp/AddSubject.html', {'allSubjects':allSubjects})
+
 ###########################################################REPORT ERRORS AND SUGGESTIONS
 def Report(request):
+
+    allSubjects = cisEmailSubject.objects.all()
 
     if request.method == 'POST':
         form = request.POST
@@ -1588,12 +1621,12 @@ def Report(request):
         message = sendEmail(form['subject'], form['message'])
 
         if message['state'] == True:
-            return render(request, 'CWBDataApp/report.html', {'dataAcceptedMessage':message['returnMessage']})
+            return render(request, 'CWBDataApp/report.html', {'dataAcceptedMessage':message['returnMessage'], 'allSubjects':allSubjects})
         else:
-            return render(request, 'CWBDataApp/report.html', {'error_message':message['returnMessage']})
+            return render(request, 'CWBDataApp/report.html', {'error_message':message['returnMessage'], 'allSubjects':allSubjects})
 
 
-    return render(request, 'CWBDataApp/report.html')
+    return render(request, 'CWBDataApp/report.html', {'allSubjects':allSubjects})
 
 
 ###########################################################PRINT FORMS
