@@ -263,4 +263,4 @@ class cisEmailSubject(models.Model):
 class picsumForm(ModelForm):
     class Meta:
         model = picsum
-        fields = ['title', 'testdate', 'machineoperator', 'temp1', 'mixer', 'temp2', 'image', 'description']
+        fields = ['title', 'testdate', 'supervisor', 'machineoperator', 'temp1', 'mixer', 'temp2', 'image', 'description']

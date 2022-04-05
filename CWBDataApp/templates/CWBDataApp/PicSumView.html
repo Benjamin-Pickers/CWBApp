@@ -1,0 +1,62 @@
+{% extends 'CWBDataApp/base.html'%}
+
+{% block title %} {{'Pic & Sum View'}} {% endblock title %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
+
+{% block content %}
+  <div>
+    <h2 id="header">View Pic & Sums </h2>
+    <p id="descriptionParagraph">
+        View Pic&Sum data between the specifed start and end dates. If you put the start date but do not give and end date, then the data
+        will be gathered for the startdate up until the current date. If an end date is given but no start date then the data is retrieved for the
+        specified day only.
+    </p>
+  </div>
+
+
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:PicSumView'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        {% csrf_token %}
+
+        <div class="inline-flex inputBox">
+          <label for=startdate">Start Date: </label>
+          <input id="startdate" type="date" name="startdate" min="2021-01-01">
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for=enddate">End Date: </label>
+          <input id="enddate" type="date" name="enddate" min="2021-01-01" {% if dateToday %} value={{dateToday}} {% endif %}>
+        </div>
+
+        <input class="submitButton" type="submit" name="View" value="View Pic&Sums">
+      </div>
+    </form>
+  </div>
+
+  <div class="justify-content-center row no-gutters">
+    {% if allPics %}
+      {% for pic in allPics %}
+        <div class="inline-flex picsum">
+          <h2> {{pic.title}} </h2>
+          <p> {{pic.testdate}}</p>
+
+          <p>Supervisor: {{pic.supervisor}} </p>
+          <p>Machine Operator: {{pic.machineoperator}}</p>
+          <p>Mixer: {{pic.mixer}}</p>
+
+
+
+          <p>{{pic.description}}</p>
+          <img src="{{pic.image.url}}" alt="pic" height="300", width="300">
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+
+{% endblock content %}

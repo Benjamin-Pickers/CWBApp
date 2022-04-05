@@ -88,3 +88,12 @@ tr, td, th
   flex-wrap: nowrap;
   margin: 0 5% 5% 5%;
 }
+
+.picsum
+{
+  background-color: White;
+  border-radius: 5px;
+  border-style: solid;
+  padding:5% 10% 5% 10%;
+  margin-bottom: 10%;
+}

@@ -1313,7 +1313,125 @@ def PicSum(request):
 
     return render(request, 'CWBDataApp/PicSum.html', {'allEmployees':allEmployees, 'dateToday':date.today().isoformat()})
 
+###########################################################PIC & SUM Display
+def PicSumView(request):
+
+    if request.method == 'POST':
+        form = request.POST
+
+        if form['startdate'] != '' and form['enddate'] == '':
+            startdate = datetime.strptime(form['startdate'], '%Y-%m-%d').date()
+            enddate = date.today()
+            allPics = picsum.objects.filter(testdate__gte=startdate, testdate__lte=enddate)
+        elif form['startdate'] == '' and form['enddate'] != '':
+            enddate = datetime.strptime(form['enddate'], '%Y-%m-%d').date()
+            allPics = picsum.objects.filter(testdate=enddate)
+        elif form['startdate'] == '' and form['enddate'] == '':
+            return render(request, 'CWBDataApp/PicSumView.html', {'error_message':"Please enter a start/end date or both", 'dateToday':date.today().isoformat()})
+        else:
+            startdate = datetime.strptime(form['startdate'], '%Y-%m-%d').date()
+            enddate = datetime.strptime(form['enddate'], '%Y-%m-%d').date()
+            allPics = picsum.objects.filter(testdate__gte=startdate, testdate__lte=enddate)
+
+        return render(request, 'CWBDataApp/PicSumView.html', {'allPics':allPics, 'dateToday':date.today().isoformat()})
+
+    return render(request, 'CWBDataApp/PicSumView.html', {'dateToday':date.today().isoformat()})
+
+###########################################################Update a PIC & SUM
+def PicSumUpdate(request):
+
+    if request.method == 'POST':
+        form = request.POST
+
+        if form['startdate'] != '' and form['enddate'] == '':
+            startdate = datetime.strptime(form['startdate'], '%Y-%m-%d').date()
+            enddate = date.today()
+            allPics = picsum.objects.filter(testdate__gte=startdate, testdate__lte=enddate)
+        elif form['startdate'] == '' and form['enddate'] != '':
+            enddate = datetime.strptime(form['enddate'], '%Y-%m-%d').date()
+            allPics = picsum.objects.filter(testdate=enddate)
+        elif form['startdate'] == '' and form['enddate'] == '':
+            return render(request, 'CWBDataApp/PicSumUpdate.html', {'error_message':"Please enter a start/end date or both", 'dateToday':date.today().isoformat()})
+        else:
+            startdate = datetime.strptime(form['startdate'], '%Y-%m-%d').date()
+            enddate = datetime.strptime(form['enddate'], '%Y-%m-%d').date()
+            allPics = picsum.objects.filter(testdate__gte=startdate, testdate__lte=enddate)
+
+        if allPics == None:
+            return render(request, 'CWBDataApp/PicSumUpdate.html', {'error_message':'No Pic&Sums exist for this time frame', 'dateToday':date.today().isoformat()})
+
+        return render(request, 'CWBDataApp/PicSumUpdate.html', {'allPics':allPics, 'dateToday':date.today().isoformat()})
+
+    return render(request, 'CWBDataApp/PicSumUpdate.html', {'dateToday':date.today().isoformat()})
+
+###########################################################GRAB A SPECIFIED PIC & SUM and display its data
+def GetPicSum(request):
+
+    if request.method == 'POST':
+        form = request.POST
+
+        #try:
+        pic = picsum.objects.get(pk=form['title'])
+        allEmployees = Employees.objects.all()
+        return render(request, 'CWBDataApp/PicSumUpdate.html', {'pic':pic, 'allEmployees':allEmployees, 'picDate':pic.testdate.isoformat()})
+        #except:
+            #return render(request, 'CWBDataApp/PicSumUpdate.html', {'error_message':'Could Not Get Specifed Pic&Sum', 'dateToday':date.today().isoformat()})
+
+    return render(request, 'CWBDataApp/PicSumUpdate.html', {'dateToday':date.today().isoformat()})
+
 ###########################################################PIC & SUM
+def PicSumChange(request):
+    allEmployees = Employees.objects.all()
+
+    if request.method == 'POST':
+        form = request.POST
+
+        try:
+            pic = picsum.objects.get(title=form['title'])
+
+            if form['newTitle'] != form['title'] and form['newTitle'] != '':
+
+                if not picsum.objects.filter(title=form['newTitle']):
+                    pic.title = form['newTitle']
+                    pic.save()
+                else:
+                    allEmployees = Employees.objects.all()
+                    return render(request, 'CWBDataApp/PicSumUpdate.html', {'error_message':'Title already taken, please choose a differnt one', 'pic':pic, 'allEmployees':allEmployees, 'picDate':pic.testdate.isoformat()})
+
+            pic.testdate = form['testdate']
+            pic.supervisor = form['supervisor']
+            pic.machineoperator = form['machineoperator']
+            pic.temp1 = form['temp1']
+            pic.mixer = form['mixer']
+            pic.temp2 = form['temp2']
+            pic.description = form['description']
+            pic.save()
+            return render(request, 'CWBDataApp/PicSumUpdate.html', {'dataAcceptedMessage':'Pic&Sum Successfully Updated', 'dateToday':date.today().isoformat()})
+        except:
+            pic = picsum.objects.get(title=form['title'])
+            return render(request, 'CWBDataApp/PicSumUpdate.html', {'error_message':'Could not save changes, check values again', 'pic':pic, 'allEmployees':allEmployees, 'picDate':pic.testdate.isoformat()})
+
+
+    return render(request, 'CWBDataApp/PicSumUpdate.html', {'dateToday':date.today().isoformat()})
+
+###########################################################REMOVE A PIC & SUM
+def RemovePic(request):
+
+    if request.method == 'POST':
+        form = request.POST
+
+        #try:
+        pic = picsum.objects.get(title=form['title'])
+        pic.image.delete(save=False)
+        pic.delete()
+
+        return render(request, 'CWBDataApp/PicSumUpdate.html', {'dataAcceptedMessage':'Pic&Sum Successfully Removed', 'dateToday':date.today().isoformat()})
+        #except:
+            #return render(request, 'CWBDataApp/PicSumUpdate.html', {'error_message':'Could Not Remove Pic&Sum', 'dateToday':date.today().isoformat()})
+
+    return render(request, 'CWBDataApp/PicSumUpdate.html', {'dateToday':date.today().isoformat()})
+
+###########################################################PIC & SUM Excel sheet
 def PicSumForms(request):
 
     if request.method == 'POST':

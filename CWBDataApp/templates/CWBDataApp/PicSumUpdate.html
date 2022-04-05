@@ -1,0 +1,173 @@
+{% extends 'CWBDataApp/base.html'%}
+
+{% block title %} {{'Pic & Sum Update'}} {% endblock title %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'CWBDataApp/body.css'%}">
+{% endblock %}
+
+{% block content %}
+  <div>
+    <h2 id="header">Update Pic & Sums </h2>
+    <p id="descriptionParagraph">
+        Update Pic&Sum data. Query Pic&Sums between the specifed start and end dates. If you put the start date but do not give and end date, then the data
+        will be gathered for the startdate up until the current date. If an end date is given but no start date then the data is retrieved for the
+        specified day only.
+
+        Then choose the pic&sum to update from the list given. Remember to press the save button after updating the Pic&Sum to record the changes.
+    </p>
+  </div>
+
+
+  <div class="justify-content-center row no-gutters">
+    <form action="{% url 'CWBDataApp:PicSumUpdate'%}" method="post">
+      <div class="d-inline-flex flex-column">
+        {% csrf_token %}
+
+        <div class="inline-flex inputBox">
+          <label for=startdate">Start Date: </label>
+          <input id="startdate" type="date" name="startdate" min="2021-01-01">
+        </div>
+
+        <div class="inline-flex inputBox">
+          <label for=enddate">End Date: </label>
+          <input id="enddate" type="date" name="enddate" min="2021-01-01" {% if dateToday %} value={{dateToday}} {% endif %}>
+        </div>
+
+        <input class="submitButton" type="submit" name="View" value="View Pic&Sums">
+      </div>
+    </form>
+  </div>
+
+  {% if allPics and not pic %}
+    <div class="justify-content-center row no-gutters">
+      <form action="{% url 'CWBDataApp:GetPicSum'%}" method="post">
+        <div class="d-inline-flex flex-column btn-group btn-group-toggle">
+          {% csrf_token %}
+
+          <div class="inline-flex inputBox">
+            <fieldset>
+              <legend> Choose a Pic&Sum to Update:</legend>
+              {% for pic in allPics %}
+                <label class="btn btn-secondary">
+                <input type="radio" name="title" value="{{pic.title}}"> {{pic.title}}<br>
+                </label>
+                <br>
+              {% endfor %}
+            </fieldset>
+          </div>
+
+          <br>
+
+            <input type="submit" name="choosePic" value="Update Pic&Sum">
+            <input type="submit" name="removePic" formaction="{% url 'CWBDataApp:RemovePic'%}" value="Remove Pic&Sum">
+        </div>
+      </form>
+    </div>
+  {% endif %}
+
+  {% if pic and not allPics %}
+    <div class="justify-content-center row no-gutters">
+      <form action="{% url 'CWBDataApp:PicSumChange'%}" method="post" enctype="multipart/form-data">
+        <div class="d-inline-flex flex-column">
+          <h4 id=header>Pic & Sum</h4>
+          {% csrf_token %}
+
+          <div class="inline-flex form-group">
+            <label for="newTitle">Title: </label>
+            <input id="newTitle" type="text" name="newTitle" maxlength="20" value={{pic.title}}>
+            <input id="title" type="text" name="title" maxlength="20" value={{pic.title}} hidden>
+          </div>
+
+          <div class="inline-flex inputBox">
+            <label for=testdate">Date*: </label>
+            <input id="testdate" type="date" name="testdate" min="2021-01-01" value={{picDate}}>
+          </div>
+
+          <br>
+          <p> --------------------------------------------------------</p>
+
+          <div class="inline-flex input-box">
+            <label for="supervisor">Supervisor: </label>
+            <select id="supervisor" name="supervisor">
+              <option value="{{ pic.supervisor }}">{{ pic.supervisor }}</option>
+              {% if allEmployees %}
+                {% for employee in allEmployees %}
+                    <option value="{{ employee.employeename }}">{{ employee.employeename }}</option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+
+
+          <br>
+          <p> --------------------------------------------------------</p>
+
+          <div class="inline-flex input-box">
+            <label for="machineoperator">Machine Operator: </label>
+            <select id="machineoperator" name="machineoperator">
+              <option value="{{ pic.machineoperator }}">{{ pic.machineoperator }}</option>
+              {% if allEmployees %}
+                {% for employee in allEmployees %}
+                    <option value="{{ employee.employeename }}">{{ employee.employeename }}</option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+
+          <div class="inline-flex input-box">
+            <label for="temp1">Are they a Temp Employee: </label>
+            <select id="temp1" type="text" name="temp1">
+              <option value={{pic.temp1}}>{% if pic.temp1 %} Yes {% else %} No {% endif %}</option>
+              <option value='False'>No</option>
+              <option value='True'>Yes</option>
+            </select>
+          </div>
+          <br>
+
+          <p> --------------------------------------------------------</p>
+
+          <div class="inline-flex input-box">
+            <label for="mixer">Mixer: </label>
+            <select id="mixer" name="mixer">
+              <option value="{{ pic.mixer }}">{{ pic.mixer }}</option>
+              {% if allEmployees %}
+                {% for employee in allEmployees %}
+                    <option value="{{ employee.employeename }}">{{ employee.employeename }}</option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+
+          <div class="inline-flex input-box">
+            <label for="temp2">Are they a Temp Employee: </label>
+            <select id="temp2" type="text" name="temp2">
+              <option value={{pic.temp2}}>{% if pic.temp2 %} Yes {% else %} No {% endif %}</option>
+              <option value='False'>No</option>
+              <option value='True'>Yes</option>
+            </select>
+          </div>
+
+          <br>
+
+          <p> --------------------------------------------------------</p>
+
+          <div class="inline-flex form-group">
+            <img src="{{pic.image.url}}" alt="pic" height="300", width="300">
+          </div>
+
+          <div class="inline-flex form-group">
+            <label for="description">Description: </label>
+            <textarea class="form-control" id="description" name="description" rows="15" columns="40">{{pic.description}}</textarea>
+          </div>
+
+            <input type="submit" name="enterNewAverage" value="Save">
+        </div>
+      </form>
+    </div>
+
+  {% endif %}
+
+
+{% endblock content %}
