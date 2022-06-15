@@ -31,6 +31,11 @@
           <input id="testdate" type="date" name="testdate" min="2021-01-01" {% if dateToday %} value={{dateToday}} {% endif %}>
         </div>
 
+        <div class="inline-flex inputBox">
+          <label for=numberoftests">Number of Tests: </label>
+          <input id="numberoftests" type="number" name="numberoftests" min="1" max="100" value="3">
+        </div>
+
         <br>
         <p> --------------------------------------------------------</p>
 

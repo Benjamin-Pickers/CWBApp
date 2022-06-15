@@ -1399,6 +1399,7 @@ def PicSumChange(request):
                     return render(request, 'CWBDataApp/PicSumUpdate.html', {'error_message':'Title already taken, please choose a differnt one', 'pic':pic, 'allEmployees':allEmployees, 'picDate':pic.testdate.isoformat()})
 
             pic.testdate = form['testdate']
+            pic.numberoftests = form['numberoftests']
             pic.supervisor = form['supervisor']
             pic.machineoperator = form['machineoperator']
             pic.temp1 = form['temp1']
@@ -1441,7 +1442,7 @@ def PicSumForms(request):
         df = pd.read_sql_query(query, connection)
         today = str(date.today())
         df.drop(columns=['image', 'description'], inplace=True)
-        df.rename(columns={'title': 'Test Name', 'testdate':'Test Date', 'supervisor':'Supervisor (Not a temp)', 'machineoperator':'Machine Operator', 'temp1':'Is the Machine Operator a Temp', 'mixer':'Mixer', 'temp2':'Is the Mixer a temp'}, inplace=True)
+        df.rename(columns={'title': 'Test Name', 'testdate':'Test Date', 'numberoftests':'Number of Tests', 'supervisor':'Supervisor (Not a temp)', 'machineoperator':'Machine Operator', 'temp1':'Is the Machine Operator a Temp', 'mixer':'Mixer', 'temp2':'Is the Mixer a temp'}, inplace=True)
 
         df['Test Date'] = pd.to_datetime(df['Test Date'], format='%Y-%m-%d')
 

@@ -85,6 +85,11 @@
             <input id="testdate" type="date" name="testdate" min="2021-01-01" value={{picDate}}>
           </div>
 
+          <div class="inline-flex inputBox">
+            <label for=numberoftests">Number of Tests: </label>
+            <input id="numberoftests" type="number" name="numberoftests" min="1" max="100" value={{pic.numberoftests}}>
+          </div>
+
           <br>
           <p> --------------------------------------------------------</p>
 
@@ -154,7 +159,11 @@
           <p> --------------------------------------------------------</p>
 
           <div class="inline-flex form-group">
+            {% if pic.image %}
             <img src="{{pic.image.url}}" alt="pic" height="300", width="300">
+            {% else %}
+            <p> No Image Was Uploaded. Please Contact Ben To Upload An Image Until This Function Is Provided</p>
+            {% endif %}
           </div>
 
           <div class="inline-flex form-group">

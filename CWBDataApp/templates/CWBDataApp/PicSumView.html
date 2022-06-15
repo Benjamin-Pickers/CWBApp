@@ -43,7 +43,8 @@
       {% for pic in allPics %}
         <div class="inline-flex picsum">
           <h2> {{pic.title}} </h2>
-          <p> {{pic.testdate}}</p>
+          <p> Date: {{pic.testdate}}</p>
+          <p> Number of Tests: {{pic.numberoftests}}</p>
 
           <p>Supervisor: {{pic.supervisor}} </p>
           <p>Machine Operator: {{pic.machineoperator}}</p>
@@ -52,7 +53,9 @@
 
 
           <p>{{pic.description}}</p>
-          <img src="{{pic.image.url}}" alt="pic" height="300", width="300">
+          {% if pic.image %}
+            <img src="{{pic.image.url}}" alt="pic" height="300", width="300">
+          {% endif %}
         </div>
       {% endfor %}
     {% endif %}

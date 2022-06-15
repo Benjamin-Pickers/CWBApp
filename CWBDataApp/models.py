@@ -255,6 +255,7 @@ class picsum(models.Model):
     mixer = models.CharField(max_length=40, null=True)
     temp2 = models.BooleanField()
     image = models.ImageField(upload_to="PicAndSum/%Y/%m", blank=True)
+    numberoftests = models.SmallIntegerField(blank=True, null=True)
     description = models.TextField(null=True)
 
 class cisEmailSubject(models.Model):
@@ -263,4 +264,4 @@ class cisEmailSubject(models.Model):
 class picsumForm(ModelForm):
     class Meta:
         model = picsum
-        fields = ['title', 'testdate', 'supervisor', 'machineoperator', 'temp1', 'mixer', 'temp2', 'image', 'description']
+        fields = ['title', 'testdate', 'supervisor', 'machineoperator', 'temp1', 'mixer', 'temp2', 'image', 'numberoftests', 'description']
