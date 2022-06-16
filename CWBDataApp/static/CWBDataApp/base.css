@@ -1,9 +1,10 @@
 :root
 {
-    --bgcolour: #DBD4D4;
+    --bgcolour: #F0FDF0;
     --secondarybgcolour: #2B7A78;
-    --textcolour: #5A4F4F;
-    --hovercolour: #B3D822;
+    --textcolour: #F4FFF4;
+    --hovercolour: #2FCF93;
+    --greenbg: #195D0E;
 }
 
 
@@ -12,14 +13,27 @@ body
   background-color: var(--bgcolour);
 }
 
+.navbar-light
+{
+  background-color: var(--greenbg);
+}
 
-.nav-link
+
+.navbar-light .nav-item .nav-link
 {
   color: var(--textcolour);
 }
-.nav-link:hover
+.navbar-light .nav-item .nav-link:hover
 {
   color: var(--hovercolour);
+}
+
+.custom-toggler .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgb(4,52,11)' stroke-width='3' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+}
+
+.custom-toggler .navbar-toggler {
+  background-image: rgb(255,102,203);
 }
 
 .logout

@@ -4,7 +4,9 @@ import pandas as pd
 import os
 
 
-
+#WORK IN PROGRESS
+#Designer Deck integrated order sheets that update automatically
+#DD has the most retarded excel order sheets ever
 class OrdersDD():
 
     def __init__(self):

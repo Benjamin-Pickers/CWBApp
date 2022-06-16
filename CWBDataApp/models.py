@@ -2,7 +2,9 @@ from django.db import models
 from django.forms import ModelForm
 import datetime
 
+#Models.py contains the database models for each table
 
+#Table for batchcost tracking
 class Batchcost(models.Model):
     batchname = models.CharField(db_column='BatchName', primary_key=True, max_length=15)  # Field name made lowercase.
     batchdate = models.DateField(db_column='BatchDate', blank=True, null=True)  # Field name made lowercase.
@@ -51,7 +53,7 @@ class Batchcost(models.Model):
         managed = False
         db_table = 'BatchCost'
 
-
+#Table containing every material supplier and the cost/pound assocsiated with that supplier
 class Materialcost(models.Model):
     supplier = models.CharField(db_column='Supplier', primary_key=True, max_length=30)
     costperpound = models.DecimalField(db_column='CostPerPound', decimal_places=2, max_digits=10)
@@ -60,7 +62,7 @@ class Materialcost(models.Model):
         managed = False
         db_table = 'MaterialCost'
 
-
+#Table containing raw plastic material inventory
 class Materialinventory(models.Model):
     materialname = models.CharField(db_column='MaterialName', primary_key=True, max_length=30)
     supplier = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier')
@@ -73,7 +75,7 @@ class Materialinventory(models.Model):
         managed = False
         db_table = 'MaterialInventory'
 
-
+#Table for material testing data
 class Materialtesting(models.Model):
     projectnumber = models.SmallIntegerField(db_column='ProjectNumber')  # Field name made lowercase.
     testname = models.ForeignKey(Batchcost, models.DO_NOTHING, db_column='TestName')  # Field name made lowercase.
@@ -98,47 +100,7 @@ class Materialtesting(models.Model):
         db_table = 'MaterialTesting'
 
 
-class Mixingform(models.Model):
-    batchname = models.CharField(db_column='BatchName', primary_key=True, max_length=15)  # Field name made lowercase.
-    batchdate = models.DateField(db_column='BatchDate', blank=True, null=True)  # Field name made lowercase.
-    material1 = models.CharField(db_column='Material1', max_length=20)  # Field name made lowercase.
-    weight1 = models.SmallIntegerField(db_column='Weight1', blank=True, null=True)  # Field name made lowercase.
-    supplier1 = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier1', related_name='rawsupplier1', blank=True, null=True)  # Field name made lowercase.
-    material2 = models.CharField(db_column='Material2', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    weight2 = models.SmallIntegerField(db_column='Weight2', blank=True, null=True)  # Field name made lowercase.
-    supplier2 = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier2', related_name='rawsupplier2', blank=True, null=True)  # Field name made lowercase.
-    material3 = models.CharField(db_column='Material3', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    weight3 = models.SmallIntegerField(db_column='Weight3', blank=True, null=True)  # Field name made lowercase.
-    supplier3 = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier3', related_name='rawsupplier3', blank=True, null=True)  # Field name made lowercase.
-    material4 = models.CharField(db_column='Material4', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    weight4 = models.SmallIntegerField(db_column='Weight4', blank=True, null=True)  # Field name made lowercase.
-    supplier4 = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier4', related_name='rawsupplier4', blank=True, null=True)  # Field name made lowercase.
-    material5 = models.CharField(db_column='Material5', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    weight5 = models.SmallIntegerField(db_column='Weight5', blank=True, null=True)  # Field name made lowercase.
-    supplier5 = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier5', related_name='rawsupplier5', blank=True, null=True)  # Field name made lowercase.
-    material6 = models.CharField(db_column='Material6', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    weight6 = models.SmallIntegerField(db_column='Weight6', blank=True, null=True)  # Field name made lowercase.
-    supplier6 = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier6', related_name='rawsupplier6', blank=True, null=True)  # Field name made lowercase.
-    material7 = models.CharField(db_column='Material7', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    weight7 = models.SmallIntegerField(db_column='Weight7', blank=True, null=True)  # Field name made lowercase.
-    supplier7 = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier7', related_name='rawsupplier7', blank=True, null=True)  # Field name made lowercase.
-    material8 = models.CharField(db_column='Material8', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    weight8 = models.SmallIntegerField(db_column='Weight8', blank=True, null=True)  # Field name made lowercase.
-    supplier8 = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier8', related_name='rawsupplier8', blank=True, null=True)  # Field name made lowercase.
-    material9 = models.CharField(db_column='Material9', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    weight9 = models.SmallIntegerField(db_column='Weight9', blank=True, null=True)  # Field name made lowercase.
-    supplier9 = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier9', related_name='rawsupplier9', blank=True, null=True)  # Field name made lowercase.
-    material10 = models.CharField(db_column='Material10', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    weight10 = models.SmallIntegerField(db_column='Weight10', blank=True, null=True)  # Field name made lowercase.
-    supplier10 = models.ForeignKey(Materialcost, models.DO_NOTHING, db_column='Supplier10', related_name='rawsupplier10', blank=True, null=True)  # Field name made lowercase.
-    colour = models.CharField(db_column='Colour', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    colourweight = models.FloatField(db_column='ColourWeight', blank=True, null=True)  # Field name made lowercase.
-    foamweight = models.FloatField(db_column='FoamWeight', blank=True, null=True)  # Field name made lowercase.
-
-    class Meta:
-        managed = False
-        db_table = 'MixingForm'
-
+#Tables for the order sheets for each machine, Should try an attempt to move these into one table and create a machine field to differentiate between orders
 class Ordersheetmachine1(models.Model):
     ponumber = models.AutoField(db_column='PONumber', primary_key=True)  # Field name made lowercase.
     customerponumber = models.CharField(db_column='CustomerPONumber', max_length=15, blank=True, null=True)  # Field name made lowercase.
@@ -208,6 +170,7 @@ class Ordersheetmachine3(models.Model):
         db_table = 'OrderSheetMachine3'
 
 
+#Completed product inventory table
 class Productinventory(models.Model):
     productname = models.CharField(db_column='ProductName', max_length=40)
     colour = models.CharField(db_column='colour', max_length=15)
@@ -219,6 +182,7 @@ class Productinventory(models.Model):
         managed = False
         db_table = 'ProductInventory'
 
+#Table containing the different prduct profiles available and the number of pieces per skid of that profile
 class Productprofiles(models.Model):
     productname = models.CharField(db_column='ProductName', primary_key=True, max_length=40)
     pcsperskid = models.SmallIntegerField(blank=True, null=True)
@@ -227,10 +191,12 @@ class Productprofiles(models.Model):
         managed = False
         db_table = 'ProductProfiles'
 
+#Table containing different colours available for products
 class Colour(models.Model):
     colour = models.CharField(max_length=15, primary_key=True)
     priceperpound = models.DecimalField(max_digits=5, decimal_places=2, null=True)
 
+#Table for current employees, NOTE that we should only collect first names and possibly the employee's last name initial
 class Employees(models.Model):
     employeename = models.CharField(db_column='EmployeeName', primary_key=True, max_length=40)  # Field name made lowercase.
 
@@ -238,6 +204,7 @@ class Employees(models.Model):
         managed = False
         db_table = 'Employees'
 
+#Table for the average production numbers of each profile
 class Profileaverages(models.Model):
     productname = models.CharField(db_column='ProductName', primary_key=True, max_length=40)  # Field name made lowercase.
     averageskidsperday = models.DecimalField(db_column='AverageSkidsPerDay', max_digits=7, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
@@ -246,6 +213,7 @@ class Profileaverages(models.Model):
         managed = False
         db_table = 'ProfileAverages'
 
+#Table for pic and sum data, images are being stored in an S3 bucket and are stored in folders based on year and month of upload
 class picsum(models.Model):
     title = models.CharField(max_length=40, primary_key=True, default="Test")
     testdate = models.DateField(default=datetime.date.today)
@@ -258,9 +226,11 @@ class picsum(models.Model):
     numberoftests = models.SmallIntegerField(blank=True, null=True)
     description = models.TextField(null=True)
 
+#Table for user entered email subjects
 class cisEmailSubject(models.Model):
     subject = models.CharField(max_length=100, primary_key=True)
 
+#Pic and sum form, if adding a field to pic and sum table then add that field to this form as well
 class picsumForm(ModelForm):
     class Meta:
         model = picsum

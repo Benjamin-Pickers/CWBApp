@@ -4,6 +4,9 @@ from .views import signUpView
 
 app_name = 'CWBDataApp'
 
+
+#URLs for the different pages
+#Should try and clean this up later
 urlpatterns = [
     path('', views.index, name='index'),
     path('BatchCostTracking/', views.BatchCostTracking, name='BatchCost'),

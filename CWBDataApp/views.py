@@ -367,12 +367,15 @@ def BatchCostQuery(request):
 
 ###########################################################Batch Cost Excel File Download
 def BatchCostExcel(request):
+    #Query all batches and store in data frame
     query = str(Batchcost.objects.all().query)
     df = pd.read_sql_query(query, connection)
     today = str(date.today())
 
+    #Turn dataframe into excel sheet and save locally
     df.to_excel(r'./CWBDataApp/BatchCostTracking.xlsx', index=False)
 
+    #Open file and download in users browser then remove from local
     with open(r'./CWBDataApp/BatchCostTracking.xlsx', 'rb') as fh:
         response = HttpResponse(fh.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
         response['Content-Disposition'] = 'attachment; filename=BatchCostTracking-'+today+'.xlsx'
@@ -390,16 +393,19 @@ def MaterialTesting(request):
 
         form = request.POST
 
+        #Check if batch for test exists, return error if it doesnt
         try:
             Batchcosttracking.objects.get(pk=form['testName'].upper())
         except:
             return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles, 'allEmployees':allEmployees, 'error_message' : "Batch doesn't exist, please enter a batch first before entering a test.",})
 
         try:
+            #Check if test number is already used for that batch
             testName = Batchcosttracking.objects.get(pk=form['testName'].upper())
             Materialtesting.objects.get(testname=testName, testnumber=int(form['testNum']))
             return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles, 'allEmployees':allEmployees, 'error_message' : "Test number is already used for this batch, please choose a different test number",})
         except:
+            #Calculate cost based on time, ask Tom Law for updated numbers if needed
             if int(form['machinetimeUsed']) == 1:
                 costofmaterial=150
                 costoflabour=100
@@ -431,6 +437,7 @@ def MaterialTesting(request):
             totalcost = costoflabour + costofmaterial
             testName = Batchcosttracking.objects.get(pk=form['testName'].upper())
 
+            #Save new test object
             test=Materialtesting(projectnumber=form['projNum'],
                                  testname=testName,
                                  testnumber=form['testNum'],
@@ -461,8 +468,10 @@ def MaterialTestingPopulate(request):
 
         form = request.POST
 
+        #Populate test form with data if a test already exists for this batch
         if int(form['testNum']) > 1:
             try:
+                #Check if batch exists
                 Batchcosttracking.objects.get(pk=form['testName'].upper())
             except:
                 return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles, 'error_message' : "Batch doesn't exist, please enter a batch first before entering a test.",})
@@ -473,9 +482,11 @@ def MaterialTestingPopulate(request):
                 return render(request, 'CWBDataApp/MaterialTesting.html', {'allProfiles':allProfiles, 'error_message' : "Test number is already used for this batch, please choose a different test number",})
             except:
 
+                #Grab previous tests data
                 testName = Batchcosttracking.objects.get(pk=form['testName'].upper())
                 prev_test = Materialtesting.objects.get(testname=testName, testnumber=int(form['testNum'])-1)
 
+                #Store data in dict and return it to frontend
                 pop_data = {}
                 entered_data = {}
                 for key, value in form.items():
@@ -498,6 +509,7 @@ def MaterialTestQuery(request):
         form = request.POST
 
         try:
+            #Return all tests for a batch if the batch exists
             test = Batchcosttracking.objects.get(pk=form['testName'].upper())
             testName = test.batchname
             allTests = Materialtesting.objects.filter(testname=test)
@@ -510,6 +522,7 @@ def MaterialTestQuery(request):
 
 ###########################################################Material Test Excel File Download
 def MaterialTestExcel(request):
+    #Download material test data to an excel sheet
     query = str(Materialtesting.objects.all().query)
     df = pd.read_sql_query(query, connection)
     today = str(date.today())

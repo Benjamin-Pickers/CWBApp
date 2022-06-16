@@ -3,6 +3,7 @@ from datetime import date, timedelta
 import math
 from decimal import Decimal
 
+#Useful functions for the order sheets
 class OrderFunctions():
 
     def __init__(self):
