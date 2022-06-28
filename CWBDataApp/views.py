@@ -1383,12 +1383,12 @@ def GetPicSum(request):
     if request.method == 'POST':
         form = request.POST
 
-        #try:
-        pic = picsum.objects.get(pk=form['title'])
-        allEmployees = Employees.objects.all()
-        return render(request, 'CWBDataApp/PicSumUpdate.html', {'pic':pic, 'allEmployees':allEmployees, 'picDate':pic.testdate.isoformat()})
-        #except:
-            #return render(request, 'CWBDataApp/PicSumUpdate.html', {'error_message':'Could Not Get Specifed Pic&Sum', 'dateToday':date.today().isoformat()})
+        try:
+            pic = picsum.objects.get(pk=form['title'])
+            allEmployees = Employees.objects.all()
+            return render(request, 'CWBDataApp/PicSumUpdate.html', {'pic':pic, 'allEmployees':allEmployees, 'picDate':pic.testdate.isoformat()})
+        except:
+            return render(request, 'CWBDataApp/PicSumUpdate.html', {'error_message':'Could Not Get Specifed Pic&Sum', 'dateToday':date.today().isoformat()})
 
     return render(request, 'CWBDataApp/PicSumUpdate.html', {'dateToday':date.today().isoformat()})
 
