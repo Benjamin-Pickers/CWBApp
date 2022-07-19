@@ -77,7 +77,7 @@
 
           <div class="inline-flex inputBox">
             <label for="material12">Or Custom Material: </label>
-            <input id="material12" type="text" name="material12" {% if batch %} value="{{batch.material12}}" {% endif %} maxlength="40">
+            <input id="material12" type="text" name="material12" {% if batch %} value="{{batch.material12}}" {% endif %} maxlength="30">
           </div>
 
           <div class="inline-flex inputBox">
@@ -114,7 +114,7 @@
 
           <div class="inline-flex inputBox">
             <label for="material22">Or Custom Material: </label>
-            <input id="material22" type="text" name="material22" {% if batch %} value="{{batch.material22}}" {% endif %} maxlength="40">
+            <input id="material22" type="text" name="material22" {% if batch %} value="{{batch.material22}}" {% endif %} maxlength="30">
           </div>
 
           <div class="inline-flex inputBox">
@@ -151,7 +151,7 @@
 
           <div class="inline-flex inputBox">
             <label for="material32">Or Custom Material: </label>
-            <input id="material32" type="text" name="material32" {% if batch %} value="{{batch.material32}}" {% endif %} maxlength="40">
+            <input id="material32" type="text" name="material32" {% if batch %} value="{{batch.material32}}" {% endif %} maxlength="30">
           </div>
 
           <div class="inline-flex inputBox">
@@ -188,7 +188,7 @@
 
           <div class="inline-flex inputBox">
             <label for="material42">Or Custom Material: </label>
-            <input id="material42" type="text" name="material42" {% if batch %} value="{{batch.material42}}" {% endif %} maxlength="40">
+            <input id="material42" type="text" name="material42" {% if batch %} value="{{batch.material42}}" {% endif %} maxlength="30">
           </div>
 
           <div class="inline-flex inputBox">
@@ -225,7 +225,7 @@
 
           <div class="inline-flex inputBox">
             <label for="material52">Or Custom Material: </label>
-            <input id="material52" type="text" name="material52" {% if batch %} value="{{batch.material52}}" {% endif %} maxlength="40">
+            <input id="material52" type="text" name="material52" {% if batch %} value="{{batch.material52}}" {% endif %} maxlength="30">
           </div>
 
           <div class="inline-flex inputBox">
@@ -262,7 +262,7 @@
 
           <div class="inline-flex inputBox">
             <label for="materia62">Or Custom Material: </label>
-            <input id="material62" type="text" name="material62" {% if batch %} value="{{batch.material62}}" {% endif %} maxlength="40">
+            <input id="material62" type="text" name="material62" {% if batch %} value="{{batch.material62}}" {% endif %} maxlength="30">
           </div>
 
           <div class="inline-flex inputBox">
@@ -300,7 +300,7 @@
           <!-- -->
           <div class="inline-flex inputBox">
             <label for="material72">Or Custom Material: </label>
-            <input class="weight" id="material72" type="text" name="material72" {% if batch %} value="{{batch.material72}}" {% endif %} maxlength="40">
+            <input id="material72" type="text" name="material72" {% if batch %} value="{{batch.material72}}" {% endif %} maxlength="30">
           </div>
 
           <div class="inline-flex inputBox">
@@ -338,7 +338,7 @@
           <!-- -->
           <div class="inline-flex inputBox">
             <label for="material82">Or Custom Material: </label>
-            <input id="material82" type="text" name="material82" {% if batch %} value="{{batch.material82}}" {% endif %} maxlength="40">
+            <input id="material82" type="text" name="material82" {% if batch %} value="{{batch.material82}}" {% endif %} maxlength="30">
           </div>
 
           <div class="inline-flex inputBox">
@@ -376,7 +376,7 @@
           <!-- -->
           <div class="inline-flex inputBox">
             <label for="material92">Or Custom Material: </label>
-            <input id="material92" type="text" name="material92"{% if batch %} value="{{batch.material92}}" {% endif %} maxlength="40">
+            <input id="material92" type="text" name="material92"{% if batch %} value="{{batch.material92}}" {% endif %} maxlength="30">
           </div>
 
           <div class="inline-flex inputBox">
@@ -414,7 +414,7 @@
           <!-- -->
           <div class="inline-flex inputBox">
             <label for="material102">Or Custom Material: </label>
-            <input id="material102" type="text" name="material102" {% if batch %} value="{{batch.material102}}"{% endif %} maxlength="40">
+            <input id="material102" type="text" name="material102" {% if batch %} value="{{batch.material102}}"{% endif %} maxlength="30">
           </div>
 
           <div class="inline-flex inputBox">
@@ -451,11 +451,11 @@
 
           <div class="inline-flex inputBox">
             <label for="colourPercent">Colour Percentage %: </label>
-            <input id="colourPercent" type="number" name="colourPercent"  value="0" step=any />
-            <input id="weightSum" hidden />
+            <input id="colourPercent" type="number" name="colourPercent"  value="0" step=any min="0">
+            <input id="weightSum" hidden>
             <p id="boldMessage"> If you added shred weight above in the material section, then it is included in the colour calculation </p>
             <label for="colourWeight">Colour Weight: </label>
-            <input id="colourWeight" type="number" name="colourWeight" {% if batch %} value="{{batch.colourWeight}}" {% else %} value="0" {% endif %} step="any" />
+            <input id="colourWeight" type="number" name="colourWeight" {% if batch %} value="{{batch.colourWeight}}" {% else %} value="0" {% endif %} step="any" min="0">
           </div>
 
           <div class="inline-flex inputBox">
@@ -468,22 +468,22 @@
 
           <div class="inline-flex inputBox">
             <label for="foamPercent">Foam Percentage %: </label>
-            <input id="foamPercent" type="number" name="foamPercent"  value="0" step=any />
+            <input id="foamPercent" type="number" name="foamPercent"  value="0" step=any min="0">
           </div>
 
           <div class="inline-flex inputBox">
             <label for="foamWeight">Foam Weight: </label>
-            <input id="foamWeight" type="number" name="foamWeight" {% if batch %} value="{{batch.foamWeight}}" {% else %} value="0" {% endif %} step="any">
+            <input id="foamWeight" type="number" name="foamWeight" {% if batch %} value="{{batch.foamWeight}}" {% else %} value="0" {% endif %} step="any" min="0">
           </div>
 
           <div class="inline-flex inputBox">
             <label for="foamPrice">Foam Price/Pound: </label>
-            <input id="foamPrice" type="number" name="foamPrice" value="6.75" step="any">
+            <input id="foamPrice" type="number" name="foamPrice" value="6.75" step="any" min="0">
           </div>
 
           <div class="inline-flex inputBox">
             <label for="shredWeight">TotalShredWeight: </label>
-            <input id="shredWeight" type="number" name="shredWeight" {% if batch %} value="{{batch.shredWeight}}" {% else %} value="0" {% endif %}>
+            <input id="shredWeight" type="number" name="shredWeight" {% if batch %} value="{{batch.shredWeight}}" {% else %} value="0" {% endif %} min="0">
           </div>
 
           <input type="submit" name="enterNewBatch" value="Submit">
